@@ -3,11 +3,17 @@
 class Game : public DXH::DXHEngine 
 {
 public:
-	Game() {}
+	Game(DXH::AppProperties props)
+		: DXH::DXHEngine(props)
+	{}
 	~Game() {}
 };
 
 DXH::DXHEngine* DXH::CreateDXHEngine() 
 {
-	return new Game();
+	DXH::AppProperties props
+	{
+		.WindowTitle = L"Space Shooter"
+	};
+	return new Game(props);
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include <Windows.h>
 #include <pch.h>
 
 #if defined(_DEBUG) || defined(DEBUG)
@@ -32,5 +31,10 @@
 }
 
 #else
-#define VS_DB_OUT( s )
+#define VS_DB_OUT_A( s )
+#define VS_DB_OUT_W( s )
+#define ASSERT_HRESULT(x) x
 #endif // DEBUG || _DEBUG
+
+// Application instance handle
+#define APP_PROC() GetModuleHandle(NULL)

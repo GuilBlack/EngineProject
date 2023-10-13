@@ -93,10 +93,12 @@
     <ClInclude Include="src\core\DXHEngine.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\core\WinMain.h" />
+    <ClInclude Include="src\core\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\DXHEngine.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="src\core\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
