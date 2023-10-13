@@ -51,6 +51,8 @@ namespace DXH
 		// Show window on screen
 		ShowWindow(m_WindowHandle, SW_SHOW);
 		UpdateWindow(m_WindowHandle);
+
+		return true;
 	}
 
 	void Window::PollEvent()
