@@ -14,7 +14,6 @@ DXHEngine::DXHEngine(AppProperties props)
 bool DXHEngine::Init()
 {
 	VS_DB_OUT_W(L"Initializing DXHEngine...\n");
-	m_IsRunning = true;
 
 	// Initialize the window
 	WindowProperties winProps
@@ -34,11 +33,14 @@ bool DXHEngine::Init()
 	}
 	m_Window->SetCloseCallback([]() { GetInstance().Shutdown(); });
 
+	m_IsRunning = true;
 	return true;
 }
 
 void DXHEngine::Run()
 {
+	assert(m_IsRunning && "DXHEngine is not initialized!");
+
 	VS_DB_OUT_W(L"Welcome to DXHEngine! Main loop is starting...\n");
 	while (m_IsRunning)
 	{
@@ -58,5 +60,10 @@ void DXHEngine::Cleanup()
 {
 	VS_DB_OUT_W(L"Cleaning up DXHEngine...\n");
 	delete m_Window;
+}
+
+bool DXHEngine::InitDX12()
+{
+	return false;
 }
 }

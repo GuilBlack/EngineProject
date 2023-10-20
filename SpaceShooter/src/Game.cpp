@@ -1,15 +1,6 @@
-#include <DXHInclude.h>
+#include "Game.h"
 
-class Game : public DXH::DXHEngine
-{
-public:
-	Game(DXH::AppProperties props)
-		: DXH::DXHEngine(props)
-	{
-	}
-	~Game() {}
-};
-
+// The entry point of the game
 DXH::DXHEngine* DXH::CreateDXHEngine()
 {
 	DXH::AppProperties props
@@ -17,4 +8,12 @@ DXH::DXHEngine* DXH::CreateDXHEngine()
 		.WindowTitle = L"Space Shooter"
 	};
 	return new Game(props);
+}
+
+Game::Game(DXH::AppProperties props) : DXH::DXHEngine(props)
+{
+}
+
+Game::~Game()
+{
 }

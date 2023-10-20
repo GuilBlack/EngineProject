@@ -25,7 +25,7 @@ public:
 	// Gets the singleton application
 	static DXHEngine& GetInstance() noexcept { return *s_App; }
 	// Gets the window from the singleton application
-	static Window& GetWindow() noexcept { return *GetInstance().m_Window; }
+	static Window& GetWindow() noexcept { return *s_App->m_Window; }
 
 private:
 	// Singleton application
@@ -35,12 +35,14 @@ private:
 	AppProperties m_Props;
 	bool m_IsRunning = true;
 
-
 private:
 	// Stops the main loop
 	void Shutdown();
-	// Wait for any operations to finish and destroy the window
+	// Waits for any operations to finish and destroy the window
 	void Cleanup();
+
+	// Initializes DirectX 12
+	bool InitDX12();
 };
 
 DXHEngine* CreateDXHEngine();
