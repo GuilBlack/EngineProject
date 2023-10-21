@@ -16,22 +16,12 @@ bool DXHEngine::Init()
 	VS_DB_OUT_W(L"Initializing DXHEngine...\n");
 
 	// Initialize the window
-	WindowProperties winProps
-	{
-		.Title = m_Props.WindowTitle,
-		.Width = (int32_t)m_Props.WindowWidth,
-		.Height = (int32_t)m_Props.WindowHeight,
-		.MinWidth = (int32_t)m_Props.MinWindowWidth,
-		.MinHeight = (int32_t)m_Props.MinWindowHeight,
-	};
-
-	m_Window = new Window(winProps);
-	if (!m_Window->Init())
-	{
-		VS_DB_OUT_W(L"Failed to initialize the window!\n");
+	if (!InitWindow())
 		return false;
-	}
-	m_Window->SetCloseCallback([]() { GetInstance().Shutdown(); });
+
+	// Initialize DX12
+	if (!InitDX12())
+		return false;
 
 	m_IsRunning = true;
 	return true;
@@ -50,6 +40,33 @@ void DXHEngine::Run()
 	Cleanup();
 }
 
+bool DXHEngine::InitWindow()
+{
+	WindowProperties winProps
+	{
+		.Title = m_Props.WindowTitle,
+		.Width = (int32_t)m_Props.WindowWidth,
+		.Height = (int32_t)m_Props.WindowHeight,
+		.MinWidth = (int32_t)m_Props.MinWindowWidth,
+		.MinHeight = (int32_t)m_Props.MinWindowHeight,
+	};
+
+	m_Window = new Window(winProps);
+	if (!m_Window->Init())
+	{
+		VS_DB_OUT_W(L"Failed to initialize the window!\n");
+		return false;
+	}
+	m_Window->SetCloseCallback([]() { GetInstance().Shutdown(); });
+
+	return true;
+}
+
+bool DXHEngine::InitDX12()
+{
+	return true;
+}
+
 void DXHEngine::Shutdown()
 {
 	VS_DB_OUT_W(L"Shutting down DXHEngine...\n");
@@ -60,10 +77,5 @@ void DXHEngine::Cleanup()
 {
 	VS_DB_OUT_W(L"Cleaning up DXHEngine...\n");
 	delete m_Window;
-}
-
-bool DXHEngine::InitDX12()
-{
-	return false;
 }
 }

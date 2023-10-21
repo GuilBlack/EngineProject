@@ -33,16 +33,18 @@ private:
 	Window* m_Window = nullptr;
 
 	AppProperties m_Props;
-	bool m_IsRunning = true;
+	bool m_IsRunning = false;
 
 private:
+	// Initializes the window
+	bool InitWindow();
+	// Initializes DirectX 12
+	bool InitDX12();
+
 	// Stops the main loop
 	void Shutdown();
 	// Waits for any operations to finish and destroy the window
 	void Cleanup();
-
-	// Initializes DirectX 12
-	bool InitDX12();
 };
 
 DXHEngine* CreateDXHEngine();
