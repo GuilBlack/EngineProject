@@ -55,7 +55,7 @@ bool Window::Init()
 	return true;
 }
 
-void Window::PollEvent()
+void Window::PollEvents()
 {
 	MSG msg;
 	while (PeekMessage(&msg, m_WindowHandle, 0, 0, PM_REMOVE))

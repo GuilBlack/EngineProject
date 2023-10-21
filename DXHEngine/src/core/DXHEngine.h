@@ -1,5 +1,6 @@
 #pragma once
 #include "Window.h"
+#include "Timer.h"
 
 namespace DXH
 {
@@ -15,7 +16,7 @@ class DXHEngine
 {
 public:
 	DXHEngine(AppProperties props);
-	virtual ~DXHEngine() {}
+	virtual ~DXHEngine() {};
 
 	// Initializes the application
 	bool Init();
@@ -27,12 +28,17 @@ public:
 	// Gets the window from the singleton application
 	static Window& GetWindow() noexcept { return *s_App->m_Window; }
 
+protected:
+	// Updates the application
+	virtual void Update(const Timer&);
+
 private:
 	// Singleton application
 	static DXHEngine* s_App;
 	Window* m_Window = nullptr;
 
 	AppProperties m_Props;
+	Timer m_gameTimer;
 	bool m_IsRunning = false;
 
 private:
@@ -40,6 +46,9 @@ private:
 	bool InitWindow();
 	// Initializes DirectX 12
 	bool InitDX12();
+
+	// Renders the application
+	void Render(const Timer&);
 
 	// Stops the main loop
 	void Shutdown();

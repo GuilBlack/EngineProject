@@ -17,3 +17,7 @@ Game::Game(DXH::AppProperties props) : DXH::DXHEngine(props)
 Game::~Game()
 {
 }
+
+void Game::Update(const DXH::Timer& gt)
+{
+}

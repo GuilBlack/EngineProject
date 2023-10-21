@@ -29,8 +29,10 @@ public:
 	bool Init();
 	void Destroy() {}
 
-	// Polls for a window event (should be done at the beginning of each frame)
-	void PollEvent();
+	// Polls for queued window events
+	void PollEvents();
+	// Changes the title of the window
+	void SetTitle(const std::wstring& title) { SetWindowText(m_WindowHandle, title.c_str()); }
 
 	// Handles window events
 	LRESULT OnEvent(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
