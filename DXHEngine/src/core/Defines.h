@@ -37,6 +37,13 @@ typedef DirectX::XMMATRIX Matrix;
 	}												\
 }
 
+#define RELEASE_PTR(x)	\
+{						\
+	assert(x);			\
+	x->Release();		\
+	x = nullptr;		\
+}
+
 #else
 #define VS_DB_OUT_A( s )
 #define VS_DB_OUT_W( s )

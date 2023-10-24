@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -68,7 +68,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3dcompiler.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(WindowsSDK_IncludePath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -93,7 +93,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3dcompiler.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(WindowsSDK_IncludePath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -101,18 +101,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DXHInclude.h" />
+    <ClInclude Include="src\renderer\RenderContext.h" />
+    <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\core\Defines.h" />
     <ClInclude Include="src\core\DXHEngine.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\core\WinMain.h" />
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\Timer.h" />
+    <ClInclude Include="src\renderer\SwapChain.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\renderer\RenderContext.cpp" />
+    <ClCompile Include="src\renderer\Renderer.cpp" />
     <ClCompile Include="src\core\DXHEngine.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\core\Timer.cpp" />
+    <ClCompile Include="src\renderer\SwapChain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

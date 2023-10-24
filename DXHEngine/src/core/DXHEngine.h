@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.h"
 #include "Timer.h"
+#include "../renderer/RenderContext.h"
 
 namespace DXH
 {
@@ -26,7 +27,7 @@ public:
 	// Gets the singleton application
 	static DXHEngine& GetInstance() noexcept { return *s_App; }
 	// Gets the window from the singleton application
-	static Window& GetWindow() noexcept { return *s_App->m_Window; }
+	static Window& GetWindow() noexcept { return *s_App->m_pWindow; }
 
 protected:
 	// Updates the application
@@ -35,11 +36,13 @@ protected:
 private:
 	// Singleton application
 	static DXHEngine* s_App;
-	Window* m_Window = nullptr;
+	Window* m_pWindow = nullptr;
 
 	AppProperties m_Props;
-	Timer m_gameTimer;
+	Timer m_GameTimer = Timer();
 	bool m_IsRunning = false;
+
+	RenderContext* m_pContext = nullptr;
 
 private:
 	// Initializes the window

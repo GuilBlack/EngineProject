@@ -1,4 +1,5 @@
 #include "DXHEngine.h"
+#include "../renderer/Renderer.h"
 
 namespace DXH
 {
@@ -32,13 +33,13 @@ void DXHEngine::Run()
 	assert(m_IsRunning && "DXHEngine is not initialized!");
 	VS_DB_OUT_W(L"Welcome to DXHEngine! Main loop is starting...\n");
 
-	m_gameTimer.Reset();
+	m_GameTimer.Reset();
 	while (m_IsRunning)
 	{
-		m_Window->PollEvents();
-		m_gameTimer.Tick();
-		Update(m_gameTimer);
-		Render(m_gameTimer);
+		m_pWindow->PollEvents();
+		m_GameTimer.Tick();
+		Update(m_GameTimer);
+		Render(m_GameTimer);
 	}
 
 	Cleanup();
@@ -60,19 +61,27 @@ bool DXHEngine::InitWindow()
 		.MinHeight = (int32_t)m_Props.MinWindowHeight,
 	};
 
-	m_Window = new Window(winProps);
-	if (!m_Window->Init())
+	m_pWindow = new Window(winProps);
+	if (!m_pWindow->Init())
 	{
 		VS_DB_OUT_W(L"Failed to initialize the window!\n");
 		return false;
 	}
-	m_Window->SetCloseCallback([]() { GetInstance().Shutdown(); });
+	m_pWindow->SetCloseCallback([]() { GetInstance().Shutdown(); });
 
 	return true;
 }
 
 bool DXHEngine::InitDX12()
 {
+#if defined(DEBUG) || defined(_DEBUG)
+	ID3D12Debug* debugController;
+	ASSERT_HRESULT(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
+	debugController->EnableDebugLayer();
+	RELEASE_PTR(debugController);
+#endif
+
+	Renderer::GetInstance().Init(m_pWindow);
 	return true;
 }
 
@@ -82,10 +91,10 @@ void DXHEngine::Render(const Timer& gt)
 	static float timeElapsed = 0.0f;
 	frameCnt++;
 
-	if ((m_gameTimer.TotalTime() - timeElapsed) >= 1.0f)
+	if ((m_GameTimer.TotalTime() - timeElapsed) >= 1.0f)
 	{
 		float mspf = 1000.0f / frameCnt;
-		m_Window->SetTitle(m_Props.WindowTitle +
+		m_pWindow->SetTitle(m_Props.WindowTitle +
 			L"    FPS: " + std::to_wstring(frameCnt) +
 			L"    MSPF: " + std::to_wstring(mspf));
 
@@ -105,6 +114,7 @@ void DXHEngine::Shutdown()
 void DXHEngine::Cleanup()
 {
 	VS_DB_OUT_W(L"Cleaning up DXHEngine...\n");
-	delete m_Window;
+	delete m_pContext;
+	delete m_pWindow;
 }
 }

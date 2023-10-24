@@ -3,6 +3,7 @@
 // Windows kit
 #include <Windows.h>
 #include <wrl.h>
+#include <comdef.h>
 
 #include <cassert>
 

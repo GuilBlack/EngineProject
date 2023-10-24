@@ -40,6 +40,10 @@ public:
 	// Sets the callback function for when the window is closing
 	void SetCloseCallback(WindowCloseCallback callback) { m_CloseCallback = callback; }
 
+	int32_t GetWidth() const noexcept { return m_Props.Width; }
+	int32_t GetHeight() const noexcept { return m_Props.Height; }
+
+	HWND GetWindowHandle() const noexcept { return m_WindowHandle; }
 private:
 	WindowProperties m_Props;
 	HWND m_WindowHandle = nullptr;
