@@ -105,6 +105,6 @@ void DXHEngine::Shutdown()
 void DXHEngine::Cleanup()
 {
 	VS_DB_OUT_W(L"Cleaning up DXHEngine...\n");
-	delete m_Window;
+	DELETE_PTR(m_Window);
 }
 }
