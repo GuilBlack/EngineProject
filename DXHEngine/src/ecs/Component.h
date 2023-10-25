@@ -33,9 +33,13 @@ public:
 		static Id id = GetNewId();
 		return id;
 	}
+	/// <summary>
+	/// Returns the entity this component is attached to.
+	/// </summary>
+	inline Entity* GetEntity() const { return m_Entity; }
 
 private:
-	Entity* m_Entity; // Id of the entity this component is attached to
+	Entity* m_Entity;// Id of the entity this component is attached to
 
 private: // "Manager" stuff
 	/// <summary>

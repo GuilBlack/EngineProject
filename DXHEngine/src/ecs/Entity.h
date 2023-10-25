@@ -54,9 +54,14 @@ public:
 	/// <returns>True if the component was found, false otherwise.</returns>
 	template <ComponentChild C> bool TryGetComponent(C* out) const;
 
-	Transform transform; // Transform of the entity.
+
+	/// <summary>
+	/// Returns transform of the entity.
+	/// </summary>
+	Transform& GetTransform() { return m_Transform; }
 
 private:
+	Transform m_Transform; // Transform of the entity.
 	Id m_id; // Unique id of the entity.
 	std::unordered_map<Id, Component*> m_components; // Components of the entity.
 
