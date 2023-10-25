@@ -101,6 +101,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DXHInclude.h" />
+    <ClInclude Include="src\ocs\systems\PhysicsSystem.h" />
     <ClInclude Include="src\renderer\RenderContext.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\core\Defines.h" />
@@ -112,6 +113,7 @@
     <ClInclude Include="src\renderer\SwapChain.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ocs\systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\renderer\RenderContext.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
     <ClCompile Include="src\core\DXHEngine.cpp" />
