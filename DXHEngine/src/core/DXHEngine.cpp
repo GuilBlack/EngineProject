@@ -114,7 +114,7 @@ void DXHEngine::Shutdown()
 void DXHEngine::Cleanup()
 {
 	VS_DB_OUT_W(L"Cleaning up DXHEngine...\n");
-	delete m_pContext;
-	delete m_pWindow;
+	DELETE_PTR(m_pContext);
+	DELETE_PTR(m_pWindow);
 }
 }

@@ -14,7 +14,7 @@ typedef DirectX::XMMATRIX Matrix;
 {														\
 	std::stringstream ss;								\
 	ss << s;											\
-	OutputDebugStringA( ss.str().c_str() );	\
+	OutputDebugStringA( ss.str().c_str() );				\
 }
 
 // Debug output for std::wstring.
@@ -22,26 +22,19 @@ typedef DirectX::XMMATRIX Matrix;
 {														\
 	std::wstringstream ss;								\
 	ss << s;											\
-	OutputDebugStringW( ss.str().c_str() );	\
+	OutputDebugStringW( ss.str().c_str() );				\
 }
 
 // Asserts if the HRESULT is not S_OK.
-#define ASSERT_HRESULT(x)							\
-{													\
-	HRESULT dhr = (x);								\
-	if (FAILED(dhr))								\
-	{												\
-		_com_error err(dhr);						\
-		VS_DB_OUT_W(err.ErrorMessage() << L'\n');	\
-		assert(false);								\
-	}												\
-}
-
-#define RELEASE_PTR(x)	\
-{						\
-	assert(x);			\
-	x->Release();		\
-	x = nullptr;		\
+#define ASSERT_HRESULT(x)								\
+{														\
+	HRESULT dhr = (x);									\
+	if (FAILED(dhr))									\
+	{													\
+		_com_error err(dhr);							\
+		VS_DB_OUT_W(err.ErrorMessage() << L'\n');		\
+		assert(false);									\
+	}													\
 }
 
 #else
@@ -52,3 +45,8 @@ typedef DirectX::XMMATRIX Matrix;
 
 // Application instance handle
 #define APP_PROC() GetModuleHandle(NULL)
+
+// Release COM object and set pointer to nullptr.
+#define RELEASE_PTR(x) { if (x) { x->Release(); x = nullptr; } }
+// Delete pointer and set pointer to nullptr.
+#define DELETE_PTR(x) { if (x) { delete x; x = nullptr; } }
