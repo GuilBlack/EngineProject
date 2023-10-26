@@ -42,6 +42,17 @@ public:
 		ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(dsvHeap)));
 	}
 
+	void CreateCBVSRVUAVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** cbvSrvUavHeap)
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC cbvSrvUavHeapDesc =
+		{
+			.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+			.NumDescriptors = numDescriptors,
+			.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
+		};
+		ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&cbvSrvUavHeapDesc, IID_PPV_ARGS(cbvSrvUavHeap)));
+	}
+
 	void CreateRTV(ID3D12Resource* rtv, CD3DX12_CPU_DESCRIPTOR_HANDLE& rtvHeapHandle)
 	{
 		m_pDevice->CreateRenderTargetView(rtv, nullptr, rtvHeapHandle);
@@ -58,6 +69,18 @@ public:
 	uint32_t GetDescriptorIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE descriptorHeadType)
 	{ 
 		return m_pDevice->GetDescriptorHandleIncrementSize(descriptorHeadType);
+	}
+
+	void CreateResource(ID3D12Resource** res, const D3D12_HEAP_PROPERTIES& heapProps, const D3D12_RESOURCE_DESC& bufferDesc, D3D12_RESOURCE_STATES state)
+	{
+		ASSERT_HRESULT(m_pDevice->CreateCommittedResource(
+			&heapProps,
+			D3D12_HEAP_FLAG_NONE,
+			&bufferDesc,
+			state,
+			nullptr,
+			IID_PPV_ARGS(res)
+		));
 	}
 
 private:

@@ -15,6 +15,9 @@ void Renderer::Init(Window* window)
 	// Create swap chain
 	m_pSwapChain = new SwapChain();
 	m_pSwapChain->Init(window, m_pRenderContext, m_pCommandQueue);
+
+	// Create CBV descriptor heap
+	m_pRenderContext->CreateCBVSRVUAVHeapDescriptor(10, &m_pCbvSrvHeap);
 }
 
 void Renderer::Destroy()
@@ -114,6 +117,45 @@ void Renderer::FlushCommandQueue()
 		//Close the handle to the event
 		CloseHandle(eventHandle);
 	}
+}
+ID3D12Resource* Renderer::CreateDefaultBuffer(void* data, int64_t byteSize)
+{
+	ID3D12Resource* uploadBuffer = nullptr;
+	ID3D12Resource* defaultBuffer = nullptr;
+
+	D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(byteSize);
+
+	m_pRenderContext->CreateResource(&defaultBuffer, heapProperties, resourceDesc, D3D12_RESOURCE_STATE_COMMON);
+
+	heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+	m_pRenderContext->CreateResource(&uploadBuffer, heapProperties, resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+	D3D12_SUBRESOURCE_DATA subresourceData = 
+	{
+		.pData = data,
+		.RowPitch = byteSize,
+		.SlicePitch = byteSize,
+	};
+
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		defaultBuffer,
+		D3D12_RESOURCE_STATE_COMMON,
+		D3D12_RESOURCE_STATE_COPY_DEST);
+
+	m_pCommandList->ResourceBarrier(1, &barrier);
+
+	UpdateSubresources<1>(m_pCommandList, defaultBuffer, uploadBuffer, 0, 0, 1, &subresourceData);
+
+	barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		defaultBuffer,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_GENERIC_READ
+	);
+
+	m_pCommandList->ResourceBarrier(1, &barrier);
+
+	return defaultBuffer;
 }
 }
 

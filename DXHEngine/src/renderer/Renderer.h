@@ -8,7 +8,7 @@ namespace DXH
 class Renderer
 {
 public:
-	Renderer() {}
+	
 	~Renderer() {}
 
 	void Init(Window* window);
@@ -42,7 +42,10 @@ public:
 	void OnResize();
 	void FlushCommandQueue();
 
+	ID3D12Resource* CreateDefaultBuffer(void* data, int64_t byteSize);
+
 private:
+	ID3D12DescriptorHeap* m_pCbvSrvHeap = nullptr;
 	RenderContext* m_pRenderContext = nullptr;
 	SwapChain* m_pSwapChain = nullptr;
 	ID3D12CommandQueue* m_pCommandQueue = nullptr;
@@ -50,6 +53,9 @@ private:
 	ID3D12GraphicsCommandList* m_pCommandList = nullptr;
 	ID3D12Fence* m_pFence = nullptr;
 	uint32_t m_FenceValue = 0;
+
+private:
+	Renderer() {}
 };
 }
 
