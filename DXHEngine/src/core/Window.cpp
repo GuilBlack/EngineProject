@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "DXHEngine.h"
+#include "../renderer/Renderer.h"
 
 namespace DXH
 {
@@ -72,6 +73,10 @@ LRESULT Window::OnEvent(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		m_CloseCallback();
+		return 0;
+	case WM_SIZE:
+		m_Props.Width = LOWORD(lParam);
+		m_Props.Height = HIWORD(lParam);
 		return 0;
 	}
 

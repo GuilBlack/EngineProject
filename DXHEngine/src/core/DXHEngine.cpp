@@ -82,6 +82,9 @@ bool DXHEngine::InitDX12()
 #endif
 
 	Renderer::GetInstance().Init(m_pWindow);
+	
+	Renderer::GetInstance().OnResize();
+
 	return true;
 }
 
@@ -103,6 +106,8 @@ void DXHEngine::Render(const Timer& gt)
 	}
 
 	// TODO after implementing InitDX12()
+	Renderer::GetInstance().BeginFrame();
+	Renderer::GetInstance().EndFrame();
 }
 
 void DXHEngine::Shutdown()

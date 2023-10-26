@@ -101,6 +101,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DXHInclude.h" />
+    <ClInclude Include="src\renderer\Geometry.h" />
     <ClInclude Include="src\renderer\RenderContext.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\core\Defines.h" />
