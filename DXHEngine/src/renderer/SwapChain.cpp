@@ -1,17 +1,18 @@
 #include "SwapChain.h"
+#include "src/core/Window.h"
 
 namespace DXH
 {
 
-void SwapChain::Init(Window* window, RenderContext* context, ID3D12CommandQueue* commandQueue)
+void SwapChain::Init(RenderContext* context, ID3D12CommandQueue* commandQueue)
 {
 	// Init directx12 swap chain
 	DXGI_SWAP_CHAIN_DESC swapChainDesc =
 	{
 		.BufferDesc =
 		{
-			.Width = (uint32_t)window->GetWidth(),
-			.Height = (uint32_t)window->GetHeight(),
+			.Width = (uint32_t)Window::GetInstance().GetWidth(),
+			.Height = (uint32_t)Window::GetInstance().GetHeight(),
 			.RefreshRate = { 60, 1 },
 			.Format = m_BackBufferFormat,
 			.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED,
@@ -24,7 +25,7 @@ void SwapChain::Init(Window* window, RenderContext* context, ID3D12CommandQueue*
 		},
 		.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
 		.BufferCount = m_RTVBufferCount,
-		.OutputWindow = window->GetWindowHandle(),
+		.OutputWindow = Window::GetInstance().GetWindowHandle(),
 		.Windowed = true,
 		.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD,
 		.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH

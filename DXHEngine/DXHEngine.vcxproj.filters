@@ -20,7 +20,6 @@
     <ClInclude Include="src\core\Defines.h" />
     <ClInclude Include="src\core\DXHEngine.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="src\core\WinMain.h" />
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\Timer.h" />
     <ClInclude Include="src\renderer\SwapChain.h" />

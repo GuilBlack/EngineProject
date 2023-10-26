@@ -50,3 +50,6 @@ typedef DirectX::XMMATRIX Matrix;
 #define RELEASE_PTR(x) { if (x) { x->Release(); x = nullptr; } }
 // Delete pointer and set pointer to nullptr.
 #define DELETE_PTR(x) { if (x) { delete x; x = nullptr; } }
+
+// Maximum number of entities in a pool.
+constexpr const size_t MAX_ENTITY_COUNT = 1000;
