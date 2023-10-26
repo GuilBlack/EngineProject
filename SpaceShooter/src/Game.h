@@ -11,5 +11,6 @@ public:
 	void Update(const DXH::Timer& gt) override;
 
 private:
-	DXH::Entity testEntity;
+	const size_t _length = 10;
+	std::vector<DXH::Entity> _entities;
 };

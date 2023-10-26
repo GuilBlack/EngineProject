@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "src/ecs/components/Physics.h"
+#include "src/ecs/systems/PhysicsSystem.h"
 
 // The entry point of the game
 DXH::DXHEngine* DXH::CreateDXHEngine()
@@ -11,11 +11,20 @@ DXH::DXHEngine* DXH::CreateDXHEngine()
 	return new Game(props);
 }
 
-Game::Game(DXH::AppProperties props) : DXH::DXHEngine(props), testEntity()
+
+Game::Game(DXH::AppProperties props) : DXH::DXHEngine(props), _entities(_length)
 {
-	// TODO For testing purposes, remove later
-	testEntity.AddComponent<DXH::RigidBody>();
-	assert(testEntity.HasComponent<DXH::RigidBody>());
+	for (size_t i = 0; i < _length; i++)
+	{
+		_entities[i].AddComponent<DXH::RigidBody>();
+		_entities[i].AddComponent<DXH::SphereCollider>();
+	}
+
+	DXH::Timer timer = DXH::Timer(); // Timer for benchmarking
+
+	auto collisions = DXH::PhysicsSystem::ComputeCollisions(_entities);
+
+	VS_DB_OUT_A("Time: " << timer.TotalTime() << std::endl);
 }
 
 Game::~Game()

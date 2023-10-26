@@ -126,7 +126,6 @@
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\core\Timer.cpp" />
     <ClCompile Include="src\renderer\SwapChain.cpp" />
-    <ClCompile Include="src\ecs\components\Physics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
