@@ -28,12 +28,18 @@ public:
 		return DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(posA, posB)));
 	}
 	/// <summary>
-	/// Computes the collision between all passed entities
+	/// Calculates the normal of the collision between two positions
+	/// </summary>
+	inline static Vector3 CalculateCollisionNormal(DirectX::XMVECTOR posA, DirectX::XMVECTOR posB)
+	{
+		Vector3 normal;
+		DirectX::XMStoreFloat3(&normal, DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(posB, posA)));
+		return normal;
+	}
+	/// <summary>
+	/// Detects any collisions between all passed entities
 	/// </summary>
 	/// <param name="entities">The entities to check for collisions. All entities must have a sphere collider</param>
-	static std::vector<Collision> ComputeCollisions(std::vector<DXH::Entity>& entities);
-
-private:
-	std::vector<SphereCollider*> m_SphereColliders;
+	static std::vector<Collision> DetectCollisions(std::vector<DXH::Entity>& entities);
 };
 }

@@ -22,7 +22,7 @@ Game::Game(DXH::AppProperties props) : DXH::DXHEngine(props), _entities(_length)
 
 	DXH::Timer timer = DXH::Timer(); // Timer for benchmarking
 
-	auto collisions = DXH::PhysicsSystem::ComputeCollisions(_entities);
+	auto collisions = DXH::PhysicsSystem::DetectCollisions(_entities);
 
 	VS_DB_OUT_A("Time: " << timer.TotalTime() << std::endl);
 }
