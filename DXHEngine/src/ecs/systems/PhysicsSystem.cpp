@@ -42,7 +42,31 @@ std::vector<Collision> PhysicsSystem::DetectCollisions(std::vector<Entity>& enti
 				collisions.push_back({colA, colB, CalculateCollisionNormal(posA, posB)});
 		}
 	}
-
 	return collisions;
+}
+void PhysicsSystem::UpdateCollision(std::vector<Collision> collision, float deltaTime)
+{
+	using namespace DirectX; 
+
+	for (const auto& col : collision)
+	{
+		SphereCollider* firstSphere = col.First;
+		SphereCollider* secondSphere = col.Second;
+
+		//Vector3 collisionNormal = col.Normal;
+
+		// Calculate relative velocity
+		XMVECTOR firstSphereVelocityLoaded = XMLoadFloat3(&firstSphere->GetEntity()->GetComponent<RigidBody>()->Velociy);
+		XMVECTOR secondSphereVelocityLoaded = XMLoadFloat3(&secondSphere->GetEntity()->GetComponent<RigidBody>()->Velociy);
+		XMVECTOR relativeVelocity = XMVectorSubtract(firstSphereVelocityLoaded, secondSphereVelocityLoaded);
+		XMVECTOR collisionNormal = XMLoadFloat3(&col.Normal);
+
+		// Calculate impulse
+		XMVECTOR impulse = XMVectorScale(XMVector3Dot(relativeVelocity, collisionNormal), -2.0f/(firstSphere->GetEntity()->GetComponent<RigidBody>()->Mass + secondSphere->GetEntity()->GetComponent<RigidBody>()->Mass));
+
+		// Apply impulse
+		XMVECTOR firstSphereVelocity = XMVectorAdd(firstSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f/firstSphere->GetEntity()->GetComponent<RigidBody>()->Mass), collisionNormal));
+		XMVECTOR secondSphereVelocity = XMVectorSubtract(secondSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f / secondSphere->GetEntity()->GetComponent<RigidBody>()->Mass), collisionNormal));
+	}
 }
 }

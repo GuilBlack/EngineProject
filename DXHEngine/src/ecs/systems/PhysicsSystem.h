@@ -41,5 +41,7 @@ public:
 	/// </summary>
 	/// <param name="entities">The entities to check for collisions. All entities must have a sphere collider</param>
 	static std::vector<Collision> DetectCollisions(std::vector<DXH::Entity>& entities);
+
+	void UpdateCollision(std::vector<Collision> collision, float deltaTime);
 };
 }
