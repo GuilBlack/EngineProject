@@ -1,15 +1,29 @@
 #pragma once
 #include <DXHInclude.h>
-#include "src/ecs/Entity.h" // TODO: Remove this later
 
-class Game : public DXH::DXHEngine
+class Game
 {
 public:
-	Game(DXH::AppProperties props);
-	~Game();
+	inline static Game& GetInstance()
+	{
+		static Game instance;
+		return instance;
+	}
 
-	void Update(const DXH::Timer& gt) override;
+	/// <summary>
+	/// Call this function to start the engine.
+	/// This function will not return until the engine is shut down.
+	/// Make sure to call it after initializing all the systems.
+	/// </summary>
+	void StartEngine();
 
 private:
-	DXH::Entity testEntity;
+	Game();
+	~Game();
+
+	/// <summary>
+	/// Called every frame from the engine.
+	/// </summary>
+	/// <param name="gt">Game timer, contains variables such as DeltaTime or TotalTime.</param>
+	void Update(const DXH::Timer& gt);
 };
