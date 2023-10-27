@@ -1,18 +1,9 @@
 #include "DXHEngine.h"
-#include "../renderer/Renderer.h"
+#include "Window.h"
 
 namespace DXH
 {
-DXHEngine* DXHEngine::s_App = nullptr;
-
-DXHEngine::DXHEngine(AppProperties props)
-	: m_Props(props)
-{
-	assert(s_App == nullptr && "There should only be one instance of the app running!");
-	s_App = this;
-}
-
-bool DXHEngine::Init()
+bool DXHEngine::Init(AppProperties props, UpdateFunc gameUpdate)
 {
 	VS_DB_OUT_W(L"Initializing DXHEngine...\n");
 
@@ -24,6 +15,7 @@ bool DXHEngine::Init()
 	if (!InitDX12())
 		return false;
 
+	m_GameUpdate = gameUpdate;
 	m_IsRunning = true;
 	return true;
 }
@@ -36,18 +28,16 @@ void DXHEngine::Run()
 	m_GameTimer.Reset();
 	while (m_IsRunning)
 	{
-		m_pWindow->PollEvents();
-		m_GameTimer.Tick();
-		Update(m_GameTimer);
-		Render(m_GameTimer);
+		Window::GetInstance().PollEvents();
+		UpdateFpsCounter();
+		m_GameUpdate(m_GameTimer);
+
+		Renderer::GetInstance().BeginFrame();
+		Renderer::GetInstance().EndFrame();
+		
 	}
 
 	Cleanup();
-}
-
-void DXHEngine::Update(const Timer&)
-{
-	// Do nothing. This method should be overrided by the user.
 }
 
 bool DXHEngine::InitWindow()
@@ -61,13 +51,11 @@ bool DXHEngine::InitWindow()
 		.MinHeight = (int32_t)m_Props.MinWindowHeight,
 	};
 
-	m_pWindow = new Window(winProps);
-	if (!m_pWindow->Init())
+	if (!Window::GetInstance().Init(winProps, []() { GetInstance().Shutdown(); }))
 	{
 		VS_DB_OUT_W(L"Failed to initialize the window!\n");
 		return false;
 	}
-	m_pWindow->SetCloseCallback([]() { GetInstance().Shutdown(); });
 
 	return true;
 }
@@ -81,33 +69,30 @@ bool DXHEngine::InitDX12()
 	RELEASE_PTR(debugController);
 #endif
 
-	Renderer::GetInstance().Init(m_pWindow);
+	Renderer::GetInstance().Init();
 	
 	Renderer::GetInstance().OnResize();
 
 	return true;
 }
 
-void DXHEngine::Render(const Timer& gt)
+void DXHEngine::UpdateFpsCounter()
 {
 	static int frameCnt = 0;
 	static float timeElapsed = 0.0f;
+	m_GameTimer.Tick();
 	frameCnt++;
 
 	if ((m_GameTimer.TotalTime() - timeElapsed) >= 1.0f)
 	{
 		float mspf = 1000.0f / frameCnt;
-		m_pWindow->SetTitle(m_Props.WindowTitle +
+		Window::GetInstance().SetTitle(m_Props.WindowTitle +
 			L"    FPS: " + std::to_wstring(frameCnt) +
 			L"    MSPF: " + std::to_wstring(mspf));
 
 		frameCnt = 0;
 		timeElapsed += 1.0f;
 	}
-
-	// TODO after implementing InitDX12()
-	Renderer::GetInstance().BeginFrame();
-	Renderer::GetInstance().EndFrame();
 }
 
 void DXHEngine::Shutdown()
@@ -120,6 +105,5 @@ void DXHEngine::Cleanup()
 {
 	VS_DB_OUT_W(L"Cleaning up DXHEngine...\n");
 	DELETE_PTR(m_pContext);
-	DELETE_PTR(m_pWindow);
 }
 }

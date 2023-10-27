@@ -1,6 +1,4 @@
 #pragma once
-#include "../core/Window.h"
-#include "RenderContext.h"
 #include "SwapChain.h"
 
 namespace DXH
@@ -11,7 +9,7 @@ public:
 	
 	~Renderer() {}
 
-	void Init(Window* window);
+	void Init();
 	void Destroy();
 
 	static Renderer& GetInstance()

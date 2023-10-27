@@ -1,10 +1,12 @@
 #pragma once
-#include "Window.h"
 #include "Timer.h"
-#include "../renderer/RenderContext.h"
+#include "src/renderer/Renderer.h"
 
 namespace DXH
 {
+// Delegate for update functions
+typedef void(*UpdateFunc)(const Timer&);
+
 // Application properties that are set on startup
 struct AppProperties
 {
@@ -16,18 +18,17 @@ struct AppProperties
 class DXHEngine
 {
 public:
-	DXHEngine(AppProperties props);
-	virtual ~DXHEngine() {};
+	// Gets the singleton application
+	inline static DXHEngine& GetInstance() noexcept
+	{
+		static DXHEngine instance;
+		return instance;
+	}
 
 	// Initializes the application
-	bool Init();
+	bool Init(AppProperties props, UpdateFunc gameUpdate);
 	// Starts the main loop
 	void Run();
-
-	// Gets the singleton application
-	static DXHEngine& GetInstance() noexcept { return *s_App; }
-	// Gets the window from the singleton application
-	static Window& GetWindow() noexcept { return *s_App->m_pWindow; }
 
 #pragma region FlagsGettersAndSetters
 	bool IsPaused() const noexcept { return m_AppPaused; }
@@ -48,12 +49,9 @@ protected:
 	virtual void Update(const Timer&);
 
 private:
-	// Singleton application
-	static DXHEngine* s_App;
-	Window* m_pWindow = nullptr;
-
 	AppProperties m_Props;
 	Timer m_GameTimer = Timer();
+	UpdateFunc m_GameUpdate = nullptr;
 	bool m_IsRunning = false;
 
 	RenderContext* m_pContext = nullptr;
@@ -67,20 +65,21 @@ private:
 #pragma endregion
 
 private:
+	// Private constructor, only the static instance is allowed
+	DXHEngine() = default;
+	~DXHEngine() = default;
+
 	// Initializes the window
 	bool InitWindow();
 	// Initializes DirectX 12
 	bool InitDX12();
 
-	// Renders the application
-	void Render(const Timer&);
+	// Updates the FPS counter
+	void UpdateFpsCounter();
 
 	// Stops the main loop
 	void Shutdown();
 	// Waits for any operations to finish and destroy the window
 	void Cleanup();
 };
-
-DXHEngine* CreateDXHEngine();
 }
-

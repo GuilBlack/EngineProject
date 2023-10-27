@@ -1,5 +1,4 @@
 #pragma once
-#include "../core/Window.h"
 #include "RenderContext.h"
 
 namespace DXH
@@ -10,7 +9,7 @@ class SwapChain
 	SwapChain() = default;
 	~SwapChain() { Destroy(); }
 
-	void Init(Window* window, RenderContext* context, ID3D12CommandQueue* commandQueue);
+	void Init(RenderContext* context, ID3D12CommandQueue* commandQueue);
 	void Destroy();
 	void Present();
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentBackBufferDescriptorHeap()

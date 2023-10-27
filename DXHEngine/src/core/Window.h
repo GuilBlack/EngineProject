@@ -1,13 +1,8 @@
 #pragma once
-#include <pch.h>
+#include <string>
 
 namespace DXH
 {
-// Forward declaration of DXHEngine class
-class DXHEngine;
-// A pointer to a function that returns void and takes no arguments
-typedef void (*WindowCloseCallback)();
-
 // Struct representing the properties of the window
 struct WindowProperties
 {
@@ -17,37 +12,49 @@ struct WindowProperties
 	int32_t MinWidth = 0, MinHeight = 0;
 };
 
+// Function to be called when the window is closed
+typedef void(*WindowCloseCallback)();
+
 class Window
 {
 public:
-	Window(WindowProperties props)
-		: m_Props(props)
+	inline static Window& GetInstance()
 	{
+		static Window instance;
+		return instance;
 	}
-	~Window() {}
-
-	bool Init();
-	void Destroy() {}
-
-	// Polls for queued window events
+	/// <summary>
+	/// Initializes the window.
+	/// </summary>
+	/// <param name="props">Properties of the window</param>
+	/// <param name="callback">Callback function to be called when the window is closed</param>
+	bool Init(WindowProperties props, WindowCloseCallback callback);
+	/// <summary>
+	/// Destroys the window.
+	/// </summary>
+	void Destroy();
+	/// <summary>
+	/// Computes all the events that happened since the last call.
+	/// </summary>
 	void PollEvents();
-	// Changes the title of the window
+	/// <summary>
+	/// Sets the title of the window.
+	/// </summary>
 	void SetTitle(const std::wstring& title) { SetWindowText(m_WindowHandle, title.c_str()); }
-
-	// Handles window events
-	LRESULT OnEvent(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-	// Sets the callback function for when the window is closing
-	void SetCloseCallback(WindowCloseCallback callback) { m_CloseCallback = callback; }
 
 	int32_t GetWidth() const noexcept { return m_Props.Width; }
 	int32_t GetHeight() const noexcept { return m_Props.Height; }
-
 	HWND GetWindowHandle() const noexcept { return m_WindowHandle; }
+
 private:
+	Window() = default;
+	~Window() = default;
+
+	// Handles window events
+	static LRESULT WINAPI OnEvent(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+
 	WindowProperties m_Props;
 	HWND m_WindowHandle = nullptr;
 	WindowCloseCallback m_CloseCallback = nullptr;
 };
 }
-

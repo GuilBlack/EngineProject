@@ -27,37 +27,45 @@ public:
 	/// </summary>
 	inline Id GetId() const { return m_id; }
 	/// <summary>
+	/// Returns transform of the entity.
+	/// </summary>
+	inline const Transform& GetTransform() const { return m_Transform; }
+	/// <summary>
 	/// Adds a component to the entity.
 	/// </summary>
 	/// <typeparam name="C">Type of the component to add.</typeparam>
-	template <ComponentChild C> void AddComponent() { m_components[Component::GetId<C>()] = new C(this); }
+	template <ComponentChild C>
+	inline void AddComponent() { m_components[Component::GetId<C>()] = new C(this); }
 	/// <summary>
 	/// Removes a component from the entity.
 	/// </summary>
 	/// <typeparam name="C">Type of the component to remove.</typeparam>
-	template <ComponentChild C> void RemoveComponent() { m_components.erase(Component::GetId<C>()); }
+	template <ComponentChild C>
+	inline void RemoveComponent() { m_components.erase(Component::GetId<C>()); }
 	/// <summary>
 	/// Gets a component from the entity.
 	/// </summary>
 	/// <typeparam name="C">Type of the component to get.</typeparam>
-	template <ComponentChild C> C* GetComponent() const { return m_components[Component::GetId<C>()]; }
+	template <ComponentChild C>
+	inline C* GetComponent() const { return static_cast<C*>(m_components.at(Component::GetId<C>())); }
 	/// <summary>
 	/// Checks if the entity has a component.
 	/// </summary>
 	/// <typeparam name="C">Type of the component to check.</typeparam>
-	template <ComponentChild C> bool HasComponent() const { return m_components.find(Component::GetId<C>()) != m_components.end(); }
+	template <ComponentChild C>
+	inline bool HasComponent() const { return m_components.find(Component::GetId<C>()) != m_components.end(); }
 	/// <summary>
 	/// Tries to get a component from the entity.
 	/// </summary>
 	/// <typeparam name="C">Type of the component to get.</typeparam>
 	/// <param name="out">Pointer to the component, if found.</param>
 	/// <returns>True if the component was found, false otherwise.</returns>
-	template <ComponentChild C> bool TryGetComponent(C* out) const;
-
-	Transform transform; // Transform of the entity.
+	template <ComponentChild C>
+	bool TryGetComponent(C* out) const;
 
 private:
 	Id m_id; // Unique id of the entity.
+	Transform m_Transform; // Transform of the entity.
 	std::unordered_map<Id, Component*> m_components; // Components of the entity.
 
 	inline static Id GetNewId() { static Id id = 0; return id++; }

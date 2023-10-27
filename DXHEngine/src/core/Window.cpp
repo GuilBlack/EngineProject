@@ -1,22 +1,18 @@
 #include "Window.h"
-#include "DXHEngine.h"
-#include "../renderer/Renderer.h"
 
 namespace DXH
 {
-LRESULT WINAPI WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+bool Window::Init(WindowProperties props, WindowCloseCallback callback)
 {
-	return DXHEngine::GetWindow().OnEvent(hWnd, Msg, wParam, lParam);
-}
+	m_Props = props;
+	m_CloseCallback = callback;
 
-bool Window::Init()
-{
 	// Init information for the window that we want to create
 	WNDCLASSEX wc
 	{
 		.cbSize = sizeof(WNDCLASSEX),
 		.style = CS_HREDRAW | CS_VREDRAW,
-		.lpfnWndProc = WindowProc,
+		.lpfnWndProc = OnEvent,
 		.cbClsExtra = 0,
 		.cbWndExtra = 0,
 		.hInstance = APP_PROC(),
@@ -56,7 +52,11 @@ bool Window::Init()
 	return true;
 }
 
-void Window::PollEvents()
+void Window::Destroy()
+{
+}
+
+void DXH::Window::PollEvents()
 {
 	MSG msg;
 	while (PeekMessage(&msg, m_WindowHandle, 0, 0, PM_REMOVE))
@@ -72,15 +72,15 @@ LRESULT Window::OnEvent(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
-		m_CloseCallback();
+		GetInstance().m_CloseCallback();
+		GetInstance().Destroy();
 		return 0;
 	case WM_SIZE:
-		m_Props.Width = LOWORD(lParam);
-		m_Props.Height = HIWORD(lParam);
+		GetInstance().m_Props.Width = LOWORD(lParam);
+		GetInstance().m_Props.Height = HIWORD(lParam);
 		return 0;
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 }
-
