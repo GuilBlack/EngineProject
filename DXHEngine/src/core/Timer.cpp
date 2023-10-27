@@ -3,12 +3,11 @@
 namespace DXH
 {
 Timer::Timer()
-	: m_SecondsPerCount(0.0), m_DeltaTime(-1.0), m_BaseTime(0), m_PausedTime(0),
-	m_StopTime(0), m_PrevTime(0), m_CurrTime(0), m_IsStopped(false)
 {
 	LARGE_INTEGER frequency;
 	QueryPerformanceFrequency(&frequency);
 	m_SecondsPerCount = 1.0 / frequency.QuadPart;
+	Reset();
 }
 
 Timer::~Timer()
@@ -46,8 +45,11 @@ void Timer::Reset()
 	LARGE_INTEGER currTime;
 	QueryPerformanceCounter(&currTime);
 
+	m_DeltaTime = -1.0;
 	m_BaseTime = currTime.QuadPart;
 	m_PrevTime = currTime.QuadPart;
+	m_CurrTime = currTime.QuadPart;
+	m_PausedTime = 0;
 	m_StopTime = 0;
 	m_IsStopped = false;
 }
@@ -74,11 +76,11 @@ float Timer::TotalTime() const
 {
 	if (m_IsStopped)
 	{
-		return (float)(((m_StopTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount);
+		return (float)((m_StopTime - m_PausedTime - m_BaseTime) * m_SecondsPerCount);
 	}
 	else
 	{
-		return (float)(((m_CurrTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount);
+		return (float)((m_CurrTime - m_PausedTime - m_BaseTime) * m_SecondsPerCount);
 	}
 }
 

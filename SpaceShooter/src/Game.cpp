@@ -1,16 +1,15 @@
 #include "Game.h"
 
-// The entry point of the game
-DXH::DXHEngine* DXH::CreateDXHEngine()
+void Game::StartEngine()
 {
-	DXH::AppProperties props
-	{
-		.WindowTitle = L"Space Shooter"
-	};
-	return new Game(props);
+	using namespace DXH;
+	DXHEngine::GetInstance().Init(AppProperties{
+			.WindowTitle = L"Space Shooter",
+		}, [](const Timer& gt) { GetInstance().Update(gt); });
+	DXHEngine::GetInstance().Run();
 }
 
-Game::Game(DXH::AppProperties props) : DXH::DXHEngine(props)
+Game::Game()
 {
 }
 
@@ -20,4 +19,5 @@ Game::~Game()
 
 void Game::Update(const DXH::Timer& gt)
 {
+	gt.DeltaTime();
 }

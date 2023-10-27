@@ -2,7 +2,7 @@
 
 namespace DXH
 {
-void Renderer::Init(Window* window)
+void Renderer::Init()
 {
 	// Init device and stuff
 	m_pRenderContext = new RenderContext();
@@ -12,7 +12,7 @@ void Renderer::Init(Window* window)
 
 	// Create swap chain
 	m_pSwapChain = new SwapChain();
-	m_pSwapChain->Init(window, m_pRenderContext, m_pCommandQueue);
+	m_pSwapChain->Init(m_pRenderContext, m_pCommandQueue);
 }
 
 void Renderer::Destroy()
