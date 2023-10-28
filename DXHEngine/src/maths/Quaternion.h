@@ -9,7 +9,7 @@ struct Quaternion : public DirectX::XMFLOAT4
 	/// </summary>
 	Quaternion();
 	Quaternion(float x, float y, float z, float w);
-	Quaternion(DirectX::FXMVECTOR v);
+	XM_CALLCONV Quaternion(DirectX::FXMVECTOR v);
 	/// <summary>
 	/// Loads this quaternion in a XMVECTOR.
 	/// </summary>

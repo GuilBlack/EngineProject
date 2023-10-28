@@ -13,7 +13,7 @@ Quaternion::Quaternion(float x, float y, float z, float w)
 {
 }
 
-Quaternion::Quaternion(FXMVECTOR v)
+XM_CALLCONV Quaternion::Quaternion(FXMVECTOR v)
 {
 	XMStoreFloat4(this, v);
 }

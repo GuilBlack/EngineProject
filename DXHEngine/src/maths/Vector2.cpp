@@ -13,7 +13,7 @@ Vector2::Vector2(float x, float y)
 {
 }
 
-Vector2::Vector2(FXMVECTOR v)
+XM_CALLCONV Vector2::Vector2(FXMVECTOR v)
 {
 	XMStoreFloat2(this, v);
 }
