@@ -1,5 +1,5 @@
 #pragma once
-#include "src/ecs/Component.h"
+#include "src/ecs/Component.h" // The manager needs to know what a component is
 
 namespace DXH
 {

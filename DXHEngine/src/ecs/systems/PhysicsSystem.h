@@ -2,6 +2,7 @@
 
 namespace DXH
 {
+// Forward declarations, avoid including the headers
 struct Transform;
 struct SphereCollider;
 class GameObject;

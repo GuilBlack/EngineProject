@@ -1,5 +1,3 @@
-#include "Component.h"
-#include "ComponentManager.h"
 #include "GameObject.h"
 
 namespace DXH

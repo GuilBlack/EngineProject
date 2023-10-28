@@ -1,5 +1,5 @@
 #pragma once
-#include "src/ecs/Component.h"
+#include "src/ecs/Component.h" // For the Component base class
 
 namespace DXH
 {
