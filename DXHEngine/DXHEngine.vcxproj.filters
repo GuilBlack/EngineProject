@@ -10,6 +10,7 @@
     <ClCompile Include="src\core\Timer.cpp" />
     <ClCompile Include="src\renderer\SwapChain.cpp" />
     <ClCompile Include="src\ecs\GameObject.cpp" />
+    <ClCompile Include="src\ecs\System.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHInclude.h" />
@@ -27,5 +28,6 @@
     <ClInclude Include="src\ecs\components\Transform.h" />
     <ClInclude Include="src\ecs\GameObject.h" />
     <ClInclude Include="src\ecs\Component.h" />
+    <ClInclude Include="src\ecs\System.h" />
   </ItemGroup>
 </Project>

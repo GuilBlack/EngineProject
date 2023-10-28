@@ -2,6 +2,7 @@
 #include "src/ecs/components/Transform.h"
 #include "src/ecs/components/Physics.h"
 #include "src/ecs/GameObject.h"
+#include "src/core/Timer.h"
 
 namespace DXH
 {
@@ -11,6 +12,14 @@ PhysicsSystem::PhysicsSystem()
 
 PhysicsSystem::~PhysicsSystem()
 {
+}
+
+void PhysicsSystem::Update(const Timer& gt)
+{
+	// Get all GO with a sphere collider
+	auto& map = ComponentManager<SphereCollider>::UsedComponentsMap();
+
+	// TODO
 }
 
 inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform* transform, SphereCollider* collider)

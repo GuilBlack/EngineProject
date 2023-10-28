@@ -115,9 +115,11 @@
     <ClInclude Include="src\renderer\SwapChain.h" />
     <ClInclude Include="src\ecs\ComponentManager.h" />
     <ClInclude Include="src\ecs\components\Physics.h" />
+    <ClInclude Include="src\ecs\System.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ecs\GameObject.cpp" />
+    <ClCompile Include="src\ecs\System.cpp" />
     <ClCompile Include="src\ecs\systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\renderer\RenderContext.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />

@@ -10,11 +10,11 @@ struct RigidBody : Component
 {
 	void Reset() override
 	{
-		Velociy = {0,0,0};
+		Velocity = {0,0,0};
 		Force = {0,0,0};
 		Mass = 1.0f;
 	}
-	Vector3 Velociy;
+	Vector3 Velocity;
 	Vector3 Force;
 	float Mass;
 };

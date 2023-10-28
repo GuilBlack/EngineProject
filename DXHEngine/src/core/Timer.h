@@ -5,20 +5,35 @@ namespace DXH
 class Timer
 {
 public:
+	/// <summary>
+	/// Create and start a new timer.
+	/// </summary>
 	Timer();
-
-	// Starts the timer.
+	/// <summary>
+	/// Starts the timer.
+	/// </summary>
 	void Start();
-	// Stops/pauses the timer.
+	/// <summary>
+	/// Stops/pauses the timer.
+	/// </summary>
 	void Stop();
-	// Resets the timer.
+	/// <summary>
+	/// Resets and restarts the timer.
+	/// </summary>
 	void Reset();
-	// Call this every frame.
+	/// <summary>
+	/// Call this to update all the timer values.
+	/// </summary>
 	void Tick();
 
-	// Gets the time (in seconds) elapsed since the last frame.
+public: // Const methods, will be available in const objects.
+	/// <summary>
+	/// Gets the time (in seconds) elapsed since the last frame.
+	/// </summary>
 	float DeltaTime() const;
-	// Gets the total time (in seconds) elapsed since the timer started.
+	/// <summary>
+	/// Gets the total time (in seconds) elapsed since the timer started.
+	/// </summary>
 	float TotalTime() const;
 
 private:

@@ -1,4 +1,5 @@
 #pragma once
+#include "src/ecs/System.h" // For the System base class
 
 namespace DXH
 {
@@ -17,12 +18,15 @@ struct Collision
 	Vector3 Normal = {0,0,0}; // Normal of the collision, pointing from first to second
 };
 
-class PhysicsSystem
+class PhysicsSystem : public System
 {    
 public:
 	PhysicsSystem();
 	~PhysicsSystem();
 
+	void Update(const Timer& gt) override;
+
+private:
 	/// <summary>
 	/// Calculates the position of the collider in world space
 	/// </summary>
