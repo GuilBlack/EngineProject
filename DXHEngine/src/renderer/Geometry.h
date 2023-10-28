@@ -5,7 +5,7 @@ namespace DXH
 struct Geometry
 {
 	Geometry() = default;
-	Geometry(std::string name, void* vertices, std::vector<uint16_t> indices, uint64_t vbByteSize, uint32_t vertexByteStride);
+	Geometry(const std::string& name, void* vertices, std::vector<uint16_t> indices, uint32_t vbByteSize, uint32_t vertexByteStride);
 	~Geometry();
 
 	std::string Name = "";

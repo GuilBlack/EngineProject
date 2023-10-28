@@ -3,6 +3,9 @@
 
 namespace DXH
 {
+class Shader;
+struct Mesh;
+
 class Renderer
 {
 public:
@@ -19,9 +22,10 @@ public:
 	}
 
 	static RenderContext* GetRenderContext() { return GetInstance().m_pRenderContext; }
+	static ID3D12DescriptorHeap* GetCbvSrvHeap() { return GetInstance().m_pCbvSrvHeap; }
 
 	void BeginFrame();
-
+	void Draw(Mesh* mesh);
 	void EndFrame();
 
 	void Clear()
@@ -43,13 +47,14 @@ public:
 	ID3D12Resource* CreateDefaultBuffer(void* data, int64_t byteSize);
 
 private:
-	ID3D12DescriptorHeap* m_pCbvSrvHeap = nullptr;
 	RenderContext* m_pRenderContext = nullptr;
 	SwapChain* m_pSwapChain = nullptr;
 	ID3D12CommandQueue* m_pCommandQueue = nullptr;
 	ID3D12CommandAllocator* m_pCommandAllocator = nullptr;
 	ID3D12GraphicsCommandList* m_pCommandList = nullptr;
 	ID3D12Fence* m_pFence = nullptr;
+	ID3D12DescriptorHeap* m_pCbvSrvHeap = nullptr;
+	uint32_t m_CbvSrvIndex = 0;
 	uint32_t m_FenceValue = 0;
 
 private:

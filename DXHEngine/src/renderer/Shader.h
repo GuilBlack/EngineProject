@@ -1,40 +1,74 @@
 #pragma once
+#include "ConstantBuffers.h"
 
 namespace DXH
 {
-	enum class ShaderProgramType
-	{
-		SimpleShader,
-		PhongShader
-	};
-	class BaseShader
-	{
-	public:
-		BaseShader() = default;
-		virtual ~BaseShader() = default;
+enum class ShaderProgramType
+{
+	SimpleShader,
+};
 
-		static BaseShader* Create(std::string vsFilePath, std::string psFilePath, ShaderProgramType type);
+enum class InputLayoutType
+{
+	Position,
+	PositionColor,
+	PositionTexcoord,
+	PositionNormalColor,
+	PositionNormalTexcoord
+};
 
-	private:
-		ID3DBlob* m_pVS;
-		ID3DBlob* m_pPS;
-		ID3D12PipelineState* m_pPSO;
-		ID3D12RootSignature* m_pRootSignature;
-		std::vector<D3D12_INPUT_ELEMENT_DESC> m_InputLayout;
+struct Geometry;
 
+class BaseShader
+{
+public:
+	BaseShader();
+	virtual ~BaseShader();
 
-	private:
-		static ID3DBlob* LoadCompiledShader(std::string filepath);
-	};
+	static BaseShader* Create(const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout);
 
-	class SimpleShader : public BaseShader
-	{
+	virtual void Bind(ID3D12GraphicsCommandList* cl) {}
+	
+	virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, ID3D12GraphicsCommandList* cl);
 
-	};
+	virtual void Unbind(ID3D12GraphicsCommandList* cl) {}
 
-	class PhongShader : public BaseShader
-	{
+	uint32_t AddObjectCB(ObjectConstants& objectCB) 
+	{ 
+		m_ObjectCB.emplace_back(UploadBuffer<ObjectConstants>(1, true));
+		m_ObjectCB.back().CopyData(0, objectCB);
+		return (uint32_t)m_ObjectCB.size() - 1;
+	}
+	void UpdatePassCB(PassConstants& passCB) { m_PassCB.CopyData(0, passCB); }
+	void UpdateObjectCB(ObjectConstants& objectCB, uint32_t index) { m_ObjectCB[index].CopyData(0, objectCB); }
 
-	};
+protected:
+	ID3DBlob* m_pVS = nullptr;
+	ID3DBlob* m_pPS = nullptr;
+	
+	ID3D12PipelineState* m_pPSO = nullptr;
+	ID3D12RootSignature* m_pRootSignature = nullptr;
+	std::vector<D3D12_INPUT_ELEMENT_DESC> m_InputLayout;
+
+	UploadBuffer<PassConstants> m_PassCB;
+	std::vector<UploadBuffer<ObjectConstants>> m_ObjectCB;
+
+protected:
+	static ID3DBlob* LoadCompiledShader(const std::string& filepath);
+	static std::vector<D3D12_INPUT_ELEMENT_DESC> CreateInputLayout(InputLayoutType layout);
+	void BuildRootSignature(CD3DX12_ROOT_PARAMETER* rootParameters, uint32_t numParameters);
+	void BuildPSO();
+};
+
+class SimpleShader : public BaseShader
+{
+public:
+	SimpleShader();
+
+	virtual void Bind(ID3D12GraphicsCommandList* cl) override;
+
+	virtual void Unbind(ID3D12GraphicsCommandList* cl) override;
+private:
+};
 }
 

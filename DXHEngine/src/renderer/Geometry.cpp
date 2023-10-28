@@ -1,7 +1,7 @@
 #include "Geometry.h"
 #include "Renderer.h"
 
-DXH::Geometry::Geometry(std::string name, void* vertices, std::vector<uint16_t> indices, uint64_t vbByteSize, uint32_t vertexByteStride)
+DXH::Geometry::Geometry(const std::string& name, void* vertices, std::vector<uint16_t> indices, uint32_t vbByteSize, uint32_t vertexByteStride)
 	: Name(name)
 {
 	VertexByteStride = vertexByteStride;

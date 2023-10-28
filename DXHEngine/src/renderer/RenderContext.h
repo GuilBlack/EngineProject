@@ -84,6 +84,41 @@ public:
 		));
 	}
 
+	void CreateRootSignature(ID3DBlob* serializedRootSignature, ID3D12RootSignature** rs)
+	{
+			ASSERT_HRESULT(m_pDevice->CreateRootSignature(
+					0,
+				serializedRootSignature->GetBufferPointer(),
+				serializedRootSignature->GetBufferSize(),
+				IID_PPV_ARGS(rs)
+			));
+	}
+
+	void CreatePSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc, ID3D12PipelineState** pso)
+	{
+		ASSERT_HRESULT(m_pDevice->CreateGraphicsPipelineState(
+			&psoDesc,
+			IID_PPV_ARGS(pso)
+		));
+	}
+
+	void CreateConstantBufferView(D3D12_GPU_VIRTUAL_ADDRESS bufferLocation, uint32_t sizeInBytes, ID3D12DescriptorHeap* cbvSrvHeap, uint32_t heapIndex)
+	{
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc =
+		{
+			.BufferLocation = bufferLocation,
+			.SizeInBytes = sizeInBytes,
+		};
+
+		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+			cbvSrvHeap->GetCPUDescriptorHandleForHeapStart(),
+			heapIndex,
+			m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+
+		m_pDevice->CreateConstantBufferView(&cbvDesc, handle);
+	}
+
 private:
 	ID3D12Device* m_pDevice = nullptr;
 	IDXGIFactory4* m_pDXGIFactory = nullptr;

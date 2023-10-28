@@ -1,8 +1,31 @@
 #pragma once
 #include "Renderer.h"
+#include "Util.h"
 
 namespace DXH
 {
+struct PassConstants
+{
+	DirectX::XMFLOAT4X4 View;
+	DirectX::XMFLOAT4X4 Proj;
+	DirectX::XMFLOAT4X4 ViewProj;
+	DirectX::XMFLOAT3 EyePosW;
+	float NearZ;
+	float FarZ;
+	float TotalTime;
+	DirectX::XMFLOAT2 RenderTargetSize;
+	float DeltaTime;
+};
+
+struct ObjectConstants
+{
+	DirectX::XMFLOAT4X4 World = DirectX::XMFLOAT4X4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+};
+
 template<typename BufferType>
 class UploadBuffer
 {
@@ -11,7 +34,7 @@ public:
 		: m_IsConstantBuffer(isConstantBuffer)
 	{
 		if (isConstantBuffer)
-			m_ElementByteSize = UtilFunc::GetCBByteSize(sizeof(BufferType));
+			m_ElementByteSize = GetCBByteSize(sizeof(BufferType));
 		else
 			m_ElementByteSize = sizeof(BufferType);
 
@@ -28,20 +51,20 @@ public:
 		ASSERT_HRESULT(m_UploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&m_CPUData)));
 	}
 
-	UploadBuffer(const UploadBuffer& rhs) = delete;
+	UploadBuffer(const UploadBuffer& rhs) = default;
 	UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
 
 	~UploadBuffer()
 	{
 		if (m_UploadBuffer != nullptr)
 			m_UploadBuffer->Unmap(0, nullptr);
-
+		RELEASE_PTR(m_UploadBuffer);
 		m_CPUData = nullptr;
 	}
 
 	ID3D12Resource* GetResource() const
 	{
-		return m_UploadBuffer.Get();
+		return m_UploadBuffer;
 	}
 
 	void CopyData(int elementIndex, const BufferType& data)
@@ -54,6 +77,6 @@ private:
 	uint32_t m_ElementByteSize = 0;
 
 	uint8_t* m_CPUData = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> m_UploadBuffer;
+	ID3D12Resource* m_UploadBuffer;
 };
 }

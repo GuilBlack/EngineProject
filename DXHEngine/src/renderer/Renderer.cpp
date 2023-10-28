@@ -1,4 +1,10 @@
+#include "Geometry.h"
+#include "../ecs/Entity.h"
 #include "Renderer.h"
+#include "RendererResource.h"
+#include "Shader.h"
+#include "Mesh.h"
+
 
 namespace DXH
 {
@@ -16,18 +22,17 @@ void Renderer::Init()
 	m_pSwapChain = new SwapChain();
 
 	m_pSwapChain->Init(m_pRenderContext, m_pCommandQueue);
-
-	// Create CBV descriptor heap
-	m_pRenderContext->CreateCBVSRVUAVHeapDescriptor(10, &m_pCbvSrvHeap);
+	RendererResource::GetInstance().Init();
+	
 }
 
 void Renderer::Destroy()
 {
-	delete m_pSwapChain;
 	RELEASE_PTR(m_pCommandQueue);
 	RELEASE_PTR(m_pCommandList);
 	RELEASE_PTR(m_pCommandAllocator);
 	RELEASE_PTR(m_pCommandQueue);
+	delete m_pSwapChain;
 	delete m_pRenderContext;
 }
 
@@ -54,6 +59,13 @@ void Renderer::BeginFrame()
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_pSwapChain->GetDepthStencilDescriptorHeap();
 
 	m_pCommandList->OMSetRenderTargets(1, &rtvHandle, true, &dsvHandle);
+}
+
+void Renderer::Draw(Mesh* mesh)
+{
+	mesh->Shader->Bind(m_pCommandList);
+	mesh->Shader->Draw(mesh->Geo, mesh->CBVIndex, m_pCommandList);
+	mesh->Shader->Unbind(m_pCommandList);
 }
 
 void Renderer::EndFrame()

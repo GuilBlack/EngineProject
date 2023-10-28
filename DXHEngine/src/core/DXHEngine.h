@@ -46,7 +46,7 @@ public:
 
 protected:
 	// Updates the application
-	virtual void Update(const Timer&);
+	virtual void Update(const Timer&) {};
 
 private:
 	AppProperties m_Props;
