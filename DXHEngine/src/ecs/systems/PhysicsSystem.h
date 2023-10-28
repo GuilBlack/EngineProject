@@ -45,6 +45,8 @@ private:
 	/// Detects any collisions between all passed gameObjects
 	/// </summary>
 	/// <param name="gameObjects">The gameObjects to check for collisions. All gameObjects must have a sphere collider</param>
-	static std::vector<Collision> DetectCollisions(std::vector<DXH::GameObject>& gameObjects);
+	static std::vector<Collision> DetectCollisions(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects);
+
+	void UpdateCollision(std::vector<Collision> collision, float deltaTime);
 };
 }
