@@ -6,7 +6,6 @@ class Timer
 {
 public:
 	Timer();
-	~Timer();
 
 	// Starts the timer.
 	void Start();

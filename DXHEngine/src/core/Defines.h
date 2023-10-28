@@ -51,5 +51,5 @@ typedef DirectX::XMMATRIX Matrix;
 // Delete pointer and set pointer to nullptr.
 #define DELETE_PTR(x) { if (x) { delete x; x = nullptr; } }
 
-// Maximum number of entities in a pool.
-constexpr const size_t MAX_ENTITY_COUNT = 1000;
+// Maximum number of game objects.
+constexpr const size_t MAX_GO_COUNT = 1000;

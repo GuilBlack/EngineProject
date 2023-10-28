@@ -1,5 +1,5 @@
 #pragma once
-#include "src/ecs/Entity.h"
+#include "src/ecs/Component.h"
 
 namespace DXH
 {
@@ -8,30 +8,27 @@ namespace DXH
 /// </summary>
 struct RigidBody : Component
 {
-	RigidBody(Entity* entity) : Component(entity) {}
-	Vector3 Velociy = {0,0,0};
-	Vector3 Force = {0,0,0};
-	float Mass = 1.0f;
+	void Reset() override
+	{
+		Velociy = {0,0,0};
+		Force = {0,0,0};
+		Mass = 1.0f;
+	}
+	Vector3 Velociy;
+	Vector3 Force;
+	float Mass;
 };
 /// <summary>
-/// A sphere collider. The entity must have a rigid body.
+/// A sphere collider.
 /// </summary>
 struct SphereCollider : Component
 {
-	SphereCollider(Entity* entity) : Component(entity)
+	void Reset() override
 	{
-		assert(entity->HasComponent<RigidBody>()); // sphere collider must have rigid body
+		Center = {0,0,0};
+		Radius = 0.f;
 	}
-	Vector3 Center = {0,0,0}; // relative to entity
-	float Radius = 0.f;
-};
-/// <summary>
-/// Represents a collision between two entities.
-/// </summary>
-struct Collision
-{
-	SphereCollider* First = nullptr;
-	SphereCollider* Second = nullptr;
-	Vector3 Normal = {0,0,0}; // Normal of the collision, pointing from first to second
+	Vector3 Center; // Relative to game object
+	float Radius;
 };
 }

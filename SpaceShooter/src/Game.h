@@ -1,5 +1,6 @@
 #pragma once
-#include <DXHInclude.h>
+
+namespace DXH { class Timer; } // Forward declaration
 
 class Game
 {

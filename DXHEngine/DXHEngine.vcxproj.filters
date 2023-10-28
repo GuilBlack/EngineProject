@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\ecs\systems\PhysicsSystem.cpp" />
-    <ClCompile Include="src\ecs\Entity.cpp" />
     <ClCompile Include="src\renderer\RenderContext.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
     <ClCompile Include="src\core\DXHEngine.cpp" />
@@ -10,11 +9,11 @@
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\core\Timer.cpp" />
     <ClCompile Include="src\renderer\SwapChain.cpp" />
+    <ClCompile Include="src\ecs\GameObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHInclude.h" />
     <ClInclude Include="src\ecs\systems\PhysicsSystem.h" />
-    <ClInclude Include="src\ecs\Entity.h" />
     <ClInclude Include="src\renderer\RenderContext.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\core\Defines.h" />
@@ -23,8 +22,10 @@
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\Timer.h" />
     <ClInclude Include="src\renderer\SwapChain.h" />
-    <ClInclude Include="src\ecs\Component.h" />
-    <ClInclude Include="src\ecs\System.h" />
+    <ClInclude Include="src\ecs\ComponentManager.h" />
     <ClInclude Include="src\ecs\components\Physics.h" />
+    <ClInclude Include="src\ecs\components\Transform.h" />
+    <ClInclude Include="src\ecs\GameObject.h" />
+    <ClInclude Include="src\ecs\Component.h" />
   </ItemGroup>
 </Project>
