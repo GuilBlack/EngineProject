@@ -100,6 +100,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\maths\Matrix.h" />
+    <ClInclude Include="src\DXHMaths.h" />
+    <ClInclude Include="src\maths\Quaternion.h" />
     <ClInclude Include="src\ecs\Component.h" />
     <ClInclude Include="DXHInclude.h" />
     <ClInclude Include="src\ecs\GameObject.h" />
@@ -116,8 +119,12 @@
     <ClInclude Include="src\ecs\ComponentManager.h" />
     <ClInclude Include="src\ecs\components\Physics.h" />
     <ClInclude Include="src\ecs\System.h" />
+    <ClInclude Include="src\maths\Vector3.h" />
+    <ClInclude Include="src\maths\Vector2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\maths\Matrix.cpp" />
+    <ClCompile Include="src\maths\Quaternion.cpp" />
     <ClCompile Include="src\ecs\GameObject.cpp" />
     <ClCompile Include="src\ecs\System.cpp" />
     <ClCompile Include="src\ecs\systems\PhysicsSystem.cpp" />
@@ -128,6 +135,8 @@
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\core\Timer.cpp" />
     <ClCompile Include="src\renderer\SwapChain.cpp" />
+    <ClCompile Include="src\maths\Vector3.cpp" />
+    <ClCompile Include="src\maths\Vector2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
