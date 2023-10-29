@@ -44,7 +44,7 @@ void Renderer::Init()
 		.scale = { 1, 1, 1 },
 	};
 	m_Transforms.push_back(transform);
-	transform.position = { 0, -1, 0 };
+	transform.position = { 0, -1, 10 };
 	m_Transforms.push_back(transform);
 }
 
@@ -156,8 +156,8 @@ void Renderer::OnResize()
 	assert(m_pCommandAllocator);
 
 	XMMATRIX proj = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(65.f),
-		(float)Window::GetInstance().GetWidth() / Window::GetInstance().GetWidth(),
+		XMConvertToRadians(100.f),
+		(float)Window::GetInstance().GetWidth() / Window::GetInstance().GetHeight(),
 		0.001f,
 		1000.f
 	);

@@ -56,7 +56,7 @@ void RenderContext::CreateSwapChain(ID3D12CommandQueue* commandQueue, DXGI_SWAP_
 	ASSERT_HRESULT(m_pDXGIFactory->CreateSwapChain(commandQueue, &swapChainDesc, swapChain));
 }
 void RenderContext::CreateDSV(
-	ID3D12Resource** dsv, 
+	ID3D12Resource** dsv,
 	D3D12_CPU_DESCRIPTOR_HANDLE& dsvHeapHandle,
 	CD3DX12_HEAP_PROPERTIES& heapProps,
 	D3D12_RESOURCE_DESC& depthStencilDesc,

@@ -40,6 +40,7 @@ BaseShader* BaseShader::Create(const std::string& vsFilePath, const std::string&
 	}
 	assert(shader && "Wrong shader program type given!");
 
+	shader->m_Type = type;
 	shader->m_pVS = LoadCompiledShader(vsFilePath);
 	shader->m_pPS = LoadCompiledShader(psFilePath);
 	shader->m_InputLayout = CreateInputLayout(layout);

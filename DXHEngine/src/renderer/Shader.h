@@ -66,6 +66,7 @@ protected:
 
 	UploadBuffer<PassConstants> m_PassCB;
 	std::vector<UploadBuffer<ObjectConstants>> m_ObjectCB;
+	ShaderProgramType m_Type;
 
 protected:
 	static ID3DBlob* LoadCompiledShader(const std::string& filepath);

@@ -24,6 +24,7 @@ public:
 		static DXHEngine instance;
 		return instance;
 	}
+	Timer& GetTimer() noexcept { return m_GameTimer; }
 
 	// Initializes the application
 	bool Init(AppProperties props, UpdateFunc gameUpdate);
