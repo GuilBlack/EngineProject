@@ -10,10 +10,6 @@ Timer::Timer()
 	Reset();
 }
 
-Timer::~Timer()
-{
-}
-
 void Timer::Start()
 {
 	if (m_IsStopped)
