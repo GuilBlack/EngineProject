@@ -1,6 +1,6 @@
 #include "Geometry.h"
-#include "../ecs/Entity.h"
 #include "Renderer.h"
+#include "../ecs/components/Transform.h"
 
 #include "Shader.h"
 
@@ -54,7 +54,7 @@ void BaseShader::Draw(Geometry* geometry, uint32_t objectCBIndex, Transform& tra
 {
 	using namespace DirectX;
 	ObjectConstants objectCB;
-	XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(transform.GetWorldMatrix()));
+	XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(transform.GetModelMatrix()));
 	UpdateObjectCB(objectCB, objectCBIndex);
 	D3D12_VERTEX_BUFFER_VIEW vbv = geometry->VertexBufferView();
 	D3D12_INDEX_BUFFER_VIEW ibv = geometry->IndexBufferView();

@@ -7,24 +7,30 @@ struct Transform : Component
 {
 	void Reset() override
 	{
-		position = {0, 0, 0};
-		rotation = {0, 0, 0, 1};
-		scale = {1, 1, 1};
+		Position = {0, 0, 0};
+		Rotation = {0, 0, 0, 1};
+		Scale = {1, 1, 1};
 	}
-	Vector3 position;
-	Quaternion rotation;
-	Vector3 scale;
+	Vector3 Position = { 0,0,0 };
+	Quaternion Rotation = { 0,0,0,1 };
+	Vector3 Angles = { 0,0,0 };
+	Vector3 Scale = { 1,1,1 };
 
 	/// <summary>
 	/// Gets the matrix describing the transformation from world space to model space.
 	/// </summary>
 	inline Matrix GetModelMatrix() const
 	{
-		return DirectX::XMMatrixAffineTransformation(
-			XMLoadFloat3(&scale),
-			DirectX::XMVectorZero(),
-			XMLoadFloat4(&rotation),
-			XMLoadFloat3(&position));
+		using namespace DirectX;
+		Matrix world = XMMatrixIdentity();
+
+		world = XMMatrixMultiply(world, XMMatrixScalingFromVector(XMLoadFloat3(&Scale)));
+
+		world = XMMatrixMultiply(world, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Angles)));
+
+		world = XMMatrixMultiply(world, XMMatrixTranslationFromVector(XMLoadFloat3(&Position)));
+
+		return world;
 	}
 };
 }

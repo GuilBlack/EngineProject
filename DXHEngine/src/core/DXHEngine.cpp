@@ -38,7 +38,7 @@ void DXHEngine::Run()
 		Renderer::GetInstance().EndFrame();
 		
 		System::UpdateAll(m_GameTimer);
-		UpdateFpsCounter(m_GameTimer);
+		UpdateFpsCounter();
 	}
 
 	Cleanup();

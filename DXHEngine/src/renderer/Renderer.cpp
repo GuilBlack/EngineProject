@@ -35,15 +35,13 @@ void Renderer::Init()
 	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 	XMStoreFloat4x4(&m_Camera.View, view);
 
-	Transform transform =
-	{
-		.position = { 0, 1, 0 },
-		.rotation = { 0, 0, 0, 1 },
-		.eulerRotation = { 0, 0, 0 },
-		.scale = { 1, 1, 1 },
-	};
+	Transform transform;
+	transform.Position = { 0, 1, 0 },
+	transform.Rotation = { 0, 0, 0, 1 },
+	transform.Angles = { 0, 0, 0 },
+	transform.Scale = { 1, 1, 1 },
 	m_Transforms.push_back(transform);
-	transform.position = { 0, -1, 10 };
+	transform.Position = { 0, -1, 10 };
 	m_Transforms.push_back(transform);
 }
 

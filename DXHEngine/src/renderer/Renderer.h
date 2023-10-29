@@ -2,7 +2,7 @@
 #include "SwapChain.h"
 #include "Util.h"
 #include "Mesh.h"
-#include "../ecs/Entity.h"
+#include "../ecs/components/Transform.h"
 
 namespace DXH
 {
