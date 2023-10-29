@@ -2,6 +2,9 @@
 
 namespace DXH
 {
+/// <summary>
+/// Geometry struct that contains all the data about a geometry on the CPU and the GPU
+/// </summary>
 struct Geometry
 {
 	Geometry() = default;
@@ -19,6 +22,9 @@ struct Geometry
 	uint32_t IndexBufferByteSize = 0;
 	DXGI_FORMAT IndexFormat = DXGI_FORMAT_R16_UINT;
 
+	/// <summary>
+	/// Returns the vertex buffer view
+	/// </summary>
 	D3D12_VERTEX_BUFFER_VIEW VertexBufferView() const
 	{
 		D3D12_VERTEX_BUFFER_VIEW vbv = {};
@@ -29,6 +35,9 @@ struct Geometry
 		return vbv;
 	}
 
+	/// <summary>
+	/// Returns the index buffer view
+	/// </summary>
 	D3D12_INDEX_BUFFER_VIEW IndexBufferView() const
 	{
 		D3D12_INDEX_BUFFER_VIEW ibv = {};

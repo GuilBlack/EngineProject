@@ -4,7 +4,6 @@
 #include "Shader.h"
 #include "../core/Window.h"
 
-
 namespace DXH
 {
 void Renderer::Init()
