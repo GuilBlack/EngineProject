@@ -1,54 +1,25 @@
 #pragma once
-#include <map>
-#include <functional>
 
 namespace DXH
 {
-class Entity; // Forward declaration of Entity
-class Component; // Forward declaration of Component
+class GameObject;
 
-// Concept for component types
-template <typename T> concept
-ComponentChild = std::is_base_of_v<Component, T>;
-class Component // Component must inherit from this
+/// <summary>
+/// Component of a game object. Must be inherited by all components.
+/// </summary>
+struct Component
 {
-public:
 	/// <summary>
-	/// Create a new component attached to an entity.
+	/// Resets the component to its default state.
+	/// Automatically called when the component is created and released.
 	/// </summary>
-	/// <param name="e">Entity to attach to.</param>
-	Component(Entity* e) : m_Entity(e) {}
-	virtual ~Component() { m_Entity = nullptr; }
-
+	virtual void Reset() = 0;
 	/// <summary>
-	/// Id of the component type.
+	/// Gets the game object that owns this component.
 	/// </summary>
-	typedef uint32_t Id;
-	/// <summary>
-	/// Gets the id of a component type.
-	/// </summary>
-	/// <typeparam name="C">Component type.</typeparam>
-	template <ComponentChild C> static Id GetId()
-	{
-		static Id id = GetNewId();
-		return id;
-	}
-	/// <summary>
-	/// Returns the entity this component is attached to.
-	/// </summary>
-	inline Entity* GetEntity() const { return m_Entity; }
-
-private:
-	Entity* m_Entity;// Id of the entity this component is attached to
-
-private: // "Manager" stuff
-	/// <summary>
-	/// Gets a new id for a component type. (incremental)
-	/// </summary>
-	static inline Id GetNewId()
-	{
-		static Id id = 0;
-		return id++;
-	}
+	GameObject* pGameObject = nullptr;
 };
+
+// Concept for classes that inherit from Component
+template <typename T> concept ComponentConcept = std::is_base_of_v<Component, T>;
 }

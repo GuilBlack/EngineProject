@@ -1,3 +1,4 @@
+#include <DXHInclude.h>
 #include "Game.h"
 
 void Game::StartEngine()
@@ -11,6 +12,12 @@ void Game::StartEngine()
 
 Game::Game()
 {
+	using namespace DXH;
+	GameObject* pObject = new GameObject();
+	pObject->Add<Transform>();
+	pObject->Remove<Transform>();
+	pObject->Add<Transform>();
+	delete pObject;
 }
 
 Game::~Game()

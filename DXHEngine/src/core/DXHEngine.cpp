@@ -1,5 +1,6 @@
 #include "DXHEngine.h"
 #include "Window.h"
+#include "src/ecs/System.h"
 
 namespace DXH
 {
@@ -35,6 +36,9 @@ void DXHEngine::Run()
 		Renderer::GetInstance().BeginFrame();
 		Renderer::GetInstance().DrawTest();
 		Renderer::GetInstance().EndFrame();
+		
+		System::UpdateAll(m_GameTimer);
+		UpdateFpsCounter(m_GameTimer);
 	}
 
 	Cleanup();
