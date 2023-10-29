@@ -30,8 +30,17 @@ template<typename BufferType>
 class UploadBuffer
 {
 public:
+	UploadBuffer() = default;
 	UploadBuffer(uint32_t elementCount, bool isConstantBuffer = true)
 		: m_IsConstantBuffer(isConstantBuffer)
+	{
+		Init(elementCount, isConstantBuffer);
+	}
+
+	UploadBuffer(const UploadBuffer& rhs) = default;
+	UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
+
+	void Init(uint32_t elementCount, bool isConstantBuffer = true)
 	{
 		if (isConstantBuffer)
 			m_ElementByteSize = GetCBByteSize(sizeof(BufferType));
@@ -43,22 +52,20 @@ public:
 
 		Renderer::GetInstance().GetRenderContext()->CreateResource(
 			&m_UploadBuffer,
-			heapProperties, 
-			resourceDesc, 
+			heapProperties,
+			resourceDesc,
 			D3D12_RESOURCE_STATE_GENERIC_READ
 		);
 
 		ASSERT_HRESULT(m_UploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&m_CPUData)));
 	}
 
-	UploadBuffer(const UploadBuffer& rhs) = default;
-	UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
-
 	~UploadBuffer()
 	{
 		if (m_UploadBuffer != nullptr)
+		{
 			m_UploadBuffer->Unmap(0, nullptr);
-		RELEASE_PTR(m_UploadBuffer);
+		}
 		m_CPUData = nullptr;
 	}
 
@@ -73,10 +80,10 @@ public:
 	}
 
 private:
-	bool m_IsConstantBuffer;
+	bool m_IsConstantBuffer = true;
 	uint32_t m_ElementByteSize = 0;
 
 	uint8_t* m_CPUData = nullptr;
-	ID3D12Resource* m_UploadBuffer;
+	ID3D12Resource* m_UploadBuffer = nullptr;
 };
 }

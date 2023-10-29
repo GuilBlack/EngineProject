@@ -33,8 +33,8 @@ void DXHEngine::Run()
 		m_GameUpdate(m_GameTimer);
 
 		Renderer::GetInstance().BeginFrame();
+		Renderer::GetInstance().DrawTest();
 		Renderer::GetInstance().EndFrame();
-		
 	}
 
 	Cleanup();

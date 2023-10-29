@@ -17,7 +17,14 @@ enum class InputLayoutType
 	PositionNormalTexcoord
 };
 
+struct BasicVertex
+{
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT4 Color;
+};
+
 struct Geometry;
+struct Transform;
 
 class BaseShader
 {
@@ -27,15 +34,22 @@ public:
 
 	static BaseShader* Create(const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout);
 
-	virtual void Bind(ID3D12GraphicsCommandList* cl) {}
+	virtual void Bind(ID3D12GraphicsCommandList* cl) 
+	{
+		cl->SetPipelineState(m_pPSO);
+		cl->SetGraphicsRootSignature(m_pRootSignature);
+		cl->SetGraphicsRootConstantBufferView(1, m_PassCB.GetResource()->GetGPUVirtualAddress());
+	}
 	
-	virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, ID3D12GraphicsCommandList* cl);
+	virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Transform& transform, ID3D12GraphicsCommandList* cl);
 
 	virtual void Unbind(ID3D12GraphicsCommandList* cl) {}
 
-	uint32_t AddObjectCB(ObjectConstants& objectCB) 
-	{ 
-		m_ObjectCB.emplace_back(UploadBuffer<ObjectConstants>(1, true));
+	uint32_t AddObjectCB() 
+	{
+		ObjectConstants objectCB;
+		m_ObjectCB.push_back(UploadBuffer<ObjectConstants>());
+		m_ObjectCB.back().Init(1, true);
 		m_ObjectCB.back().CopyData(0, objectCB);
 		return (uint32_t)m_ObjectCB.size() - 1;
 	}

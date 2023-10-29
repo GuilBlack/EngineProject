@@ -7,12 +7,24 @@ struct Transform
 {
 	Vector3 position = {0, 0, 0};
 	Quaternion rotation = {0, 0, 0, 1};
+	// x = pitch, y = yaw, z = roll
+	Vector3 eulerRotation = {0, 0, 0};
 	Vector3 scale = {1, 1, 1};
 
 	/// <summary>
 	/// Gets the matrix describing the transformation from world space to model space.
 	/// </summary>
 	inline Matrix GetModelMatrix() const { return DirectX::XMMatrixAffineTransformation(XMLoadFloat3(&scale), DirectX::XMVectorZero(), XMLoadFloat4(&rotation), XMLoadFloat3(&position)); }
+
+	Matrix GetWorldMatrix() const
+	{
+		using namespace DirectX;
+		Matrix world = XMMatrixIdentity();
+		world = XMMatrixMultiply(world, XMMatrixScalingFromVector(XMLoadFloat3(&scale)));
+		world = XMMatrixMultiply(world, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&eulerRotation)));
+		world = XMMatrixMultiply(world, XMMatrixTranslationFromVector(XMLoadFloat3(&position)));
+		return world;
+	}
 };
 
 class Entity

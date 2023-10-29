@@ -1,15 +1,15 @@
 #include "Geometry.h"
-#include "../ecs/Entity.h"
 #include "Renderer.h"
 #include "RendererResource.h"
 #include "Shader.h"
-#include "Mesh.h"
+#include "../core/Window.h"
 
 
 namespace DXH
 {
 void Renderer::Init()
 {
+	using namespace DirectX;
 	// Init device and stuff
 	m_pRenderContext = new RenderContext();
 
@@ -22,12 +22,35 @@ void Renderer::Init()
 	m_pSwapChain = new SwapChain();
 
 	m_pSwapChain->Init(m_pRenderContext, m_pCommandQueue);
+
+	// Create descriptor heap
+	m_pRenderContext->CreateCBVSRVUAVHeapDescriptor(10, &m_pCbvSrvHeap);
+
 	RendererResource::GetInstance().Init();
-	
+	m_Meshes.push_back(RendererResource::GetInstance().CreateMesh("SimpleShader", "Square"));
+	m_Meshes.push_back(RendererResource::GetInstance().CreateMesh("SimpleShader", "Square"));
+
+	XMVECTOR pos = XMVectorSet(0.f, 0.f, -5.f, 1.f);
+	XMVECTOR target = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	XMVECTOR up = XMVectorSet(0.f, 1.f, 0.f, 1.f);
+	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+	XMStoreFloat4x4(&m_Camera.View, view);
+
+	Transform transform =
+	{
+		.position = { 0, 1, 0 },
+		.rotation = { 0, 0, 0, 1 },
+		.eulerRotation = { 0, 0, 0 },
+		.scale = { 1, 1, 1 },
+	};
+	m_Transforms.push_back(transform);
+	transform.position = { 0, -1, 0 };
+	m_Transforms.push_back(transform);
 }
 
 void Renderer::Destroy()
 {
+	RELEASE_PTR(m_pCbvSrvHeap);
 	RELEASE_PTR(m_pCommandQueue);
 	RELEASE_PTR(m_pCommandList);
 	RELEASE_PTR(m_pCommandAllocator);
@@ -38,6 +61,7 @@ void Renderer::Destroy()
 
 void Renderer::BeginFrame()
 {
+	using namespace DirectX;
 	ASSERT_HRESULT(m_pCommandAllocator->Reset());
 	ASSERT_HRESULT(m_pCommandList->Reset(m_pCommandAllocator, nullptr));
 
@@ -59,13 +83,50 @@ void Renderer::BeginFrame()
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_pSwapChain->GetDepthStencilDescriptorHeap();
 
 	m_pCommandList->OMSetRenderTargets(1, &rtvHandle, true, &dsvHandle);
+
+	ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvSrvHeap };
+	m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
+	XMMATRIX view = XMLoadFloat4x4(&m_Camera.View);
+	XMMATRIX proj = XMLoadFloat4x4(&m_Camera.Proj);
+	XMMATRIX viewProj = view * proj;
+
+	PassConstants passCB =
+	{
+		.View = m_Camera.View,
+		.Proj = m_Camera.Proj,
+		.EyePosW = {0.f, 0.f, -5.f},
+		.NearZ = 0.001f,
+		.FarZ = 1000.f,
+		.TotalTime = 0.f,
+		.RenderTargetSize = 
+		{
+			(float)Window::GetInstance().GetWidth(), 
+			(float)Window::GetInstance().GetHeight()
+		},
+		.DeltaTime = 0.f,
+	};
+	XMStoreFloat4x4(&passCB.ViewProj, viewProj);
+
+	for (auto [_, shader] : RendererResource::GetInstance().m_Shaders)
+	{
+		shader->UpdatePassCB(passCB);
+	}
 }
 
-void Renderer::Draw(Mesh* mesh)
+void Renderer::Draw(Mesh* mesh, Transform transform)
 {
 	mesh->Shader->Bind(m_pCommandList);
-	mesh->Shader->Draw(mesh->Geo, mesh->CBVIndex, m_pCommandList);
+	mesh->Shader->Draw(mesh->Geo, mesh->CBVIndex, transform, m_pCommandList);
 	mesh->Shader->Unbind(m_pCommandList);
+}
+
+void Renderer::DrawTest()
+{
+	for (int i = 0; i < m_Meshes.size(); ++i)
+	{
+		Draw(&m_Meshes[i], m_Transforms[i]);
+	}
 }
 
 void Renderer::EndFrame()
@@ -89,9 +150,18 @@ void Renderer::EndFrame()
 
 void Renderer::OnResize()
 {
+	using namespace DirectX;
 	assert(m_pRenderContext);
 	assert(m_pSwapChain);
 	assert(m_pCommandAllocator);
+
+	XMMATRIX proj = XMMatrixPerspectiveFovLH(
+		XMConvertToRadians(65.f),
+		(float)Window::GetInstance().GetWidth() / Window::GetInstance().GetWidth(),
+		0.001f,
+		1000.f
+	);
+	XMStoreFloat4x4(&m_Camera.Proj, proj);
 
 	// Flush before changing any resources.
 	FlushCommandQueue();
@@ -131,12 +201,15 @@ void Renderer::FlushCommandQueue()
 		CloseHandle(eventHandle);
 	}
 }
+
 ID3D12Resource* Renderer::CreateDefaultBuffer(void* data, int64_t byteSize)
 {
+	FlushCommandQueue();
+	ASSERT_HRESULT(m_pCommandList->Reset(m_pCommandAllocator, nullptr));
 	ID3D12Resource* uploadBuffer = nullptr;
 	ID3D12Resource* defaultBuffer = nullptr;
 
-	D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+	D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(byteSize);
 
 	m_pRenderContext->CreateResource(&defaultBuffer, heapProperties, resourceDesc, D3D12_RESOURCE_STATE_COMMON);
@@ -167,6 +240,13 @@ ID3D12Resource* Renderer::CreateDefaultBuffer(void* data, int64_t byteSize)
 	);
 
 	m_pCommandList->ResourceBarrier(1, &barrier);
+	
+	ASSERT_HRESULT(m_pCommandList->Close());
+	ID3D12CommandList* commandLists[] = { m_pCommandList };
+	m_pCommandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
+
+	FlushCommandQueue();
+	RELEASE_PTR(uploadBuffer);
 
 	return defaultBuffer;
 }

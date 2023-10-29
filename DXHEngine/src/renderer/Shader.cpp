@@ -1,9 +1,9 @@
 #include "Geometry.h"
 #include "../ecs/Entity.h"
+#include "Renderer.h"
 
 #include "Shader.h"
 
-#include "Renderer.h"
 #include "Util.h"
 
 namespace DXH
@@ -49,11 +49,16 @@ BaseShader* BaseShader::Create(const std::string& vsFilePath, const std::string&
 	return shader;
 }
 
-void BaseShader::Draw(Geometry* geometry, uint32_t objectCBIndex, ID3D12GraphicsCommandList* cl)
+void BaseShader::Draw(Geometry* geometry, uint32_t objectCBIndex, Transform& transform, ID3D12GraphicsCommandList* cl)
 {
+	using namespace DirectX;
+	ObjectConstants objectCB;
+	XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(transform.GetWorldMatrix()));
+	UpdateObjectCB(objectCB, objectCBIndex);
 	D3D12_VERTEX_BUFFER_VIEW vbv = geometry->VertexBufferView();
 	D3D12_INDEX_BUFFER_VIEW ibv = geometry->IndexBufferView();
-	cl->SetGraphicsRootConstantBufferView(0, m_PassCB.GetResource()->GetGPUVirtualAddress());
+
+	cl->SetGraphicsRootConstantBufferView(0, m_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress());
 	cl->IASetVertexBuffers(0, 1, &vbv);
 	cl->IASetIndexBuffer(&ibv);
 	cl->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -128,9 +133,7 @@ SimpleShader::SimpleShader()
 
 void SimpleShader::Bind(ID3D12GraphicsCommandList* cl)
 {
-	cl->SetGraphicsRootSignature(m_pRootSignature);
-
-	cl->SetGraphicsRootConstantBufferView(1, m_PassCB.GetResource()->GetGPUVirtualAddress());
+	BaseShader::Bind(cl);
 }
 
 void SimpleShader::Unbind(ID3D12GraphicsCommandList * cl)
@@ -167,8 +170,6 @@ void BaseShader::BuildRootSignature(CD3DX12_ROOT_PARAMETER* rootParameters, uint
 
 void BaseShader::BuildPSO()
 {
-	uint32_t size = m_pVS->GetBufferSize();
-	size = m_pPS->GetBufferSize();
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc =
 	{
 		.pRootSignature = m_pRootSignature,

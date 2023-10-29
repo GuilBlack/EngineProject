@@ -5,10 +5,8 @@ namespace DXH
 struct Geometry
 {
 	Geometry() = default;
-	Geometry(const std::string& name, void* vertices, std::vector<uint16_t> indices, uint32_t vbByteSize, uint32_t vertexByteStride);
+	Geometry(void* vertices, std::vector<uint16_t> indices, uint32_t vbByteSize, uint32_t vertexByteStride);
 	~Geometry();
-
-	std::string Name = "";
 
 	ID3DBlob* VertexBufferCPU = nullptr;
 	ID3DBlob* IndexBufferCPU = nullptr;

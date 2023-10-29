@@ -5,10 +5,13 @@ namespace DXH
 enum class ShaderProgramType;
 enum class InputLayoutType;
 class BaseShader;
+struct Geometry;
+struct Mesh;
 
 class RendererResource
 {
-	public:
+	friend class Renderer;
+public:
 	RendererResource() = default;
 	~RendererResource();
 
@@ -24,8 +27,15 @@ class RendererResource
 
 	BaseShader* GetShader(const std::string& name) { return m_Shaders[name]; }
 
+
+	Mesh CreateMesh(const std::string& shaderName, const std::string& geometryName);
+
 private:
 	std::unordered_map<std::string, BaseShader*> m_Shaders;
+	std::unordered_map<std::string, Geometry*> m_Geometries;
+
+private:
+	void CreateCube();
+	void CreateSquare();
 };
 }
-

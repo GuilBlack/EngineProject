@@ -1,15 +1,15 @@
 #pragma once
-#include "Geometry.h"
-#include "Shader.h"
 
 namespace DXH
 {
-	struct Mesh
-	{
-		Geometry* Geo;
+class BaseShader;
+struct Geometry;
 
-		uint32_t CBVIndex = -1;
+struct Mesh
+{
+	Geometry* Geo = nullptr;
+	BaseShader* Shader = nullptr;
 
-		BaseShader* Shader = nullptr;
-	};
+	uint32_t CBVIndex = -1;
+};
 }

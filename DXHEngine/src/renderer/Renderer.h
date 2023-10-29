@@ -1,5 +1,8 @@
 #pragma once
 #include "SwapChain.h"
+#include "Util.h"
+#include "Mesh.h"
+#include "../ecs/Entity.h"
 
 namespace DXH
 {
@@ -25,8 +28,13 @@ public:
 	static ID3D12DescriptorHeap* GetCbvSrvHeap() { return GetInstance().m_pCbvSrvHeap; }
 
 	void BeginFrame();
-	void Draw(Mesh* mesh);
+	void Draw(Mesh* mesh, Transform transform);
+	void DrawTest();
 	void EndFrame();
+
+
+	void OnResize();
+	void FlushCommandQueue();
 
 	void Clear()
 	{
@@ -40,10 +48,6 @@ public:
 			1.0f, 0, 0, nullptr
 		);
 	}
-
-	void OnResize();
-	void FlushCommandQueue();
-
 	ID3D12Resource* CreateDefaultBuffer(void* data, int64_t byteSize);
 
 private:
@@ -56,6 +60,9 @@ private:
 	ID3D12DescriptorHeap* m_pCbvSrvHeap = nullptr;
 	uint32_t m_CbvSrvIndex = 0;
 	uint32_t m_FenceValue = 0;
+	std::vector<Mesh> m_Meshes;
+	std::vector<Transform> m_Transforms;
+	Camera m_Camera;
 
 private:
 	Renderer() {}
