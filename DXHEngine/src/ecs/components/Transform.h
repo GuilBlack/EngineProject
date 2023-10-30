@@ -6,15 +6,16 @@ namespace DXH
 {
 struct Transform : Component
 {
-	void Reset() override
+	void OnGet() override
 	{
 		Position = Vector3::Zero;
 		Rotation = Quaternion::Identity;
 		Scale = Vector3::One;
 	}
-	Vector3 Position = { 0,0,0 };
-	Quaternion Rotation = { 0,0,0,1 };
-	Vector3 Scale = { 1,1,1 };
+	void OnRelease() override {}
+	Vector3 Position = Vector3::Zero;
+	Quaternion Rotation = Quaternion::Identity;
+	Vector3 Scale = Vector3::One;
 
 	/// <summary>
 	/// Gets the matrix describing the transformation from world space to model space.

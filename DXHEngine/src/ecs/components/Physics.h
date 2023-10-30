@@ -8,12 +8,13 @@ namespace DXH
 /// </summary>
 struct RigidBody : Component
 {
-	void Reset() override
+	void OnGet() override
 	{
 		Velocity = Vector3::Zero;
 		Force = Vector3::Zero;
 		Mass = 1.0f;
 	}
+	void OnRelease() override {}
 	Vector3 Velocity;
 	Vector3 Force;
 	float Mass;
@@ -23,11 +24,12 @@ struct RigidBody : Component
 /// </summary>
 struct SphereCollider : Component
 {
-	void Reset() override
+	void OnGet() override
 	{
 		Center = Vector3::Zero;
 		Radius = 0.f;
 	}
+	void OnRelease() override {}
 	Vector3 Center; // Relative to game object
 	float Radius;
 };

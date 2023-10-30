@@ -9,11 +9,15 @@ class GameObject;
 /// </summary>
 struct Component
 {
+	virtual ~Component() = default;
 	/// <summary>
-	/// Resets the component to its default state.
-	/// Automatically called when the component is created and released.
+	/// Automatically called when the component is retrieved from the pool (added to a game object).
 	/// </summary>
-	virtual void Reset() = 0;
+	virtual void OnGet() = 0;
+	/// <summary>
+	/// Automatically called when the component is released back to the pool (removed from a game object).
+	/// </summary>
+	virtual void OnRelease() = 0;
 	/// <summary>
 	/// Gets the game object that owns this component.
 	/// </summary>

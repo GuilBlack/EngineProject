@@ -13,15 +13,10 @@ InputManager::InputManager()
 			VK_XBUTTON1, VK_XBUTTON2
 	};
 	SetFollowedKeys(keys);
-
-	// Hide cursor
-	ShowCursor(false);
 }
 
 InputManager::~InputManager()
 {
-	// Show cursor
-	ShowCursor(true);
 }
 
 void InputManager::Update()
@@ -38,7 +33,8 @@ void InputManager::Update()
 	m_MouseDelta.y = (float)(mousePos.y) - screenCenterY;
 
 	// Reset cursor position to center of screen
-	SetCursorPos(screenCenterX, screenCenterY);
+	if (m_CursorLocked)
+		SetCursorPos(screenCenterX, screenCenterY);
 
 	// Get buttons
 	for (auto& [key, state] : m_KeyStates)
@@ -66,5 +62,16 @@ void InputManager::SetFollowedKeys(const std::vector<int>& newKeys)
 		if (m_KeyStates.contains(key)) continue;
 		m_KeyStates[key] = KeyState::NotUpdatedOnce;
 	}
+}
+
+void InputManager::ToggleCursorLock(bool locked)
+{
+	m_CursorLocked = locked;
+	ShowCursor(!locked);
+}
+
+void InputManager::ToggleCursorLock()
+{
+	ToggleCursorLock(!m_CursorLocked);
 }
 }

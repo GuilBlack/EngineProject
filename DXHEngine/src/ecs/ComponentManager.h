@@ -33,6 +33,7 @@ public:
 			if (s_Components[index].pGameObject == nullptr)
 			{
 				s_Components[index].pGameObject = target; // Mark as used (by the target)
+				s_Components[index].OnGet();
 				return &s_Components[index];
 			}
 			index = (index + i) % MAX_GO_COUNT;
@@ -48,7 +49,7 @@ public:
 		if (component == nullptr) return;
 		UsedComponentsMap().erase(component->pGameObject);
 		component->pGameObject = nullptr; // Mark as unused
-		component->Reset();
+		component->OnRelease();
 	}
 	/// <summary>
 	/// Gets the map of all used components of the given type.
@@ -67,13 +68,14 @@ private:
 	{
 		for (size_t i = 0; i < MAX_GO_COUNT; i++)
 		{
-			s_Components[i] = T();
-			s_Components[i].Reset();
+			new(&s_Components[i]) T();
 			s_Components[i].pGameObject = nullptr;
 		}
 	}
 
+	// Memory buffer for all components, needed for not calling the constructor
+	inline static alignas(T) std::byte s_MemoryBuffer[MAX_GO_COUNT * sizeof(T)] = {};
 	// Array of components (size is MAX_GO_COUNT)
-	inline static T* s_Components = new T[MAX_GO_COUNT];
+	inline static T* s_Components = reinterpret_cast<T*>(s_MemoryBuffer);
 };
 }

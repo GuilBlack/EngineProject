@@ -7,7 +7,7 @@ void Game::StartEngine()
 	DXHEngine::GetInstance().Init(AppProperties{
 			.WindowTitle = L"Space Shooter",
 		},
-		[](const Timer& gt) { GetInstance().Update(gt); },
+		[](const Timer& gt) { GetInstance().Init(gt); },
 		[](const Timer& gt) { GetInstance().Update(gt); });
 	DXHEngine::GetInstance().Run();
 }
