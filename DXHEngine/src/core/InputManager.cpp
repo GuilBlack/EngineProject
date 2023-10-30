@@ -34,8 +34,8 @@ void InputManager::Update()
 	// Calculate mouse position relative to center of screen
 	int screenCenterX = Window::GetInstance().GetWidth();
 	int screenCenterY = Window::GetInstance().GetHeight();
-	m_MouseDelta.x = mousePos.x - screenCenterX;
-	m_MouseDelta.y = mousePos.y - screenCenterY;
+	m_MouseDelta.x = (float)(mousePos.x) - screenCenterX;
+	m_MouseDelta.y = (float)(mousePos.y) - screenCenterY;
 
 	// Reset cursor position to center of screen
 	SetCursorPos(screenCenterX, screenCenterY);

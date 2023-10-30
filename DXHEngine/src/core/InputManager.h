@@ -1,4 +1,5 @@
 #pragma once
+#include "src/DXHMaths.h" // Vector2
 
 namespace DXH
 {
@@ -34,7 +35,7 @@ public:
     inline KeyState GetKeyState(int key) const { return m_KeyStates.at(key); }
 
 private:
-	Vector2 m_MouseDelta = {0, 0};
+	Vector2 m_MouseDelta = Vector2::Zero;
 	std::unordered_map<int, KeyState> m_KeyStates;
 };
 }

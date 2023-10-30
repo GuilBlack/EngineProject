@@ -1,5 +1,6 @@
 #pragma once
 
+#include "pch.h"
 #include "src/core/DXHEngine.h"
 #include "src/DXHMaths.h"
 
