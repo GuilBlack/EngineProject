@@ -25,7 +25,7 @@ void PhysicsSystem::Update(const Timer& gt)
 
 inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform* transform, SphereCollider* collider)
 {
-	return DirectX::XMVectorAdd(transform->position.Load(), collider->Center.Load());
+	return DirectX::XMVectorAdd(transform->Position.Load(), collider->Center.Load());
 }
 
 inline float PhysicsSystem::SqrDistanceBetween(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB)

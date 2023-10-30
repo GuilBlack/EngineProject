@@ -26,5 +26,10 @@ struct Quaternion : public DirectX::XMFLOAT4
 	}
 
 	static const Quaternion Identity; // Shorthand for writing Quaternion(0, 0, 0, 1).
+
+	inline void SetRotationFromAngles(float yaw, float pitch, float roll)
+	{
+		Store(DirectX::XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
+	}
 };
 }

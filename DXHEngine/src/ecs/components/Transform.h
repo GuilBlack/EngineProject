@@ -1,5 +1,6 @@
 #pragma once
 #include "src/ecs/Component.h" // For the Component base class
+#include "src/DXHMaths.h" // For math structs and functions
 
 namespace DXH
 {
@@ -7,13 +8,12 @@ struct Transform : Component
 {
 	void Reset() override
 	{
-		position = Vector3::Zero;
-		rotation = Quaternion::Identity;
-		scale = Vector3::One;
+		Position = Vector3::Zero;
+		Rotation = Quaternion::Identity;
+		Scale = Vector3::One;
 	}
 	Vector3 Position = { 0,0,0 };
 	Quaternion Rotation = { 0,0,0,1 };
-	Vector3 Angles = { 0,0,0 };
 	Vector3 Scale = { 1,1,1 };
 
 	/// <summary>
@@ -21,23 +21,11 @@ struct Transform : Component
 	/// </summary>
 	inline DirectX::XMMATRIX GetModelMatrix() const
 	{
-		using namespace DirectX;
-		Matrix world = XMMatrixIdentity();
-
-		world = XMMatrixMultiply(world, XMMatrixScalingFromVector(XMLoadFloat3(&Scale)));
-		
-		XMFLOAT3 angles = 
-		{ 
-			XMConvertToRadians(Angles.x),
-			XMConvertToRadians(Angles.y),
-			XMConvertToRadians(Angles.z)
-		};
-		
-		world = XMMatrixMultiply(world, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&angles)));
-
-		world = XMMatrixMultiply(world, XMMatrixTranslationFromVector(XMLoadFloat3(&Position)));
-
-		return world;
+		return DirectX::XMMatrixAffineTransformation(
+			Scale.Load(),
+			DirectX::XMVectorZero(),
+			Rotation.Load(),
+			Position.Load());
 	}
 };
 }
