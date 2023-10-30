@@ -55,9 +55,9 @@ public:
 	/// </summary>
 	/// <param name="materialName">Name of the material</param>
 	/// <returns>Pointer to the material</returns>
-	Material* GetMaterial(const std::string& materialName) { return m_Materials[materialName]; }
+	static Material* GetMaterial(const std::string& materialName) { return RendererResource::GetInstance().m_Materials[materialName]; }
 
-	Geometry* GetGeometry(const std::string& geometryName) { return m_Geometries[geometryName]; }
+	static Geometry* GetGeometry(const std::string& geometryName) { return RendererResource::GetInstance().m_Geometries[geometryName]; }
 
 private:
 	std::unordered_map<std::string, BaseShader*> m_Shaders;

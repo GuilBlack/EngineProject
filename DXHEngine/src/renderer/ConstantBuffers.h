@@ -74,13 +74,19 @@ public:
 		ASSERT_HRESULT(m_UploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&m_CPUData)));
 	}
 
-	~UploadBuffer()
+	void Destroy()
 	{
 		if (m_UploadBuffer != nullptr)
 		{
 			m_UploadBuffer->Unmap(0, nullptr);
+			m_UploadBuffer->Release();
 		}
+
 		m_CPUData = nullptr;
+	}
+
+	~UploadBuffer()
+	{
 	}
 
 	/// <summary>

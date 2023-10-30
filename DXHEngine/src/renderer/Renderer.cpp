@@ -29,6 +29,8 @@ void Renderer::Init()
 	m_pRenderContext->CreateCBVSRVUAVHeapDescriptor(10, &m_pCbvSrvHeap);
 
 	RendererResource::GetInstance().Init();
+	BaseShader::s_ObjectCB = std::vector<UploadBuffer<ObjectConstants>>();
+	BaseShader::s_ObjectCB.reserve(1000);
 
 	XMVECTOR pos = XMVectorSet(0.f, 0.f, -10.f, 1.f);
 	XMVECTOR target = XMVectorSet(0.f, 0.f, 0.f, 1.f);
@@ -39,6 +41,10 @@ void Renderer::Init()
 
 void Renderer::Destroy()
 {
+	for (auto cb : BaseShader::s_ObjectCB)
+	{
+		cb.Destroy();
+	}
 	RELEASE_PTR(m_pCbvSrvHeap);
 	RELEASE_PTR(m_pCommandQueue);
 	RELEASE_PTR(m_pCommandList);

@@ -1,7 +1,7 @@
 #pragma once
+#include <DXHInclude.h>
 
 namespace DXH { class Timer; } // Forward declaration
-
 class Game
 {
 public:
@@ -17,6 +17,9 @@ public:
 	/// Make sure to call it after initializing all the systems.
 	/// </summary>
 	void StartEngine();
+
+private:
+	std::vector<DXH::GameObject*> m_GameObjects;
 
 private:
 	Game();

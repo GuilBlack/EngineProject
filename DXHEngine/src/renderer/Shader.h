@@ -43,6 +43,7 @@ struct ObjectConstants;
 /// </summary>
 class BaseShader
 {
+	friend class Renderer;
 public:
 	BaseShader();
 	virtual ~BaseShader();

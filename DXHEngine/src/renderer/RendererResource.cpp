@@ -46,7 +46,7 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
 		Material* material = new Material();
 		material->Shader = m_Shaders[shaderName];
 		material->Type = MaterialType::Simple;
-		m_Materials[shaderName] = material;
+		m_Materials[materialName] = material;
 		break;
 	}
 	default:

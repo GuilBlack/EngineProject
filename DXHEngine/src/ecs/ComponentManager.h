@@ -34,6 +34,7 @@ public:
 			{
 				s_Components[index].pGameObject = target; // Mark as used (by the target)
 				s_Components[index].OnGet();
+				UsedComponentsMap().insert({ target, &s_Components[index] });
 				return &s_Components[index];
 			}
 			index = (index + i) % MAX_GO_COUNT;

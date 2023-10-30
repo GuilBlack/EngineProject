@@ -110,6 +110,7 @@ void DXHEngine::Shutdown()
 void DXHEngine::Cleanup()
 {
 	VS_DB_OUT_W(L"Cleaning up DXHEngine...\n");
+	Renderer::GetInstance().Destroy();
 	DELETE_PTR(m_pContext);
 }
 }
