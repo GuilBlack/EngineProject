@@ -14,9 +14,30 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #if defined(DEBUG) | defined(_DEBUG)
 	// Enable run-time memory check for debug builds.
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+	_CrtMemState memState;
+	_CrtMemCheckpoint(&memState);
 #endif
 
 	Game::GetInstance().StartEngine();
+
+# if defined(DEBUG) | defined(_DEBUG)
+	_CrtMemState memState2, memStateDiff;
+	_CrtMemCheckpoint(&memState2);
+	if (_CrtMemDifference(&memStateDiff, &memState, &memState2))
+	{
+		MessageBox(nullptr,
+			L"Memory leak detected!\nCheck the output window for more information.",
+			L"Memory leak!",
+			MB_OK | MB_ICONERROR);
+
+		// Dump memory leaks to output window
+		_CrtMemDumpStatistics(&memStateDiff);
+		_CrtDumpMemoryLeaks();
+		return 1;
+	}
+#endif
+
 	return 0;
 }
 
