@@ -19,6 +19,10 @@ struct Mesh : public Component
 		Mat = nullptr;
 	}
 
+	virtual void OnGet() override
+	{
+	}
+
 	Mesh()
 	{
 		CBVIndex = BaseShader::AddObjectCB();

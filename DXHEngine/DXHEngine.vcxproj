@@ -103,7 +103,7 @@
     <ClInclude Include="src\ecs\systems\RenderSystem.h" />
     <ClInclude Include="src\renderer\Material.h" />
     <ClInclude Include="src\renderer\RendererResource.h" />
-    <ClInclude Include="src\ecs\components\Mesh.h" />
+    <ClInclude Include="src\ecs\components\Render.h" />
     <ClInclude Include="src\renderer\Shader.h" />
     <ClInclude Include="src\renderer\Geometry.h" />
     <ClInclude Include="src\maths\Matrix.h" />

@@ -27,6 +27,7 @@ void Game::Init(const DXH::Timer& gt)
 	pObject->Add<Transform>();
 	pObject->Remove<Transform>();
 	pObject->Add<Transform>();
+	pObject->Add<Mesh>();
 	delete pObject;
 }
 

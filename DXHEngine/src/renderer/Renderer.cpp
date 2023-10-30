@@ -4,7 +4,7 @@
 #include "Shader.h"
 #include "Material.h"
 #include "../ecs/components/Transform.h"
-#include "../ecs/components/Mesh.h"
+#include "../ecs/components/Render.h"
 #include "../core/Window.h"
 
 namespace DXH

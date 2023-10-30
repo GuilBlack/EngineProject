@@ -1,7 +1,7 @@
 #include "RendererResource.h"
 #include "Geometry.h"
 #include "Shader.h"
-#include "../ecs/components/Mesh.h"
+#include "../ecs/components/Render.h"
 #include "Material.h"
 
 namespace DXH

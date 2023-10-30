@@ -8,3 +8,4 @@
 #include "src/ecs/GameObject.h"
 #include "src/ecs/components/Physics.h"
 #include "src/ecs/components/Transform.h"
+#include "src/ecs/components/Render.h"
