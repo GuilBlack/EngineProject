@@ -101,6 +101,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DXHInclude.h" />
+    <ClInclude Include="src\core\InputManager.h" />
     <ClInclude Include="src\ecs\systems\PhysicsSystem.h" />
     <ClInclude Include="src\ecs\Entity.h" />
     <ClInclude Include="src\renderer\RenderContext.h" />
@@ -116,6 +117,7 @@
     <ClInclude Include="src\ecs\components\Physics.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\InputManager.cpp" />
     <ClCompile Include="src\ecs\systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\ecs\Entity.cpp" />
     <ClCompile Include="src\renderer\RenderContext.cpp" />

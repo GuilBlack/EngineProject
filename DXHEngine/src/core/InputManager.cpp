@@ -1,23 +1,70 @@
 #include "InputManager.h"
+#include "Window.h"
 
-void InputManager::CheckInputs()
+namespace DXH
 {
-	if (m_KeyState.empty())
+InputManager::InputManager()
+{
+	// Set default keys
+	std::vector<int> keys =
 	{
-		m_KeyState.resize(m_Keys.size(), KeyState::NONE);
+		'w', 'a', 's', 'd',
+			VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
+			VK_XBUTTON1, VK_XBUTTON2
+	};
+	SetFollowedKeys(keys);
+
+	// Hide cursor
+	ShowCursor(false);
+}
+
+InputManager::~InputManager()
+{
+	// Show cursor
+	ShowCursor(true);
+}
+
+void InputManager::Update()
+{
+	// Get mouse position
+	POINT mousePos;
+	GetCursorPos(&mousePos);
+	ScreenToClient(Window::GetInstance().GetWindowHandle(), &mousePos);
+
+	// Calculate mouse position relative to center of screen
+	int screenCenterX = Window::GetInstance().GetWidth();
+	int screenCenterY = Window::GetInstance().GetHeight();
+	m_MouseDelta.x = mousePos.x - screenCenterX;
+	m_MouseDelta.y = mousePos.y - screenCenterY;
+
+	// Reset cursor position to center of screen
+	SetCursorPos(screenCenterX, screenCenterY);
+
+	// Get buttons
+	for (auto& [key, state] : m_KeyStates)
+	{
+		state = GetAsyncKeyState(key) ? KeyState::Pressed : KeyState::Released;
+		// TODO: Held state
 	}
+}
 
-	vector<KeyState> currentKeyState(m_Keys.size(), KeyState::NONE);
-
-	for (size_t i = 0; i < m_Keys.size(); ++i)
+void InputManager::SetFollowedKeys(const std::vector<int>& newKeys)
+{
+	// Remove keys that are not in the new vector
+	for (auto it = m_KeyStates.begin(); it != m_KeyStates.end();)
 	{
-		if (GetAsyncKeyState(m_Keys[i]) < 0) {
-			currentKeyState[i] = (m_KeyState[i] == KeyState::HELD || m_KeyState[i] == KeyState::DOWN) ? KeyState::HELD : KeyState::DOWN;
-		}
-		else
+		if (std::find(newKeys.begin(), newKeys.end(), it->first) == newKeys.end())
 		{
-			currentKeyState[i] = (m_KeyState[i] == KeyState::HELD || m_KeyState[i] == KeyState::DOWN) ? KeyState::UP : KeyState::NONE;
+			it = m_KeyStates.erase(it);
 		}
+		else ++it; // Only increment if not erased
 	}
-	m_KeyState = currentKeyState;
+
+	// Add new keys
+	for (auto key : newKeys)
+	{
+		if (m_KeyStates.contains(key)) continue;
+		m_KeyStates[key] = KeyState::NotUpdatedOnce;
+	}
+}
 }

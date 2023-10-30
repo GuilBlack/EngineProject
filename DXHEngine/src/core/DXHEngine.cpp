@@ -15,7 +15,9 @@ bool DXHEngine::Init(AppProperties props, UpdateFunc gameUpdate)
 	if (!InitDX12())
 		return false;
 
+	m_InputManager.Update(); // First update to reset the mouse position
 	m_GameUpdate = gameUpdate;
+
 	m_IsRunning = true;
 	return true;
 }
@@ -29,6 +31,7 @@ void DXHEngine::Run()
 	while (m_IsRunning)
 	{
 		Window::GetInstance().PollEvents();
+		m_InputManager.Update();
 		m_GameTimer.Tick();
 		m_GameUpdate(m_GameTimer);
 		UpdateFpsCounter(m_GameTimer);

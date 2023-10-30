@@ -1,24 +1,40 @@
 #pragma once
-#include <vector>
-using namespace std;
 
-class InputManager {
-public:
-	enum class KeyState {
-		HELD,
-		UP,
-		DOWN,
-		NONE,
-	};
+namespace DXH
+{
+
+enum class KeyState
+{
+	NotUpdatedOnce, // The key has not been updated once yet
+	Released,
+	Pressed,
+	Held,
+};
+
+class InputManager
+{
 public:
 	InputManager();
-
-	void CheckInputs();
+	~InputManager();
+	/// <summary>
+	/// Checks for the mouse movement and updates the key states.
+	/// </summary>
+	void Update();
+	/// <summary>
+	/// Gets the mouse delta since the last update.
+	/// </summary>
+	inline Vector2 GetMouseDelta() const { return m_MouseDelta; }
+	/// <summary>
+	/// Sets the followed keys (keys that will be updated every frame).
+	/// </summary>
+	void SetFollowedKeys(const std::vector<int>& keys);
+    /// <summary>
+    /// Gets the state of the key.
+    /// </summary>
+    inline KeyState GetKeyState(int key) const { return m_KeyStates.at(key); }
 
 private:
-	vector<char> m_Keys = {
-		'q', 's','z','d',VK_LBUTTON,VK_RBUTTON
-	};
-
-	vector<KeyState> m_KeyState;
+	Vector2 m_MouseDelta = {0, 0};
+	std::unordered_map<int, KeyState> m_KeyStates;
 };
+}

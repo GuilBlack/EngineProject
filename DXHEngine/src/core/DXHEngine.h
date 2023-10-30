@@ -1,5 +1,6 @@
 #pragma once
 #include "Timer.h"
+#include "InputManager.h"
 #include "src/renderer/Renderer.h"
 
 namespace DXH
@@ -33,6 +34,7 @@ public:
 private:
 	AppProperties m_Props;
 	Timer m_GameTimer = Timer();
+	InputManager m_InputManager = InputManager();
 	UpdateFunc m_GameUpdate = nullptr;
 	bool m_IsRunning = false;
 
