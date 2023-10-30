@@ -1,8 +1,10 @@
-#include "Geometry.h"
 #include "Renderer.h"
+#include "Geometry.h"
 #include "RendererResource.h"
 #include "Shader.h"
 #include "Material.h"
+#include "../ecs/components/Transform.h"
+#include "../ecs/components/Mesh.h"
 #include "../core/Window.h"
 
 namespace DXH
@@ -27,23 +29,12 @@ void Renderer::Init()
 	m_pRenderContext->CreateCBVSRVUAVHeapDescriptor(10, &m_pCbvSrvHeap);
 
 	RendererResource::GetInstance().Init();
-	m_Meshes.push_back(RendererResource::GetInstance().CreateMesh("SimpleShader", "Cube"));
-	m_Meshes.push_back(RendererResource::GetInstance().CreateMesh("SimpleShader", "Cube"));
 
 	XMVECTOR pos = XMVectorSet(0.f, 0.f, -10.f, 1.f);
 	XMVECTOR target = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	XMVECTOR up = XMVectorSet(0.f, 1.f, 0.f, 1.f);
 	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 	XMStoreFloat4x4(&m_Camera.View, view);
-
-	Transform transform;
-	transform.Position = { 2, 0, 1 },
-	transform.Rotation = { 0, 0, 0, 1 },
-	transform.Angles = { 0, 0, 0 },
-	transform.Scale = { 1, 1, 1 },
-	m_Transforms.push_back(transform);
-	transform.Position = { -2, 0, 1 };
-	m_Transforms.push_back(transform);
 }
 
 void Renderer::Destroy()
@@ -112,28 +103,20 @@ void Renderer::BeginFrame()
 	}
 }
 
-void Renderer::Draw(Mesh* mesh, Transform transform)
+void Renderer::Draw(Mesh& mesh, Transform& transform)
 {
-	mesh->Mat->Shader->Bind(m_pCommandList);
-	switch (mesh->Mat->Shader->GetType())
+	mesh.Mat->Shader->Bind(m_pCommandList);
+	switch (mesh.Mat->Shader->GetType())
 	{
 	case ShaderProgramType::SimpleShader:
 	{
-		mesh->Mat->Shader->Draw(mesh->Geo, mesh->CBVIndex, transform, m_pCommandList);
+		mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), transform, m_pCommandList);
 		break;
 	}
 	default:
 		break;
 	}
-	mesh->Mat->Shader->Unbind(m_pCommandList);
-}
-
-void Renderer::DrawTest()
-{
-	for (int i = 0; i < m_Meshes.size(); ++i)
-	{
-		Draw(&m_Meshes[i], m_Transforms[i]);
-	}
+	mesh.Mat->Shader->Unbind(m_pCommandList);
 }
 
 void Renderer::EndFrame()

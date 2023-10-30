@@ -44,18 +44,20 @@ public:
 	void CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName);
 
 	/// <summary>
-	/// Get a shader program
-	/// </summary>
-	/// <param name="name">Name of the shader program</param>
-	/// <returns>Pointer to the shader program</returns>
-	BaseShader* GetShader(const std::string& name) { return m_Shaders[name]; }
-
-	/// <summary>
 	/// Create a Mesh
 	/// </summary>
 	/// <param name="shaderName">Name of the shader that will be used.</param>
 	/// <param name="geometryName">Name of the geometry that will be used.</param>
 	Mesh CreateMesh(const std::string& shaderName, const std::string& geometryName);
+
+	/// <summary>
+	/// Get a material
+	/// </summary>
+	/// <param name="materialName">Name of the material</param>
+	/// <returns>Pointer to the material</returns>
+	Material* GetMaterial(const std::string& materialName) { return m_Materials[materialName]; }
+
+	Geometry* GetGeometry(const std::string& geometryName) { return m_Geometries[geometryName]; }
 
 private:
 	std::unordered_map<std::string, BaseShader*> m_Shaders;

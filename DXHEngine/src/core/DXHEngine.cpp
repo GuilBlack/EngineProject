@@ -36,16 +36,6 @@ void DXHEngine::Run()
 		m_InputManager.Update();
 		m_GameTimer.Tick();
 		m_GameUpdate(m_GameTimer);
-
-		Renderer::GetInstance().BeginFrame();
-		Renderer::GetInstance().m_Transforms[0].Angles.y = m_GameTimer.TotalTime() * 10;
-		Renderer::GetInstance().m_Transforms[1].Position.y = sinf(m_GameTimer.TotalTime());
-		Renderer::GetInstance().m_Transforms[1].Angles.x = m_GameTimer.TotalTime() * -10;
-		Renderer::GetInstance().m_Transforms[1].Angles.y = m_GameTimer.TotalTime() * 20;
-		Renderer::GetInstance().m_Transforms[1].Angles.z = m_GameTimer.TotalTime() * 15;
-		Renderer::GetInstance().m_Transforms[1].Scale.x = sinf(m_GameTimer.TotalTime()) + 1;
-		Renderer::GetInstance().DrawTest();
-		Renderer::GetInstance().EndFrame();
 		
 		System::UpdateAll(m_GameTimer);
 		UpdateFpsCounter();

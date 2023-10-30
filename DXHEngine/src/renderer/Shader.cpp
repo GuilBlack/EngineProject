@@ -8,6 +8,7 @@
 
 namespace DXH
 {
+std::vector<UploadBuffer<ObjectConstants>> BaseShader::s_ObjectCB;
 //////////////////////////////////////////////////////////////////////////
 // BaseShader ////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -59,12 +60,21 @@ void BaseShader::Draw(Geometry* geometry, uint32_t objectCBIndex, Transform& tra
 	D3D12_VERTEX_BUFFER_VIEW vbv = geometry->VertexBufferView();
 	D3D12_INDEX_BUFFER_VIEW ibv = geometry->IndexBufferView();
 
-	cl->SetGraphicsRootConstantBufferView(0, m_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress());
+	cl->SetGraphicsRootConstantBufferView(0, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress());
 	cl->IASetVertexBuffers(0, 1, &vbv);
 	cl->IASetIndexBuffer(&ibv);
 	cl->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	cl->DrawIndexedInstanced(geometry->IndexBufferByteSize / sizeof(uint16_t), 1, 0, 0, 0);
+}
+
+uint32_t BaseShader::AddObjectCB()
+{
+	ObjectConstants objectCB;
+	s_ObjectCB.push_back(UploadBuffer<ObjectConstants>());
+	s_ObjectCB.back().Init(1, true);
+	s_ObjectCB.back().CopyData(0, objectCB);
+	return (uint32_t)s_ObjectCB.size() - 1;
 }
 
 ID3DBlob* BaseShader::LoadCompiledShader(const std::string& filepath)

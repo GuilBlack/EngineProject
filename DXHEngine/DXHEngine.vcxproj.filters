@@ -19,6 +19,7 @@
     <ClCompile Include="src\maths\Quaternion.cpp" />
     <ClCompile Include="src\maths\Matrix.cpp" />
     <ClCompile Include="src\maths\Vector2.cpp" />
+    <ClCompile Include="src\ecs\systems\RenderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHInclude.h" />
@@ -42,7 +43,7 @@
     <ClInclude Include="src\renderer\Shader.h" />
     <ClInclude Include="src\renderer\ConstantBuffers.h" />
     <ClInclude Include="src\renderer\Util.h" />
-    <ClInclude Include="src\renderer\Mesh.h" />
+    <ClInclude Include="src\ecs\components\Mesh.h" />
     <ClInclude Include="src\renderer\RendererResource.h" />
     <ClInclude Include="src\renderer\Material.h" />
     <ClInclude Include="src\core\InputManager.h" />
@@ -51,5 +52,6 @@
     <ClInclude Include="src\maths\Matrix.h" />
     <ClInclude Include="src\DXHMaths.h" />
     <ClInclude Include="src\maths\Vector2.h" />
+    <ClInclude Include="src\ecs\systems\RenderSystem.h" />
   </ItemGroup>
 </Project>

@@ -35,6 +35,8 @@ struct BasicVertex
 
 struct Geometry;
 struct Transform;
+struct PassConstants;
+struct ObjectConstants;
 
 /// <summary>
 /// The base class for all shaders, providing common functionality. It includes methods for creating shaders, binding them to a graphics command list, drawing with shaders, unbinding shaders, and updating constant buffers for shaders. It also manages the root signature, input layout, and other shader-related resources.
@@ -89,14 +91,7 @@ public:
 	/// Adds an object constant buffer to the shader and returns its index.
 	/// </summary>
 	/// <returns>The index of the object constant buffer.</returns>
-	uint32_t AddObjectCB() 
-	{
-		ObjectConstants objectCB;
-		m_ObjectCB.push_back(UploadBuffer<ObjectConstants>());
-		m_ObjectCB.back().Init(1, true);
-		m_ObjectCB.back().CopyData(0, objectCB);
-		return (uint32_t)m_ObjectCB.size() - 1;
-	}
+	static uint32_t AddObjectCB();
 
 	/// <summary>
 	/// Updates the pass constant buffer with the given pass constants.
@@ -109,7 +104,7 @@ public:
 	/// </summary>
 	/// <param name="objectCB">The object constants to update the object constant buffer with.</param>
 	/// <param name="index">The index of the object constant buffer to update.</param>
-	void UpdateObjectCB(ObjectConstants& objectCB, uint32_t index) { m_ObjectCB[index].CopyData(0, objectCB); }
+	static void UpdateObjectCB(ObjectConstants& objectCB, uint32_t index) { s_ObjectCB[index].CopyData(0, objectCB); }
 
 protected:
 	ID3DBlob* m_pVS = nullptr;
@@ -120,8 +115,8 @@ protected:
 	std::vector<D3D12_INPUT_ELEMENT_DESC> m_InputLayout;
 
 	UploadBuffer<PassConstants> m_PassCB;
-	std::vector<UploadBuffer<ObjectConstants>> m_ObjectCB;
 	ShaderProgramType m_Type = ShaderProgramType::SimpleShader;
+	static std::vector<UploadBuffer<ObjectConstants>> s_ObjectCB;
 
 protected:
 	/// <summary>

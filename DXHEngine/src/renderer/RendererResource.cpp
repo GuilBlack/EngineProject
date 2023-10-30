@@ -1,7 +1,7 @@
 #include "RendererResource.h"
 #include "Geometry.h"
 #include "Shader.h"
-#include "Mesh.h"
+#include "../ecs/components/Mesh.h"
 #include "Material.h"
 
 namespace DXH
@@ -56,22 +56,22 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
 	}
 }
 
-Mesh RendererResource::CreateMesh(const std::string& materialName, const std::string& geometryName)
-{
-	if (m_Materials.contains(materialName) && m_Geometries.contains(geometryName))
-	{
-		Mesh mesh;
-
-		mesh.CBVIndex = m_Materials[materialName]->Shader->AddObjectCB();
-		mesh.Geo = m_Geometries[geometryName];
-		mesh.Mat = m_Materials[materialName];
-
-		return mesh;
-	}
-	// TODO: Add error handling
-	assert(false && "Material or Geometry not found");
-	return Mesh();
-}
+//Mesh RendererResource::CreateMesh(const std::string& materialName, const std::string& geometryName)
+//{
+//	if (m_Materials.contains(materialName) && m_Geometries.contains(geometryName))
+//	{
+//		Mesh mesh;
+//
+//		mesh.CBVIndex = m_Materials[materialName]->Shader->AddObjectCB();
+//		mesh.Geo = m_Geometries[geometryName];
+//		mesh.Mat = m_Materials[materialName];
+//
+//		return mesh;
+//	}
+//	// TODO: Add error handling
+//	assert(false && "Material or Geometry not found");
+//	return Mesh();
+//}
 
 void RendererResource::CreateCube()
 {

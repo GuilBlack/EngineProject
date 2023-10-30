@@ -1,19 +1,17 @@
 #pragma once
 #include "SwapChain.h"
 #include "Util.h"
-#include "../ecs/components/Transform.h"
-#include "Mesh.h"
 
 namespace DXH
 {
 class Shader;
 struct Mesh;
 struct Material;
+struct Transform;
 
 class Renderer
 {
 public:
-	std::vector<Transform> m_Transforms;
 	Camera m_Camera;
 public:
 	
@@ -54,8 +52,7 @@ public:
 	/// <summary>
 	/// Draw a mesh
 	/// </summary>
-	void Draw(Mesh* mesh, Transform transform);
-	void DrawTest();
+	void Draw(Mesh& mesh, Transform& transform);
 
 	/// <summary>
 	/// End the frame and present the back buffer
@@ -103,7 +100,6 @@ private:
 	ID3D12DescriptorHeap* m_pCbvSrvHeap = nullptr;
 	uint32_t m_CbvSrvIndex = 0;
 	uint32_t m_FenceValue = 0;
-	std::vector<Mesh> m_Meshes;
 
 private:
 	Renderer() {}
