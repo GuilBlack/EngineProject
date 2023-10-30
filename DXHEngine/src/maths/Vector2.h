@@ -9,18 +9,18 @@ struct Vector2 : public DirectX::XMFLOAT2
 	/// </summary>
 	Vector2();
 	Vector2(float x, float y);
-	XM_CALLCONV Vector2(DirectX::FXMVECTOR v);
+	Vector2(DirectX::FXMVECTOR v);
 	/// <summary>
 	/// Loads this Vector3 in a XMVECTOR.
 	/// </summary>
-	inline DirectX::XMVECTOR XM_CALLCONV Load() const
+	inline DirectX::XMVECTOR Load() const
 	{
 		return XMLoadFloat2(this);
 	}
 	/// <summary>
 	/// Stores the given XMVECTOR in this Vector3.
 	/// </summary>
-	inline void XM_CALLCONV Store(DirectX::FXMVECTOR v)
+	inline void Store(DirectX::FXMVECTOR v)
 	{
 		XMStoreFloat2(this, v);
 	}

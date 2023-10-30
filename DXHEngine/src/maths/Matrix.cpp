@@ -8,7 +8,7 @@ Matrix::Matrix()
 {
 }
 
-XM_CALLCONV Matrix::Matrix(FXMMATRIX m)
+Matrix::Matrix(FXMMATRIX m)
 {
 	XMStoreFloat4x4(this, m);
 }
