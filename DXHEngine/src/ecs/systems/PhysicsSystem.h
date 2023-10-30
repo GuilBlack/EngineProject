@@ -1,5 +1,6 @@
 #pragma once
 #include "src/ecs/System.h" // For the System base class
+#include "src/DXHMaths.h" // For the Vector3 struct
 
 namespace DXH
 {
@@ -15,11 +16,11 @@ struct Collision
 {
 	SphereCollider* First = nullptr;
 	SphereCollider* Second = nullptr;
-	Vector3 Normal = {0,0,0}; // Normal of the collision, pointing from first to second
+	Vector3 Normal = Vector3::Zero; // Normal of the collision, pointing from first to second
 };
 
 class PhysicsSystem : public System
-{    
+{
 public:
 	PhysicsSystem();
 	~PhysicsSystem();
@@ -36,11 +37,11 @@ private:
 	/// <summary>
 	/// Calculates the squared distance between two positions
 	/// </summary>
-	inline static float SqrDistanceBetween(DirectX::XMVECTOR posA, DirectX::XMVECTOR posB);
+	inline static float SqrDistanceBetween(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB);
 	/// <summary>
 	/// Calculates the normal of the collision between two positions
 	/// </summary>
-	inline static Vector3 CalculateCollisionNormal(DirectX::XMVECTOR posA, DirectX::XMVECTOR posB);
+	inline static Vector3 CalculateCollisionNormal(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB);
 	/// <summary>
 	/// Detects any collisions between all passed gameObjects
 	/// </summary>
