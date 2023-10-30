@@ -10,8 +10,8 @@ struct RigidBody : Component
 {
 	void Reset() override
 	{
-		Velocity = {0,0,0};
-		Force = {0,0,0};
+		Velocity = Vector3::Zero;
+		Force = Vector3::Zero;
 		Mass = 1.0f;
 	}
 	Vector3 Velocity;
@@ -25,7 +25,7 @@ struct SphereCollider : Component
 {
 	void Reset() override
 	{
-		Center = {0,0,0};
+		Center = Vector3::Zero;
 		Radius = 0.f;
 	}
 	Vector3 Center; // Relative to game object

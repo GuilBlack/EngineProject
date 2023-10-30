@@ -25,19 +25,17 @@ void PhysicsSystem::Update(const Timer& gt)
 
 inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform* transform, SphereCollider* collider)
 {
-	return DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&transform->Position), DirectX::XMLoadFloat3(&collider->Center));
+	return DirectX::XMVectorAdd(transform->position.Load(), collider->Center.Load());
 }
 
-inline float PhysicsSystem::SqrDistanceBetween(DirectX::XMVECTOR posA, DirectX::XMVECTOR posB)
+inline float PhysicsSystem::SqrDistanceBetween(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB)
 {
 	return DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(posA, posB)));
 }
 
-inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::XMVECTOR posA, DirectX::XMVECTOR posB)
+inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB)
 {
-	Vector3 normal;
-	DirectX::XMStoreFloat3(&normal, DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(posB, posA)));
-	return normal;
+	return Vector3(DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(posB, posA)));
 }
 
 std::vector<Collision> PhysicsSystem::DetectCollisions(std::unordered_map<const GameObject*, SphereCollider*>& map)
@@ -86,10 +84,10 @@ void PhysicsSystem::UpdateCollision(std::vector<Collision> collision, float delt
 		//Vector3 collisionNormal = col.Normal;
 
 		// Calculate relative velocity
-		XMVECTOR firstSphereVelocityLoaded = XMLoadFloat3(&firstSphere->pGameObject->Get<RigidBody>()->Velocity);
-		XMVECTOR secondSphereVelocityLoaded = XMLoadFloat3(&secondSphere->pGameObject->Get<RigidBody>()->Velocity);
+		XMVECTOR firstSphereVelocityLoaded = firstSphere->pGameObject->Get<RigidBody>()->Velocity.Load();
+		XMVECTOR secondSphereVelocityLoaded = secondSphere->pGameObject->Get<RigidBody>()->Velocity.Load();
 		XMVECTOR relativeVelocity = XMVectorSubtract(firstSphereVelocityLoaded, secondSphereVelocityLoaded);
-		XMVECTOR collisionNormal = XMLoadFloat3(&col.Normal);
+		XMVECTOR collisionNormal = col.Normal.Load();
 
 		// Calculate impulse
 		XMVECTOR impulse = XMVectorScale(XMVector3Dot(relativeVelocity, collisionNormal), -2.0f / (firstSphere->pGameObject->Get<RigidBody>()->Mass + secondSphere->pGameObject->Get<RigidBody>()->Mass));

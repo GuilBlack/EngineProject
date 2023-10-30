@@ -12,8 +12,13 @@
     <ClCompile Include="src\renderer\Shader.cpp" />
     <ClCompile Include="src\renderer\Geometry.cpp" />
     <ClCompile Include="src\renderer\RendererResource.cpp" />
+    <ClCompile Include="src\core\InputManager.cpp" />
     <ClCompile Include="src\ecs\GameObject.cpp" />
     <ClCompile Include="src\ecs\System.cpp" />
+    <ClCompile Include="src\maths\Vector3.cpp" />
+    <ClCompile Include="src\maths\Quaternion.cpp" />
+    <ClCompile Include="src\maths\Matrix.cpp" />
+    <ClCompile Include="src\maths\Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHInclude.h" />
@@ -40,5 +45,11 @@
     <ClInclude Include="src\renderer\Mesh.h" />
     <ClInclude Include="src\renderer\RendererResource.h" />
     <ClInclude Include="src\renderer\Material.h" />
+    <ClInclude Include="src\core\InputManager.h" />
+    <ClInclude Include="src\maths\Vector3.h" />
+    <ClInclude Include="src\maths\Quaternion.h" />
+    <ClInclude Include="src\maths\Matrix.h" />
+    <ClInclude Include="src\DXHMaths.h" />
+    <ClInclude Include="src\maths\Vector2.h" />
   </ItemGroup>
 </Project>

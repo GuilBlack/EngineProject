@@ -7,9 +7,9 @@ struct Transform : Component
 {
 	void Reset() override
 	{
-		Position = {0, 0, 0};
-		Rotation = {0, 0, 0, 1};
-		Scale = {1, 1, 1};
+		position = Vector3::Zero;
+		rotation = Quaternion::Identity;
+		scale = Vector3::One;
 	}
 	Vector3 Position = { 0,0,0 };
 	Quaternion Rotation = { 0,0,0,1 };
@@ -19,7 +19,7 @@ struct Transform : Component
 	/// <summary>
 	/// Gets the matrix describing the transformation from world space to model space.
 	/// </summary>
-	inline Matrix GetModelMatrix() const
+	inline DirectX::XMMATRIX GetModelMatrix() const
 	{
 		using namespace DirectX;
 		Matrix world = XMMatrixIdentity();
