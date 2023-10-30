@@ -25,8 +25,15 @@ struct Transform : Component
 		Matrix world = XMMatrixIdentity();
 
 		world = XMMatrixMultiply(world, XMMatrixScalingFromVector(XMLoadFloat3(&Scale)));
-
-		world = XMMatrixMultiply(world, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Angles)));
+		
+		XMFLOAT3 angles = 
+		{ 
+			XMConvertToRadians(Angles.x),
+			XMConvertToRadians(Angles.y),
+			XMConvertToRadians(Angles.z)
+		};
+		
+		world = XMMatrixMultiply(world, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&angles)));
 
 		world = XMMatrixMultiply(world, XMMatrixTranslationFromVector(XMLoadFloat3(&Position)));
 

@@ -100,6 +100,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\renderer\Material.h" />
     <ClInclude Include="src\renderer\RendererResource.h" />
     <ClInclude Include="src\renderer\Mesh.h" />
     <ClInclude Include="src\renderer\Shader.h" />

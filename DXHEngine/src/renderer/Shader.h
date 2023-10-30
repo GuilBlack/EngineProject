@@ -80,6 +80,12 @@ public:
 	virtual void Unbind(ID3D12GraphicsCommandList* cl) {}
 
 	/// <summary>
+	/// Gets the type of the shader program.
+	/// </summary>
+	/// <returns>The type of the shader program.</returns>
+	ShaderProgramType GetType() { return m_Type; }
+
+	/// <summary>
 	/// Adds an object constant buffer to the shader and returns its index.
 	/// </summary>
 	/// <returns>The index of the object constant buffer.</returns>
@@ -115,7 +121,7 @@ protected:
 
 	UploadBuffer<PassConstants> m_PassCB;
 	std::vector<UploadBuffer<ObjectConstants>> m_ObjectCB;
-	ShaderProgramType m_Type;
+	ShaderProgramType m_Type = ShaderProgramType::SimpleShader;
 
 protected:
 	/// <summary>

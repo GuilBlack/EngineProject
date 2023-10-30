@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "RendererResource.h"
 #include "Shader.h"
+#include "Material.h"
 #include "../core/Window.h"
 
 namespace DXH
@@ -26,22 +27,22 @@ void Renderer::Init()
 	m_pRenderContext->CreateCBVSRVUAVHeapDescriptor(10, &m_pCbvSrvHeap);
 
 	RendererResource::GetInstance().Init();
-	m_Meshes.push_back(RendererResource::GetInstance().CreateMesh("SimpleShader", "Square"));
-	m_Meshes.push_back(RendererResource::GetInstance().CreateMesh("SimpleShader", "Square"));
+	m_Meshes.push_back(RendererResource::GetInstance().CreateMesh("SimpleShader", "Cube"));
+	m_Meshes.push_back(RendererResource::GetInstance().CreateMesh("SimpleShader", "Cube"));
 
-	XMVECTOR pos = XMVectorSet(0.f, 0.f, -5.f, 1.f);
+	XMVECTOR pos = XMVectorSet(0.f, 0.f, -10.f, 1.f);
 	XMVECTOR target = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	XMVECTOR up = XMVectorSet(0.f, 1.f, 0.f, 1.f);
 	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 	XMStoreFloat4x4(&m_Camera.View, view);
 
 	Transform transform;
-	transform.Position = { 0, 1, 0 },
+	transform.Position = { 2, 0, 1 },
 	transform.Rotation = { 0, 0, 0, 1 },
 	transform.Angles = { 0, 0, 0 },
 	transform.Scale = { 1, 1, 1 },
 	m_Transforms.push_back(transform);
-	transform.Position = { 0, -1, 10 };
+	transform.Position = { -2, 0, 1 };
 	m_Transforms.push_back(transform);
 }
 
@@ -81,8 +82,8 @@ void Renderer::BeginFrame()
 
 	m_pCommandList->OMSetRenderTargets(1, &rtvHandle, true, &dsvHandle);
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvSrvHeap };
-	m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+	//ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvSrvHeap };
+	//m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	XMMATRIX view = XMLoadFloat4x4(&m_Camera.View);
 	XMMATRIX proj = XMLoadFloat4x4(&m_Camera.Proj);
@@ -103,7 +104,7 @@ void Renderer::BeginFrame()
 		},
 		.DeltaTime = 0.f,
 	};
-	XMStoreFloat4x4(&passCB.ViewProj, viewProj);
+	XMStoreFloat4x4(&passCB.ViewProj, XMMatrixTranspose(viewProj));
 
 	for (auto [_, shader] : RendererResource::GetInstance().m_Shaders)
 	{
@@ -113,9 +114,18 @@ void Renderer::BeginFrame()
 
 void Renderer::Draw(Mesh* mesh, Transform transform)
 {
-	mesh->Shader->Bind(m_pCommandList);
-	mesh->Shader->Draw(mesh->Geo, mesh->CBVIndex, transform, m_pCommandList);
-	mesh->Shader->Unbind(m_pCommandList);
+	mesh->Mat->Shader->Bind(m_pCommandList);
+	switch (mesh->Mat->Shader->GetType())
+	{
+	case ShaderProgramType::SimpleShader:
+	{
+		mesh->Mat->Shader->Draw(mesh->Geo, mesh->CBVIndex, transform, m_pCommandList);
+		break;
+	}
+	default:
+		break;
+	}
+	mesh->Mat->Shader->Unbind(m_pCommandList);
 }
 
 void Renderer::DrawTest()
@@ -153,7 +163,7 @@ void Renderer::OnResize()
 	assert(m_pCommandAllocator);
 
 	XMMATRIX proj = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(100.f),
+		XMConvertToRadians(65.f),
 		(float)Window::GetInstance().GetWidth() / Window::GetInstance().GetHeight(),
 		0.001f,
 		1000.f

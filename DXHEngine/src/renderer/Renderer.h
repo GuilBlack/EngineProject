@@ -1,16 +1,20 @@
 #pragma once
 #include "SwapChain.h"
 #include "Util.h"
-#include "Mesh.h"
 #include "../ecs/components/Transform.h"
+#include "Mesh.h"
 
 namespace DXH
 {
 class Shader;
 struct Mesh;
+struct Material;
 
 class Renderer
 {
+public:
+	std::vector<Transform> m_Transforms;
+	Camera m_Camera;
 public:
 	
 	~Renderer() {}
@@ -75,7 +79,7 @@ public:
 	{
 		m_pCommandList->ClearRenderTargetView(
 			m_pSwapChain->GetCurrentBackBufferDescriptorHeap(),
-			DirectX::Colors::Magenta,
+			DirectX::Colors::Gray,
 			0, nullptr);
 		m_pCommandList->ClearDepthStencilView(
 			m_pSwapChain->GetDepthStencilDescriptorHeap(),
@@ -100,8 +104,6 @@ private:
 	uint32_t m_CbvSrvIndex = 0;
 	uint32_t m_FenceValue = 0;
 	std::vector<Mesh> m_Meshes;
-	std::vector<Transform> m_Transforms;
-	Camera m_Camera;
 
 private:
 	Renderer() {}

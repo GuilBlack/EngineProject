@@ -7,6 +7,8 @@ enum class InputLayoutType;
 class BaseShader;
 struct Geometry;
 struct Mesh;
+struct Material;
+enum class MaterialType;
 
 class RendererResource
 {
@@ -39,6 +41,8 @@ public:
 	/// <param name="layout">Type of the input layout</param>
 	void CreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout);
 
+	void CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName);
+
 	/// <summary>
 	/// Get a shader program
 	/// </summary>
@@ -56,6 +60,7 @@ public:
 private:
 	std::unordered_map<std::string, BaseShader*> m_Shaders;
 	std::unordered_map<std::string, Geometry*> m_Geometries;
+	std::unordered_map<std::string, Material*> m_Materials;
 
 private:
 	/// <summary>

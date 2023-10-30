@@ -2,6 +2,7 @@
 #include "Geometry.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "Material.h"
 
 namespace DXH
 {
@@ -16,6 +17,7 @@ RendererResource::~RendererResource()
 void RendererResource::Init()
 {
 	CreateShader("SimpleShader", "../DXHEngine/res/shaders/color_vs.cso", "../DXHEngine/res/shaders/color_ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
+	CreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
 	CreateCube();
 	CreateSquare();
 }
@@ -25,19 +27,49 @@ void RendererResource::CreateShader(const std::string& name, const std::string& 
 	m_Shaders[name] = BaseShader::Create(vsFilePath, psFilePath, type, layout);
 }
 
-Mesh RendererResource::CreateMesh(const std::string& shaderName, const std::string& geometryName)
+void RendererResource::CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName)
 {
-	if (m_Shaders.contains(shaderName) && m_Geometries.contains(geometryName))
+	if (!m_Shaders.contains(shaderName))
+	{
+		// TODO: Add error handling
+		assert(false && "Shader not found");
+	}
+	switch (materialType)
+	{
+	case MaterialType::Simple:
+	{
+		if (m_Shaders[shaderName]->GetType() != ShaderProgramType::SimpleShader) 
+		{ // TODO: Add error handling
+			assert(false && "Shader type mismatch");
+			return;
+		}
+		Material* material = new Material();
+		material->Shader = m_Shaders[shaderName];
+		material->Type = MaterialType::Simple;
+		m_Materials[shaderName] = material;
+		break;
+	}
+	default:
+		// TODO: Add error handling
+		assert(false && "Material type not supported");
+		break;
+	}
+}
+
+Mesh RendererResource::CreateMesh(const std::string& materialName, const std::string& geometryName)
+{
+	if (m_Materials.contains(materialName) && m_Geometries.contains(geometryName))
 	{
 		Mesh mesh;
 
-		mesh.CBVIndex = m_Shaders[shaderName]->AddObjectCB();
+		mesh.CBVIndex = m_Materials[materialName]->Shader->AddObjectCB();
 		mesh.Geo = m_Geometries[geometryName];
-		mesh.Shader = m_Shaders[shaderName];
+		mesh.Mat = m_Materials[materialName];
 
 		return mesh;
 	}
-	assert(false && "Shader or Geometry not found");
+	// TODO: Add error handling
+	assert(false && "Material or Geometry not found");
 	return Mesh();
 }
 

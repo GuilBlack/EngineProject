@@ -39,5 +39,6 @@
     <ClInclude Include="src\renderer\Util.h" />
     <ClInclude Include="src\renderer\Mesh.h" />
     <ClInclude Include="src\renderer\RendererResource.h" />
+    <ClInclude Include="src\renderer\Material.h" />
   </ItemGroup>
 </Project>
