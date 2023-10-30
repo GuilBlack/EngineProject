@@ -4,7 +4,7 @@
 
 namespace DXH
 {
-bool DXHEngine::Init(AppProperties props, UpdateFunc gameUpdate)
+bool DXHEngine::Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate)
 {
 	VS_DB_OUT_W(L"Initializing DXHEngine...\n");
 
@@ -17,6 +17,7 @@ bool DXHEngine::Init(AppProperties props, UpdateFunc gameUpdate)
 		return false;
 
 	m_InputManager.Update(); // First update to reset the mouse position
+	m_GameInit = gameInit;
 	m_GameUpdate = gameUpdate;
 
 	m_IsRunning = true;
@@ -29,6 +30,7 @@ void DXHEngine::Run()
 	VS_DB_OUT_W(L"Welcome to DXHEngine! Main loop is starting...\n");
 
 	m_GameTimer.Reset();
+	m_GameInit(m_GameTimer);
 	while (m_IsRunning)
 	{
 		Window::GetInstance().PollEvents();
