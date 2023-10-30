@@ -32,8 +32,8 @@ void InputManager::Update()
 	ScreenToClient(Window::GetInstance().GetWindowHandle(), &mousePos);
 
 	// Calculate mouse position relative to center of screen
-	int screenCenterX = Window::GetInstance().GetWidth();
-	int screenCenterY = Window::GetInstance().GetHeight();
+	int screenCenterX = Window::GetInstance().GetWidth() / 2;
+	int screenCenterY = Window::GetInstance().GetHeight() / 2;
 	m_MouseDelta.x = (float)(mousePos.x) - screenCenterX;
 	m_MouseDelta.y = (float)(mousePos.y) - screenCenterY;
 
