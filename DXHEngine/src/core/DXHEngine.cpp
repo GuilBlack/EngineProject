@@ -1,5 +1,6 @@
 #include "DXHEngine.h"
 #include "Window.h"
+#include "src/ecs/System.h"
 
 namespace DXH
 {
@@ -34,6 +35,7 @@ void DXHEngine::Run()
 		m_InputManager.Update();
 		m_GameTimer.Tick();
 		m_GameUpdate(m_GameTimer);
+		System::UpdateAll(m_GameTimer);
 		UpdateFpsCounter(m_GameTimer);
 	}
 
