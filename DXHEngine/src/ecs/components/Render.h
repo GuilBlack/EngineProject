@@ -21,11 +21,11 @@ struct Mesh : public Component
 
 	virtual void OnAssign() override
 	{
-	}
-
-	Mesh()
-	{
-		CBVIndex = BaseShader::AddObjectCB();
+		if (!isInitialized)
+		{
+			isInitialized = true;
+			CBVIndex = BaseShader::AddObjectCB();
+		}
 	}
 
 	uint32_t GetCBIndex() const
@@ -34,7 +34,7 @@ struct Mesh : public Component
 	}
 
 private:
-
+	bool isInitialized = false;
 	uint32_t CBVIndex = -1;
 };
 }

@@ -12,6 +12,8 @@ RendererResource::~RendererResource()
 		DELETE_PTR(shader);
 	for (auto[_, geometry] : m_Geometries)
 		DELETE_PTR(geometry);
+	for (auto[_, material] : m_Materials)
+		DELETE_PTR(material);
 }
 
 void RendererResource::Init()

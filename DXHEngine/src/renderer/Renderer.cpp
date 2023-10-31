@@ -45,11 +45,15 @@ void Renderer::Destroy()
 	{
 		cb.Destroy();
 	}
+	for (auto [_, shader] : RendererResource::GetInstance().m_Shaders)
+	{
+		shader->m_PassCB.Destroy();
+	}
+	RELEASE_PTR(m_pFence);
 	RELEASE_PTR(m_pCbvSrvHeap);
 	RELEASE_PTR(m_pCommandQueue);
 	RELEASE_PTR(m_pCommandList);
 	RELEASE_PTR(m_pCommandAllocator);
-	RELEASE_PTR(m_pCommandQueue);
 	delete m_pSwapChain;
 	delete m_pRenderContext;
 }
