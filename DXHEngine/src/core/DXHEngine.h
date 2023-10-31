@@ -28,7 +28,7 @@ public:
 	Timer& GetTimer() noexcept { return m_GameTimer; }
 
 	// Initializes the application
-	bool Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate);
+	bool Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate, UpdateFunc gameDestroy);
 	// Starts the main loop
 	void Run();
 
@@ -56,6 +56,7 @@ private:
 	InputManager m_InputManager = InputManager();
 	UpdateFunc m_GameInit = nullptr;
 	UpdateFunc m_GameUpdate = nullptr;
+	UpdateFunc m_GameDestroy = nullptr;
 	bool m_IsRunning = false;
 
 	RenderContext* m_pContext = nullptr;

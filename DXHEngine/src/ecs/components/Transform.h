@@ -6,13 +6,13 @@ namespace DXH
 {
 struct Transform : Component
 {
-	void OnGet() override
+	void OnAssign() override
 	{
 		Position = Vector3::Zero;
 		Rotation = Quaternion::Identity;
 		Scale = Vector3::One;
 	}
-	void OnRelease() override {}
+	void OnDetach() override {}
 	Vector3 Position = Vector3::Zero;
 	Quaternion Rotation = Quaternion::Identity;
 	Vector3 Scale = Vector3::One;

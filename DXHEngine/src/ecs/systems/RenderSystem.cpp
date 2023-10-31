@@ -7,8 +7,8 @@
 
 void DXH::RenderSystem::Update(const Timer& gt)
 {
-	auto& map = ComponentManager<Mesh>::UsedComponentsMap();
-	auto& transformMap = ComponentManager<Transform>::UsedComponentsMap();
+	auto& map = ComponentManager<Mesh>::GetInstance().GetUsedComponentsMap();
+	auto& transformMap = ComponentManager<Transform>::GetInstance().GetUsedComponentsMap();
 	Renderer::GetInstance().BeginFrame();
 	for (auto& pair : map)
 	{

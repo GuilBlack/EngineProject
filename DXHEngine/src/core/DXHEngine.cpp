@@ -4,7 +4,7 @@
 
 namespace DXH
 {
-bool DXHEngine::Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate)
+bool DXHEngine::Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate, UpdateFunc gameDestroy)
 {
 	VS_DB_OUT_W(L"Initializing DXHEngine...\n");
 
@@ -19,6 +19,7 @@ bool DXHEngine::Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUp
 	m_InputManager.Update(); // First update to reset the mouse position
 	m_GameInit = gameInit;
 	m_GameUpdate = gameUpdate;
+	m_GameDestroy = gameDestroy;
 
 	m_IsRunning = true;
 	return true;
@@ -38,11 +39,12 @@ void DXHEngine::Run()
 		m_InputManager.Update();
 		m_GameTimer.Tick();
 		m_GameUpdate(m_GameTimer);
-		
+
 		System::UpdateAll(m_GameTimer);
 		UpdateFpsCounter();
 	}
 
+	m_GameDestroy(m_GameTimer);
 	Cleanup();
 }
 
@@ -76,7 +78,7 @@ bool DXHEngine::InitDX12()
 #endif
 
 	Renderer::GetInstance().Init();
-	
+
 	Renderer::GetInstance().OnResize();
 
 	return true;

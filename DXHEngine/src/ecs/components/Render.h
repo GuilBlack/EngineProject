@@ -13,13 +13,13 @@ struct Mesh : public Component
 	Geometry* Geo = nullptr;
 	Material* Mat = nullptr;
 
-	virtual void OnRelease() override
+	virtual void OnDetach() override
 	{
 		Geo = nullptr;
 		Mat = nullptr;
 	}
 
-	virtual void OnGet() override
+	virtual void OnAssign() override
 	{
 	}
 

@@ -11,13 +11,13 @@ struct Component
 {
 	virtual ~Component() = default;
 	/// <summary>
-	/// Automatically called when the component is retrieved from the pool (added to a game object).
+	/// Automatically called when the component is added to a game object.
 	/// </summary>
-	virtual void OnGet() = 0;
+	virtual void OnAssign() = 0;
 	/// <summary>
-	/// Automatically called when the component is released back to the pool (removed from a game object).
+	/// Automatically called when the component is removed from a game object.
 	/// </summary>
-	virtual void OnRelease() = 0;
+	virtual void OnDetach() = 0;
 	/// <summary>
 	/// Gets the game object that owns this component.
 	/// </summary>

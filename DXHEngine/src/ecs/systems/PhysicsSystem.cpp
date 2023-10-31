@@ -17,7 +17,7 @@ PhysicsSystem::~PhysicsSystem()
 void PhysicsSystem::Update(const Timer& gt)
 {
 	// Get all GO with a sphere collider
-	auto& map = ComponentManager<SphereCollider>::UsedComponentsMap();
+	auto& map = ComponentManager<SphereCollider>::GetInstance().GetUsedComponentsMap();
 
 	std::vector<Collision> collisions = DetectCollisions(map);
 	UpdateCollision(collisions, gt.DeltaTime());

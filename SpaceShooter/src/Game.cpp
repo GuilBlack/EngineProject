@@ -7,20 +7,9 @@ void Game::StartEngine()
 			.WindowTitle = L"Space Shooter",
 		},
 		[](const Timer& gt) { GetInstance().Init(gt); },
-		[](const Timer& gt) { GetInstance().Update(gt); });
+		[](const Timer& gt) { GetInstance().Update(gt); },
+		[](const Timer& gt) { GetInstance().Destroy(gt); });
 	DXHEngine::GetInstance().Run();
-}
-
-Game::Game()
-{
-}
-
-Game::~Game()
-{
-	for (auto go : m_GameObjects)
-	{
-		delete go;
-	}
 }
 
 void Game::Init(const DXH::Timer& gt)
@@ -28,8 +17,6 @@ void Game::Init(const DXH::Timer& gt)
 	using namespace DXH;
 	GameObject* pObject = new GameObject();
 	GameObject* pObject2 = new GameObject();
-	pObject->Add<Transform>();
-	pObject->Remove<Transform>();
 	pObject->Add<Transform>();
 	Transform* transform = pObject2->Add<Transform>();
 	transform->Position = { 0.0f, 2.0f, 0.0f };
@@ -46,4 +33,12 @@ void Game::Init(const DXH::Timer& gt)
 void Game::Update(const DXH::Timer& gt)
 {
 	gt.DeltaTime();
+}
+
+void Game::Destroy(const DXH::Timer& gt)
+{
+	for (auto go : m_GameObjects)
+	{
+		delete go;
+	}
 }
