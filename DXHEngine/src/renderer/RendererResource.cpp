@@ -22,6 +22,7 @@ void RendererResource::Init()
 	CreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
 	CreateCube();
 	CreateSquare();
+	CreateSphere();
 }
 
 void RendererResource::CreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout)
@@ -156,5 +157,100 @@ void RendererResource::CreateSquare()
 	uint32_t vertexByteStride = sizeof(BasicVertex);
 
 	m_Geometries["Square"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
+}
+void RendererResource::CreateSphere()
+{
+	using namespace DirectX;
+	float radius = 1.f;
+	uint32_t latitude = 32;
+	uint32_t longitude = 32;
+
+	uint32_t numVertices = (latitude + 1) * (longitude * 2);
+	uint32_t numIndices = 2 * 3 * longitude + 2 * 3 * (latitude - 1) * longitude;
+
+	std::vector<BasicVertex> vertices;
+	vertices.resize(numVertices);
+	std::vector<std::uint16_t> indices;
+	indices.resize(numIndices);
+
+	float latitudeStep = XM_PI / latitude;
+	float longitudeStep = XM_2PI / longitude;
+
+	uint32_t count = 0;
+
+	// top vertex
+	for (uint32_t i = 1; i <= longitude; ++i)
+	{
+		vertices[count].Position = XMFLOAT3(0.f, radius, 0.f);
+		vertices[count].Color = XMFLOAT4(Colors::White);
+		++count;
+	}
+
+	// middle vertices
+	for (uint32_t i = 1; i < latitude + 1; ++i)
+	{
+		float pLat = (float)i * latitudeStep;
+		for (uint32_t j = 0; j < longitude + 1; ++j)
+		{
+			float pLong = (float)j * longitudeStep;
+			vertices[count].Position = XMFLOAT3(
+				radius * sinf(pLat) * cosf(pLong),
+				radius * cosf(pLat),
+				radius * sinf(pLat) * sinf(pLong));
+			vertices[count].Color = XMFLOAT4(Colors::White);
+			++count;
+		}
+	}
+
+	// bottom vertex
+	for (uint32_t i = 1; i <= longitude; ++i)
+	{
+		vertices[count].Position = XMFLOAT3(0.f, -radius, 0.f);
+		vertices[count].Color = XMFLOAT4(Colors::White);
+		++count;
+	}
+
+	count = 0;
+
+	for (uint32_t i = 0; i < longitude; ++i)
+	{
+		indices[count++] = i;
+		indices[count++] = (longitude-1) + i + 2;
+		indices[count++] = (longitude - 1) + i + 1;
+	}
+
+	for (uint32_t i = 0; i < latitude - 1; ++i)
+	{
+		for (uint32_t j = 0; j < longitude; ++j)
+		{
+			uint32_t index[4] = {
+				longitude + i * (longitude + 1) + j,
+				longitude + i * (longitude + 1) + (j + 1),
+				longitude + (i + 1) * (longitude + 1) + (j + 1),
+				longitude + (i + 1) * (longitude + 1) + j
+			};
+
+			indices[count++] = index[0];
+			indices[count++] = index[1];
+			indices[count++] = index[2];
+
+			indices[count++] = index[0];
+			indices[count++] = index[2];
+			indices[count++] = index[3];
+		}
+	}
+
+	const uint32_t southPoleIndex = numVertices - longitude;
+	for (uint32_t i = 0; i < longitude; ++i)
+	{
+		indices[count++] = southPoleIndex + i;
+		indices[count++] = southPoleIndex - (longitude + 1) + i;
+		indices[count++] = southPoleIndex - (longitude + 1) + i + 1;
+	}
+
+	uint32_t vbByteSize = (uint32_t)vertices.size() * sizeof(BasicVertex);
+	uint32_t vertexByteStride = sizeof(BasicVertex);
+
+	m_Geometries["Sphere"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
 }
 }

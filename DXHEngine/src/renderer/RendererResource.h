@@ -74,5 +74,10 @@ private:
 	/// Create a square geometry
 	/// </summary>
 	void CreateSquare();
+
+	/// <summary>
+	/// Create a sphere geometry
+	/// </summary>
+	void CreateSphere();
 };
 }
