@@ -18,30 +18,30 @@ public:
 	{
 		m_ReleaseCallbacks.push_back([](GameObject* pObject)
 			{
-				ComponentManager<T>::Release(pObject->Get<T>());
+				ComponentManager<T>::GetInstance().Detach(pObject);
 			});
-		return ComponentManager<T>::Get(this);
+		return ComponentManager<T>::GetInstance().Assign(this);
 	}
 	/// <summary>
 	/// Gets a component from the game object, or nullptr if it doesn't have it.
 	/// </summary>
 	template <ComponentConcept T> inline T* Get() const
 	{
-		return Has<T>() ? ComponentManager<T>::UsedComponentsMap().at(this) : nullptr;
+		return ComponentManager<T>::GetInstance().GetComponent(this);
 	}
 	/// <summary>
 	/// Removes a component from the game object.
 	/// </summary>
-	template <ComponentConcept T> void Remove()
+	template <ComponentConcept T> inline void Remove()
 	{
-		ComponentManager<T>::Release(Get<T>());
+		ComponentManager<T>::GetInstance().Detach(this);
 	}
 	/// <summary>
 	/// Checks if the game object has a component.
 	/// </summary>
 	template <ComponentConcept T> inline bool Has() const
 	{
-		return ComponentManager<T>::UsedComponentsMap().contains(this);
+		return ComponentManager<T>::GetInstance().HasComponent(this);
 	}
 
 private:

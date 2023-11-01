@@ -12,6 +12,7 @@ class Timer;
 class System
 {
 public:
+	virtual ~System() = default;
 	/// <summary>
 	/// Updates the system. This is called once per frame.
 	/// </summary>

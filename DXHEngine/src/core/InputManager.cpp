@@ -9,36 +9,34 @@ InputManager::InputManager()
 	std::vector<int> keys =
 	{
 		'w', 'a', 's', 'd',
-			VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
-			VK_XBUTTON1, VK_XBUTTON2
+		VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
+		VK_XBUTTON1, VK_XBUTTON2
 	};
 	SetFollowedKeys(keys);
-
-	// Hide cursor
-	ShowCursor(false);
 }
 
 InputManager::~InputManager()
 {
-	// Show cursor
-	ShowCursor(true);
 }
 
 void InputManager::Update()
 {
-	// Get mouse position
-	POINT mousePos;
-	GetCursorPos(&mousePos);
-	ScreenToClient(Window::GetInstance().GetWindowHandle(), &mousePos);
+	if (m_CursorLocked)
+	{
+		// Get mouse position
+		POINT mousePos;
+		GetCursorPos(&mousePos);
+		ScreenToClient(Window::GetInstance().GetWindowHandle(), &mousePos);
 
-	// Calculate mouse position relative to center of screen
-	int screenCenterX = Window::GetInstance().GetWidth() / 2;
-	int screenCenterY = Window::GetInstance().GetHeight() / 2;
-	m_MouseDelta.x = (float)(mousePos.x) - screenCenterX;
-	m_MouseDelta.y = (float)(mousePos.y) - screenCenterY;
+		// Calculate mouse delta relative to center of screen
+		int screenCenterX = Window::GetInstance().GetWidth() / 2;
+		int screenCenterY = Window::GetInstance().GetHeight() / 2;
+		m_MouseDelta.x = (float)(mousePos.x) - screenCenterX;
+		m_MouseDelta.y = (float)(mousePos.y) - screenCenterY;
 
-	// Reset cursor position to center of screen
-	SetCursorPos(screenCenterX, screenCenterY);
+		// Reset cursor position to center of screen
+		SetCursorPos(screenCenterX, screenCenterY);
+	}
 
 	// Get buttons
 	for (auto& [key, state] : m_KeyStates)
@@ -66,5 +64,17 @@ void InputManager::SetFollowedKeys(const std::vector<int>& newKeys)
 		if (m_KeyStates.contains(key)) continue;
 		m_KeyStates[key] = KeyState::NotUpdatedOnce;
 	}
+}
+
+void InputManager::ToggleCursorLock(bool locked)
+{
+	m_CursorLocked = locked;
+	m_MouseDelta = Vector2::Zero;
+	ShowCursor(!locked);
+}
+
+void InputManager::ToggleCursorLock()
+{
+	ToggleCursorLock(!m_CursorLocked);
 }
 }

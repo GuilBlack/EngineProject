@@ -4,7 +4,7 @@
 
 namespace DXH
 {
-bool DXHEngine::Init(AppProperties props, UpdateFunc gameUpdate)
+bool DXHEngine::Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate, UpdateFunc gameDestroy)
 {
 	VS_DB_OUT_W(L"Initializing DXHEngine...\n");
 
@@ -17,7 +17,9 @@ bool DXHEngine::Init(AppProperties props, UpdateFunc gameUpdate)
 		return false;
 
 	m_InputManager.Update(); // First update to reset the mouse position
+	m_GameInit = gameInit;
 	m_GameUpdate = gameUpdate;
+	m_GameDestroy = gameDestroy;
 
 	m_IsRunning = true;
 	return true;
@@ -29,16 +31,20 @@ void DXHEngine::Run()
 	VS_DB_OUT_W(L"Welcome to DXHEngine! Main loop is starting...\n");
 
 	m_GameTimer.Reset();
+	m_GameInit(m_GameTimer);
 	while (m_IsRunning)
 	{
 		Window::GetInstance().PollEvents();
+		UpdateFpsCounter();
 		m_InputManager.Update();
 		m_GameTimer.Tick();
 		m_GameUpdate(m_GameTimer);
+
 		System::UpdateAll(m_GameTimer);
-		UpdateFpsCounter(m_GameTimer);
+		UpdateFpsCounter();
 	}
 
+	m_GameDestroy(m_GameTimer);
 	Cleanup();
 }
 
@@ -64,6 +70,7 @@ bool DXHEngine::InitWindow()
 
 bool DXHEngine::InitDX12()
 {
+	// TODO: Move to Init Renderer
 #if defined(DEBUG) || defined(_DEBUG)
 	ID3D12Debug* debugController;
 	ASSERT_HRESULT(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
@@ -72,13 +79,17 @@ bool DXHEngine::InitDX12()
 #endif
 
 	Renderer::GetInstance().Init();
+
+	Renderer::GetInstance().OnResize();
+
 	return true;
 }
 
-void DXHEngine::UpdateFpsCounter(const Timer& gt)
+void DXHEngine::UpdateFpsCounter()
 {
 	static int frameCnt = 0;
 	static float timeElapsed = 0.0f;
+	m_GameTimer.Tick();
 	frameCnt++;
 
 	if ((m_GameTimer.TotalTime() - timeElapsed) >= 1.0f)
@@ -102,6 +113,7 @@ void DXHEngine::Shutdown()
 void DXHEngine::Cleanup()
 {
 	VS_DB_OUT_W(L"Cleaning up DXHEngine...\n");
+	Renderer::GetInstance().Destroy();
 	DELETE_PTR(m_pContext);
 }
 }

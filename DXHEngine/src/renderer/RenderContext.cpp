@@ -24,15 +24,12 @@ void RenderContext::Init()
 		ASSERT_HRESULT(m_pDXGIFactory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
 		ASSERT_HRESULT(D3D12CreateDevice(warpAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pDevice)));
 	}
-
-	m_pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence));
 }
 
 void RenderContext::Destroy()
 {
 	RELEASE_PTR(m_pDevice);
 	RELEASE_PTR(m_pDXGIFactory);
-	RELEASE_PTR(m_pFence);
 }
 
 void RenderContext::CreateCommandObjects(ID3D12CommandQueue** commandQueue, ID3D12CommandAllocator** commandAllocator, ID3D12GraphicsCommandList** commandList)
@@ -54,9 +51,29 @@ void RenderContext::CreateCommandObjects(ID3D12CommandQueue** commandQueue, ID3D
 	(*commandList)->Close();
 }
 
-void RenderContext::CreateSwapChain(ID3D12CommandQueue* commandQueue, DXGI_SWAP_CHAIN_DESC& swapChainDesc, IDXGISwapChain* swapChain)
+void RenderContext::CreateSwapChain(ID3D12CommandQueue* commandQueue, DXGI_SWAP_CHAIN_DESC& swapChainDesc, IDXGISwapChain** swapChain)
 {
-	ASSERT_HRESULT(m_pDXGIFactory->CreateSwapChain(commandQueue, &swapChainDesc, &swapChain));
+	ASSERT_HRESULT(m_pDXGIFactory->CreateSwapChain(commandQueue, &swapChainDesc, swapChain));
 }
+void RenderContext::CreateDSV(
+	ID3D12Resource** dsv,
+	D3D12_CPU_DESCRIPTOR_HANDLE& dsvHeapHandle,
+	CD3DX12_HEAP_PROPERTIES& heapProps,
+	D3D12_RESOURCE_DESC& depthStencilDesc,
+	D3D12_CLEAR_VALUE& optClear,
+	D3D12_DEPTH_STENCIL_VIEW_DESC& dsvDesc)
+{
+	ASSERT_HRESULT(m_pDevice->CreateCommittedResource(
+		&heapProps,
+		D3D12_HEAP_FLAG_NONE,
+		&depthStencilDesc,
+		D3D12_RESOURCE_STATE_COMMON,
+		&optClear,
+		IID_PPV_ARGS(dsv)
+	));
+
+	m_pDevice->CreateDepthStencilView(*dsv, &dsvDesc, dsvHeapHandle);
+}
+
 }
 

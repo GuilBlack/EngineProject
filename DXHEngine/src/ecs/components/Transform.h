@@ -1,19 +1,21 @@
 #pragma once
 #include "src/ecs/Component.h" // For the Component base class
+#include "src/DXHMaths.h" // For math structs and functions
 
 namespace DXH
 {
 struct Transform : Component
 {
-	void Reset() override
+	void OnAssign() override
 	{
-		position = Vector3::Zero;
-		rotation = Quaternion::Identity;
-		scale = Vector3::One;
+		Position = Vector3::Zero;
+		Rotation = Quaternion::Identity;
+		Scale = Vector3::One;
 	}
-	Vector3 position;
-	Quaternion rotation;
-	Vector3 scale;
+	void OnDetach() override {}
+	Vector3 Position = Vector3::Zero;
+	Quaternion Rotation = Quaternion::Identity;
+	Vector3 Scale = Vector3::One;
 
 	/// <summary>
 	/// Gets the matrix describing the transformation from world space to model space.
@@ -21,10 +23,10 @@ struct Transform : Component
 	inline DirectX::XMMATRIX GetModelMatrix() const
 	{
 		return DirectX::XMMatrixAffineTransformation(
-			XMLoadFloat3(&scale),
+			Scale.Load(),
 			DirectX::XMVectorZero(),
-			XMLoadFloat4(&rotation),
-			XMLoadFloat3(&position));
+			Rotation.Load(),
+			Position.Load());
 	}
 };
 }

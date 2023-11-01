@@ -17,7 +17,7 @@ PhysicsSystem::~PhysicsSystem()
 void PhysicsSystem::Update(const Timer& gt)
 {
 	// Get all GO with a sphere collider
-	auto& map = ComponentManager<SphereCollider>::UsedComponentsMap();
+	auto& map = ComponentManager<SphereCollider>::GetInstance().GetUsedComponentsMap();
 
 	std::vector<Collision> collisions = DetectCollisions(map);
 	UpdateCollision(collisions, gt.DeltaTime());
@@ -25,7 +25,7 @@ void PhysicsSystem::Update(const Timer& gt)
 
 inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform* transform, SphereCollider* collider)
 {
-	return DirectX::XMVectorAdd(transform->position.Load(), collider->Center.Load());
+	return DirectX::XMVectorAdd(transform->Position.Load(), collider->Center.Load());
 }
 
 inline float PhysicsSystem::SqrDistanceBetween(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB)
