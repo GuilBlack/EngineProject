@@ -19,6 +19,13 @@ struct Collision
 	Vector3 Normal = Vector3::Zero; // Normal of the collision, pointing from first to second
 };
 
+struct Cell
+{
+	Vector3 Min;
+	Vector3 Max;
+	std::vector<SphereCollider*> Colliders;
+};
+
 class PhysicsSystem : public System
 {
 public:
@@ -42,11 +49,13 @@ private:
 	/// Calculates the normal of the collision between two positions
 	/// </summary>
 	inline static Vector3 CalculateCollisionNormal(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB);
+
+	std::vector<Cell> SortColliders(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects, float cellSize);
 	/// <summary>
 	/// Detects any collisions between all passed gameObjects
 	/// </summary>
 	/// <param name="gameObjects">The gameObjects to check for collisions. All gameObjects must have a sphere collider</param>
-	static std::vector<Collision> DetectCollisions(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects);
+	static std::vector<Collision> DetectCollisions(std::vector<Cell>);
 
 	void UpdateCollision(std::vector<Collision> collision, float deltaTime);
 };

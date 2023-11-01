@@ -38,9 +38,10 @@ inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::FXMVECTOR posA, 
 	return Vector3(DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(posB, posA)));
 }
 
-std::vector<Collision> PhysicsSystem::DetectCollisions(std::unordered_map<const GameObject*, SphereCollider*>& map)
+std::vector<Collision> PhysicsSystem::DetectCollisions(std::vector<Cell>)
 {
 	size_t length = map.size(); // Number of gameObjects
+
 	std::vector<Collision> collisions; // Vector of collisions
 
 	// If there is less than 2 game objects, there can't be any collision
@@ -66,7 +67,7 @@ std::vector<Collision> PhysicsSystem::DetectCollisions(std::unordered_map<const 
 			float sqrDistance = SqrDistanceBetween(posA, posB);
 			if (radius * radius >= sqrDistance)
 				// There is a collision, add it to the vector
-				collisions.push_back({pairA->second, pairB->second, CalculateCollisionNormal(posA, posB)});
+				collisions.push_back({pairA->second, pairB->second, CalculateCollisionNormal(posA, posB)}); 
 		}
 	}
 	return collisions;
@@ -96,5 +97,36 @@ void PhysicsSystem::UpdateCollision(std::vector<Collision> collision, float delt
 		XMVECTOR firstSphereVelocity = XMVectorAdd(firstSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f / firstSphere->pGameObject->Get<RigidBody>()->Mass), collisionNormal));
 		XMVECTOR secondSphereVelocity = XMVectorSubtract(secondSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f / secondSphere->pGameObject->Get<RigidBody>()->Mass), collisionNormal));
 	}
+}
+
+std::vector<Cell> PhysicsSystem::SortColliders(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects, float cellSize)
+{
+	std::vector<Cell> cells; 
+	for (auto[gameObject, collider] : gameObjects)
+	{
+		Vector3 center = ColliderPosition(gameObject->Get<Transform>(), collider);
+		bool Found = false;
+		for (auto& cell : cells)
+		{
+			if (center.x >= cell.Min.x && center.x <= cell.Max.x &&
+				center.y >= cell.Min.y && center.y <= cell.Max.y &&
+				center.z >= cell.Min.z && center.z <= cell.Max.z)
+			{
+				cell.Colliders.push_back(collider);
+				Found = true;
+				break;
+			}
+		}
+		// If not found create a new cell and add it to the vector of cells
+		if (!Found)
+		{
+			Cell cell;
+			cell.Min = Vector3(floorf(center.x / cellSize) * cellSize, floorf(center.y / cellSize) * cellSize, floorf(center.z / cellSize) * cellSize);
+			cell.Max = Vector3(cell.Min.x + cellSize, cell.Min.y + cellSize, cell.Min.z + cellSize);
+			cell.Colliders.push_back(collider);
+			cells.push_back(cell);
+		}
+	}
+	return std::vector<Cell>();
 }
 }
