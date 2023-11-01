@@ -9,9 +9,9 @@ namespace DXH
 /// </summary>
 enum class ShaderProgramType
 {
-	None,
-	SimpleShader,
-	BasicPhongShader
+    None,
+    SimpleShader,
+    BasicPhongShader
 };
 
 
@@ -20,12 +20,12 @@ enum class ShaderProgramType
 /// </summary>
 enum class InputLayoutType
 {
-	Position,
-	PositionColor,
-	PositionTexcoord,
-	PositionNormal,
-	PositionNormalColor,
-	PositionNormalTexcoord
+    Position,
+    PositionColor,
+    PositionTexcoord,
+    PositionNormal,
+    PositionNormalColor,
+    PositionNormalTexcoord
 };
 
 /// <summary>
@@ -33,14 +33,14 @@ enum class InputLayoutType
 /// </summary>
 struct BasicVertex
 {
-	DirectX::XMFLOAT3 Position;
-	DirectX::XMFLOAT4 Color;
+    DirectX::XMFLOAT3 Position;
+    DirectX::XMFLOAT4 Color;
 };
 
 struct PosNormVertex
 {
-	DirectX::XMFLOAT3 Position;
-	DirectX::XMFLOAT3 Normal;
+    DirectX::XMFLOAT3 Position;
+    DirectX::XMFLOAT3 Normal;
 };
 
 struct Geometry;
@@ -53,127 +53,127 @@ struct ObjectConstants;
 /// </summary>
 class BaseShader
 {
-	friend class Renderer;
+    friend class Renderer;
 public:
-	BaseShader();
-	virtual ~BaseShader();
+    BaseShader();
+    virtual ~BaseShader();
 
-	/// <summary>
-	/// Creates a shader program from the given vertex and pixel shader files, with the given shader program type and input layout type.
-	/// </summary>
-	/// <param name="vsFilePath">The file path to the vertex shader file.</param>
-	/// <param name="psFilePath">The file path to the pixel shader file.</param>
-	/// <param name="type">The type of shader program to create.</param>
-	/// <param name="layout">The type of input layout to use.</param>
-	static BaseShader* Create(const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout);
+    /// <summary>
+    /// Creates a shader program from the given vertex and pixel shader files, with the given shader program type and input layout type.
+    /// </summary>
+    /// <param name="vsFilePath">The file path to the vertex shader file.</param>
+    /// <param name="psFilePath">The file path to the pixel shader file.</param>
+    /// <param name="type">The type of shader program to create.</param>
+    /// <param name="layout">The type of input layout to use.</param>
+    static BaseShader* Create(const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout);
 
-	/// <summary>
-	/// Binds the shader to the given graphics command list.
-	/// </summary>
-	/// <param name="cl">The graphics command list to bind the shader to.</param>
-	virtual void Bind(ID3D12GraphicsCommandList* cl) 
-	{
-		cl->SetPipelineState(m_pPSO);
-		cl->SetGraphicsRootSignature(m_pRootSignature);
-		cl->SetGraphicsRootConstantBufferView(1, m_PassCB.GetResource()->GetGPUVirtualAddress());
-	}
-	
-	/// <summary>
-	/// Draws the given geometry with the given object constant buffer index, transform, and graphics command list.
-	/// </summary>
-	/// <param name="geometry">The geometry to draw.</param>
-	/// <param name="objectCBIndex">The index of the object constant buffer to use.</param>
-	/// <param name="transform">The transform to use.</param>
-	/// <param name="cl">The graphics command list to use.</param>
-	virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Transform& transform, ID3D12GraphicsCommandList* cl);
+    /// <summary>
+    /// Binds the shader to the given graphics command list.
+    /// </summary>
+    /// <param name="cl">The graphics command list to bind the shader to.</param>
+    virtual void Bind(ID3D12GraphicsCommandList* cl) 
+    {
+        cl->SetPipelineState(m_pPSO);
+        cl->SetGraphicsRootSignature(m_pRootSignature);
+        cl->SetGraphicsRootConstantBufferView(1, m_PassCB.GetResource()->GetGPUVirtualAddress());
+    }
+    
+    /// <summary>
+    /// Draws the given geometry with the given object constant buffer index, transform, and graphics command list.
+    /// </summary>
+    /// <param name="geometry">The geometry to draw.</param>
+    /// <param name="objectCBIndex">The index of the object constant buffer to use.</param>
+    /// <param name="transform">The transform to use.</param>
+    /// <param name="cl">The graphics command list to use.</param>
+    virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Transform& transform, ID3D12GraphicsCommandList* cl);
 
-	/// <summary>
-	/// Unbinds the shader from the given graphics command list.
-	/// </summary>
-	virtual void Unbind(ID3D12GraphicsCommandList* cl) 
-	{
-		cl->SetGraphicsRootSignature(nullptr);
-	}
+    /// <summary>
+    /// Unbinds the shader from the given graphics command list.
+    /// </summary>
+    virtual void Unbind(ID3D12GraphicsCommandList* cl) 
+    {
+        cl->SetGraphicsRootSignature(nullptr);
+    }
 
-	/// <summary>
-	/// Gets the type of the shader program.
-	/// </summary>
-	/// <returns>The type of the shader program.</returns>
-	ShaderProgramType GetType() { return m_Type; }
+    /// <summary>
+    /// Gets the type of the shader program.
+    /// </summary>
+    /// <returns>The type of the shader program.</returns>
+    ShaderProgramType GetType() { return m_Type; }
 
-	/// <summary>
-	/// Adds an object constant buffer to the shader and returns its index.
-	/// </summary>
-	/// <returns>The index of the object constant buffer.</returns>
-	static uint32_t AddObjectCB();
+    /// <summary>
+    /// Adds an object constant buffer to the shader and returns its index.
+    /// </summary>
+    /// <returns>The index of the object constant buffer.</returns>
+    static uint32_t AddObjectCB();
 
-	/// <summary>
-	/// Updates the pass constant buffer with the given pass constants.
-	/// </summary>
-	/// <param name="passCB">The pass constants to update the pass constant buffer with.</param>
-	void UpdatePassCB(PassConstants& passCB) { m_PassCB.CopyData(0, passCB); }
+    /// <summary>
+    /// Updates the pass constant buffer with the given pass constants.
+    /// </summary>
+    /// <param name="passCB">The pass constants to update the pass constant buffer with.</param>
+    void UpdatePassCB(PassConstants& passCB) { m_PassCB.CopyData(0, passCB); }
 
-	/// <summary>
-	/// Updates the object constant buffer at the given index with the given object constants.
-	/// </summary>
-	/// <param name="objectCB">The object constants to update the object constant buffer with.</param>
-	/// <param name="index">The index of the object constant buffer to update.</param>
-	static void UpdateObjectCB(ObjectConstants& objectCB, uint32_t index) { s_ObjectCB[index].CopyData(0, objectCB); }
-
-protected:
-	ID3DBlob* m_pVS = nullptr;
-	ID3DBlob* m_pPS = nullptr;
-	
-	ID3D12PipelineState* m_pPSO = nullptr;
-	ID3D12RootSignature* m_pRootSignature = nullptr;
-	std::vector<D3D12_INPUT_ELEMENT_DESC> m_InputLayout;
-
-	UploadBuffer<PassConstants> m_PassCB;
-	ShaderProgramType m_Type = ShaderProgramType::None;
-	static std::vector<UploadBuffer<ObjectConstants>> s_ObjectCB;
+    /// <summary>
+    /// Updates the object constant buffer at the given index with the given object constants.
+    /// </summary>
+    /// <param name="objectCB">The object constants to update the object constant buffer with.</param>
+    /// <param name="index">The index of the object constant buffer to update.</param>
+    static void UpdateObjectCB(ObjectConstants& objectCB, uint32_t index) { s_ObjectCB[index].CopyData(0, objectCB); }
 
 protected:
-	/// <summary>
-	/// Loads a compiled shader from the given file path.
-	/// </summary>
-	/// <param name="filepath">The file path to the compiled shader.</param>
-	/// <returns>The compiled shader.</returns>
-	static ID3DBlob* LoadCompiledShader(const std::string& filepath);
-	static std::vector<D3D12_INPUT_ELEMENT_DESC> CreateInputLayout(InputLayoutType layout);
-	
-	/// <summary>
-	/// Builds the root signature for the shader.
-	/// </summary>
-	/// <param name="rootParameters">The root parameters to use.</param>
-	void BuildRootSignature(CD3DX12_ROOT_PARAMETER* rootParameters, uint32_t numParameters);
+    ID3DBlob* m_pVS = nullptr;
+    ID3DBlob* m_pPS = nullptr;
+    
+    ID3D12PipelineState* m_pPSO = nullptr;
+    ID3D12RootSignature* m_pRootSignature = nullptr;
+    std::vector<D3D12_INPUT_ELEMENT_DESC> m_InputLayout;
 
-	/// <summary>
-	/// Builds the pipeline state object for the shader.
-	/// </summary>
-	void BuildPSO();
+    UploadBuffer<PassConstants> m_PassCB;
+    ShaderProgramType m_Type = ShaderProgramType::None;
+    static std::vector<UploadBuffer<ObjectConstants>> s_ObjectCB;
+
+protected:
+    /// <summary>
+    /// Loads a compiled shader from the given file path.
+    /// </summary>
+    /// <param name="filepath">The file path to the compiled shader.</param>
+    /// <returns>The compiled shader.</returns>
+    static ID3DBlob* LoadCompiledShader(const std::string& filepath);
+    static std::vector<D3D12_INPUT_ELEMENT_DESC> CreateInputLayout(InputLayoutType layout);
+    
+    /// <summary>
+    /// Builds the root signature for the shader.
+    /// </summary>
+    /// <param name="rootParameters">The root parameters to use.</param>
+    void BuildRootSignature(CD3DX12_ROOT_PARAMETER* rootParameters, uint32_t numParameters);
+
+    /// <summary>
+    /// Builds the pipeline state object for the shader.
+    /// </summary>
+    void BuildPSO();
 };
 
 class SimpleShader : public BaseShader
 {
 public:
-	SimpleShader();
+    SimpleShader();
 
-	/// <summary>
-	/// Binds the shader to the given graphics command list.
-	/// </summary>
-	virtual void Bind(ID3D12GraphicsCommandList* cl) override;
+    /// <summary>
+    /// Binds the shader to the given graphics command list.
+    /// </summary>
+    virtual void Bind(ID3D12GraphicsCommandList* cl) override;
 private:
 };
 
 class BasicPhongShader : public BaseShader
 {
 public:
-	BasicPhongShader();
+    BasicPhongShader();
 
-	virtual void Bind(ID3D12GraphicsCommandList* cl) override;
+    virtual void Bind(ID3D12GraphicsCommandList* cl) override;
 
 private:
-	PhongMaterialConstants m_MaterialCB;
+    PhongMaterialConstants m_MaterialCB;
 };
 }
 

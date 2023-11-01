@@ -4,18 +4,18 @@ using namespace DirectX;
 namespace DXH
 {
 Vector2::Vector2()
-	: XMFLOAT2(0.0f, 0.0f)
+    : XMFLOAT2(0.0f, 0.0f)
 {
 }
 
 Vector2::Vector2(float x, float y)
-	: XMFLOAT2(x, y)
+    : XMFLOAT2(x, y)
 {
 }
 
 Vector2::Vector2(FXMVECTOR v)
 {
-	XMStoreFloat2(this, v);
+    XMStoreFloat2(this, v);
 }
 
 const Vector2 Vector2::Zero(0.0f, 0.0f);

@@ -7,31 +7,31 @@
 #include <debugapi.h>
 
 // Debug output for std::string.
-#define VS_DB_OUT_A( s )								\
-{														\
-	std::stringstream ss;								\
-	ss << s;											\
-	OutputDebugStringA( ss.str().c_str() );				\
+#define VS_DB_OUT_A( s )                                \
+{                                                        \
+    std::stringstream ss;                                \
+    ss << s;                                            \
+    OutputDebugStringA( ss.str().c_str() );                \
 }
 
 // Debug output for std::wstring.
-#define VS_DB_OUT_W( s )								\
-{														\
-	std::wstringstream ss;								\
-	ss << s;											\
-	OutputDebugStringW( ss.str().c_str() );				\
+#define VS_DB_OUT_W( s )                                \
+{                                                        \
+    std::wstringstream ss;                                \
+    ss << s;                                            \
+    OutputDebugStringW( ss.str().c_str() );                \
 }
 
 // Asserts if the HRESULT is not S_OK.
-#define ASSERT_HRESULT(x)								\
-{														\
-	HRESULT dhr = (x);									\
-	if (FAILED(dhr))									\
-	{													\
-		_com_error err(dhr);							\
-		VS_DB_OUT_W(err.ErrorMessage() << L'\n');		\
-		assert(false);									\
-	}													\
+#define ASSERT_HRESULT(x)                                \
+{                                                        \
+    HRESULT dhr = (x);                                    \
+    if (FAILED(dhr))                                    \
+    {                                                    \
+        _com_error err(dhr);                            \
+        VS_DB_OUT_W(err.ErrorMessage() << L'\n');        \
+        assert(false);                                    \
+    }                                                    \
 }
 
 // Replace new to check for memory leaks

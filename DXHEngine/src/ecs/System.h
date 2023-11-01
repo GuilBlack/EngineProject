@@ -12,16 +12,16 @@ class Timer;
 class System
 {
 public:
-	virtual ~System() = default;
-	/// <summary>
-	/// Updates the system. This is called once per frame.
-	/// </summary>
-	/// <param name="gt">Game timer, contains informations like delta time.</param>
-	virtual void Update(const Timer& gt) = 0;
+    virtual ~System() = default;
+    /// <summary>
+    /// Updates the system. This is called once per frame.
+    /// </summary>
+    /// <param name="gt">Game timer, contains informations like delta time.</param>
+    virtual void Update(const Timer& gt) = 0;
 
-	/// <summary>
-	/// Updates all systems.
-	/// </summary>
-	static void UpdateAll(const Timer& gt);
+    /// <summary>
+    /// Updates all systems.
+    /// </summary>
+    static void UpdateAll(const Timer& gt);
 };
 }
