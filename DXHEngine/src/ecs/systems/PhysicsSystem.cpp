@@ -23,22 +23,22 @@ void PhysicsSystem::Update(const Timer& gt)
 	UpdateCollision(collisions, gt.DeltaTime());
 }
 
-inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform* transform, SphereCollider* collider)
+inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform& transform, SphereCollider& collider)
 {
-	return DirectX::XMVectorAdd(transform->Position.Load(), collider->Center.Load());
+	return DirectX::XMVectorAdd(transform.Position.Load(), collider.Center.Load());
 }
 
-inline float PhysicsSystem::SqrDistanceBetween(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB)
+inline float PhysicsSystem::SqrDistanceBetween(DirectX::FXMVECTOR& posA, DirectX::FXMVECTOR& posB)
 {
 	return DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(posA, posB)));
 }
 
-inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB)
+inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::FXMVECTOR& posA, DirectX::FXMVECTOR& posB)
 {
 	return Vector3(DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(posB, posA)));
 }
 
-std::vector<Collision> PhysicsSystem::DetectCollisions(std::unordered_map<const GameObject*, SphereCollider*>& map)
+std::vector<Collision> PhysicsSystem::DetectCollisions(std::unordered_map<const GameObject*, SphereCollider&>& map)
 {
 	size_t length = map.size(); // Number of gameObjects
 	std::vector<Collision> collisions; // Vector of collisions
@@ -62,7 +62,7 @@ std::vector<Collision> PhysicsSystem::DetectCollisions(std::unordered_map<const 
 			DirectX::XMVECTOR posB = ColliderPosition(pairA->first->Get<Transform>(), pairB->second);
 
 			// Add the radii and compare them to the distance between the two positions
-			float radius = pairA->second->Radius + pairB->second->Radius;
+			float radius = pairA->second.Radius + pairB->second.Radius;
 			float sqrDistance = SqrDistanceBetween(posA, posB);
 			if (radius * radius >= sqrDistance)
 				// There is a collision, add it to the vector
@@ -78,23 +78,23 @@ void PhysicsSystem::UpdateCollision(std::vector<Collision> collision, float delt
 
 	for (const auto& col : collision)
 	{
-		SphereCollider* firstSphere = col.First;
-		SphereCollider* secondSphere = col.Second;
+		SphereCollider& firstSphere = col.First;
+		SphereCollider& secondSphere = col.Second;
 
 		//Vector3 collisionNormal = col.Normal;
 
 		// Calculate relative velocity
-		XMVECTOR firstSphereVelocityLoaded = firstSphere->pGameObject->Get<RigidBody>()->Velocity.Load();
-		XMVECTOR secondSphereVelocityLoaded = secondSphere->pGameObject->Get<RigidBody>()->Velocity.Load();
+		XMVECTOR firstSphereVelocityLoaded = firstSphere.pGameObject->Get<RigidBody>().Velocity.Load();
+		XMVECTOR secondSphereVelocityLoaded = secondSphere.pGameObject->Get<RigidBody>().Velocity.Load();
 		XMVECTOR relativeVelocity = XMVectorSubtract(firstSphereVelocityLoaded, secondSphereVelocityLoaded);
 		XMVECTOR collisionNormal = col.Normal.Load();
 
 		// Calculate impulse
-		XMVECTOR impulse = XMVectorScale(XMVector3Dot(relativeVelocity, collisionNormal), -2.0f / (firstSphere->pGameObject->Get<RigidBody>()->Mass + secondSphere->pGameObject->Get<RigidBody>()->Mass));
+		XMVECTOR impulse = XMVectorScale(XMVector3Dot(relativeVelocity, collisionNormal), -2.0f / (firstSphere.pGameObject->Get<RigidBody>().Mass + secondSphere.pGameObject->Get<RigidBody>().Mass));
 
 		// Apply impulse
-		XMVECTOR firstSphereVelocity = XMVectorAdd(firstSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f / firstSphere->pGameObject->Get<RigidBody>()->Mass), collisionNormal));
-		XMVECTOR secondSphereVelocity = XMVectorSubtract(secondSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f / secondSphere->pGameObject->Get<RigidBody>()->Mass), collisionNormal));
+		XMVECTOR firstSphereVelocity = XMVectorAdd(firstSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f / firstSphere.pGameObject->Get<RigidBody>().Mass), collisionNormal));
+		XMVECTOR secondSphereVelocity = XMVectorSubtract(secondSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f / secondSphere.pGameObject->Get<RigidBody>().Mass), collisionNormal));
 	}
 }
 }

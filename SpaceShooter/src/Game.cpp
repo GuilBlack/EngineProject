@@ -18,14 +18,14 @@ void Game::Init(const DXH::Timer& gt)
 	GameObject* pObject = new GameObject();
 	GameObject* pObject2 = new GameObject();
 	pObject->Add<Transform>();
-	Transform* transform = pObject2->Add<Transform>();
-	transform->Position = { 0.0f, 2.0f, 0.0f };
-	Mesh* mesh = pObject->Add<Mesh>();
-	Mesh* mesh2 = pObject2->Add<Mesh>();
-	mesh->Geo = RendererResource::GetGeometry("Cube");
-	mesh->Mat = RendererResource::GetMaterial("SimpleMaterial");
-	mesh2->Geo = RendererResource::GetGeometry("Sphere");
-	mesh2->Mat = RendererResource::GetMaterial("SimpleMaterial");
+	Transform& transform = pObject2->Add<Transform>();
+	transform.Position = { 0.0f, 2.0f, 0.0f };
+	Mesh& mesh = pObject->Add<Mesh>();
+	Mesh& mesh2 = pObject2->Add<Mesh>();
+	mesh.Mat = RendererResource::GetMaterial("SimpleMaterial");
+	mesh.Geo = RendererResource::GetGeometry("Cube");
+	mesh2.Geo = RendererResource::GetGeometry("Sphere");
+	mesh2.Mat = RendererResource::GetMaterial("SimpleMaterial");
 	m_GameObjects.emplace_back(pObject);
 	m_GameObjects.emplace_back(pObject2);
 }

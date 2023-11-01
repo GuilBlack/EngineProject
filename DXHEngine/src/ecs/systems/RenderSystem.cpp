@@ -12,13 +12,11 @@ void DXH::RenderSystem::Update(const Timer& gt)
 	Renderer::GetInstance().BeginFrame();
 	for (auto& pair : map)
 	{
-		auto go = pair.first;
-		auto mesh = pair.second;
-		auto transform = transformMap.at(go);
-		Renderer::GetInstance().Draw(*mesh, *transform);
+		Renderer::GetInstance().Draw(pair.second, transformMap.at(pair.first));
 	}
 	Renderer::GetInstance().EndFrame();
 }
 
 void DXH::RenderSystem::Draw(Mesh * mesh, Transform transform)
-{}
+{
+}
