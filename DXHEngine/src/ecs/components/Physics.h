@@ -14,7 +14,6 @@ struct RigidBody : Component
 		Force = Vector3::Zero;
 		Mass = 1.0f;
 	}
-	void OnDetach() override {}
 	Vector3 Velocity;
 	Vector3 Force;
 	float Mass;
@@ -29,7 +28,6 @@ struct SphereCollider : Component
 		Center = Vector3::Zero;
 		Radius = 0.f;
 	}
-	void OnDetach() override {}
 	Vector3 Center; // Relative to game object
 	float Radius;
 };

@@ -13,11 +13,11 @@ struct Component
 	/// <summary>
 	/// Automatically called when the component is added to a game object.
 	/// </summary>
-	virtual void OnAssign() = 0;
+	virtual void OnAssign() {}
 	/// <summary>
 	/// Automatically called when the component is removed from a game object.
 	/// </summary>
-	virtual void OnDetach() = 0;
+	virtual void OnDetach() {}
 	/// <summary>
 	/// Gets the game object that owns this component.
 	/// </summary>

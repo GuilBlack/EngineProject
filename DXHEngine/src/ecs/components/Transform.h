@@ -12,7 +12,6 @@ struct Transform : Component
 		Rotation = Quaternion::Identity;
 		Scale = Vector3::One;
 	}
-	void OnDetach() override {}
 	Vector3 Position = Vector3::Zero;
 	Quaternion Rotation = Quaternion::Identity;
 	Vector3 Scale = Vector3::One;
