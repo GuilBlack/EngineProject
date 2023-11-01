@@ -4,9 +4,10 @@
 #include "UploadBuffer.h"
 #include "Shader.h"
 #include "Material.h"
-#include "../ecs/components/Transform.h"
-#include "../ecs/components/Render.h"
-#include "../core/Window.h"
+#include "src/ecs/components/Transform.h"
+#include "src/ecs/components/Render.h"
+#include "src/ecs/components/Camera.h"
+#include "src/core/Window.h"
 
 namespace DXH
 {
@@ -33,11 +34,11 @@ void Renderer::Init()
 	BaseShader::s_ObjectCB = std::vector<UploadBuffer<ObjectConstants>>();
 	BaseShader::s_ObjectCB.reserve(MAX_GO_COUNT);
 
-	XMVECTOR pos = XMVectorSet(0.f, 0.f, -10.f, 1.f);
-	XMVECTOR target = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	XMVECTOR up = XMVectorSet(0.f, 1.f, 0.f, 1.f);
-	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
-	XMStoreFloat4x4(&m_Camera.View, view);
+	//XMVECTOR pos = XMVectorSet(0.f, 0.f, -10.f, 1.f);
+	//XMVECTOR target = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	//XMVECTOR up = XMVectorSet(0.f, 1.f, 0.f, 1.f);
+	//XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+	//XMStoreFloat4x4(&m_Camera.View, view);
 }
 
 void Renderer::Destroy()
@@ -59,7 +60,7 @@ void Renderer::Destroy()
 	delete m_pRenderContext;
 }
 
-void Renderer::BeginFrame()
+void Renderer::BeginFrame(const Camera& camera)
 {
 	using namespace DirectX;
 	ASSERT_HRESULT(m_pCommandAllocator->Reset());
@@ -87,14 +88,15 @@ void Renderer::BeginFrame()
 	//ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvSrvHeap };
 	//m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	XMMATRIX view = XMLoadFloat4x4(&m_Camera.View);
-	XMMATRIX proj = XMLoadFloat4x4(&m_Camera.Proj);
-	XMMATRIX viewProj = view * proj;
+	Matrix view = camera.View.GetMatrixTransposed();
+	Matrix proj = camera.Proj.GetMatrixTransposed();
+	Matrix viewProj = camera.GetViewProjectionMatrix().GetMatrixTransposed();
 
 	PassConstants passCB =
 	{
-		.View = m_Camera.View,
-		.Proj = m_Camera.Proj,
+		.View = view,
+		.Proj = proj,
+		.ViewProj = viewProj,
 		.EyePosW = {0.f, 0.f, -5.f},
 		.NearZ = 0.001f,
 		.FarZ = 1000.f,
@@ -106,7 +108,6 @@ void Renderer::BeginFrame()
 		},
 		.DeltaTime = 0.f,
 	};
-	XMStoreFloat4x4(&passCB.ViewProj, XMMatrixTranspose(viewProj));
 
 	for (auto [_, shader] : RendererResource::GetInstance().m_Shaders)
 	{
@@ -156,13 +157,13 @@ void Renderer::OnResize()
 	assert(m_pSwapChain);
 	assert(m_pCommandAllocator);
 
-	XMMATRIX proj = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(65.f),
-		(float)Window::GetInstance().GetWidth() / Window::GetInstance().GetHeight(),
-		0.001f,
-		1000.f
-	);
-	XMStoreFloat4x4(&m_Camera.Proj, proj);
+	//XMMATRIX proj = XMMatrixPerspectiveFovLH(
+	//	XMConvertToRadians(65.f),
+	//	(float)Window::GetInstance().GetWidth() / Window::GetInstance().GetHeight(),
+	//	0.001f,
+	//	1000.f
+	//);
+	//XMStoreFloat4x4(&m_Camera.Proj, proj);
 
 	// Flush before changing any resources.
 	FlushCommandQueue();

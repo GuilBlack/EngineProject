@@ -29,7 +29,12 @@ struct Quaternion : public DirectX::XMFLOAT4
 
 	inline void SetRotationFromAngles(float yaw, float pitch, float roll)
 	{
-		Store(DirectX::XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
+		using namespace DirectX;
+		Store(DirectX::XMQuaternionRotationRollPitchYaw(
+			XMConvertToRadians(pitch), 
+			XMConvertToRadians(yaw), 
+			XMConvertToRadians(roll)
+		));
 	}
 
 	inline DirectX::XMMATRIX GetRotationMatrix() const

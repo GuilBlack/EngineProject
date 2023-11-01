@@ -28,6 +28,14 @@ void Game::Init(const DXH::Timer& gt)
 	mesh2->Mat = RendererResource::GetMaterial("SimpleMaterial");
 	m_GameObjects.emplace_back(pObject);
 	m_GameObjects.emplace_back(pObject2);
+
+	// Create Camera
+	GameObject* pCamera = new GameObject();
+	Transform& camTransform = *(pCamera->Add<Transform>());
+	camTransform.Position = { 0.0f, 0.0f, -5.0f };
+	camTransform.Rotation.SetRotationFromAngles(300.0f, 0.0f, 0.0f);
+	Camera& cam = *(pCamera->Add<Camera>());
+	cam.IsPrimary = true;
 }
 
 void Game::Update(const DXH::Timer& gt)

@@ -8,11 +8,12 @@ class Shader;
 struct Mesh;
 struct Material;
 struct Transform;
+struct Camera;
 
 class Renderer
 {
 public:
-	Camera m_Camera;
+	//Camera m_Camera;
 public:
 	
 	~Renderer() {}
@@ -47,7 +48,7 @@ public:
 	/// <summary>
 	/// Initialize the resources needed to draw to the back buffer
 	/// </summary>
-	void BeginFrame();
+	void BeginFrame(const Camera& camera);
 
 	/// <summary>
 	/// Draw a mesh

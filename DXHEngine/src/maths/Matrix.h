@@ -25,6 +25,11 @@ struct Matrix : public DirectX::XMFLOAT4X4
 		XMStoreFloat4x4(this, m);
 	}
 
+	inline DirectX::XMMATRIX GetMatrixTransposed() const
+	{
+		return XMMatrixTranspose(Load());
+	}
+
 	static const Matrix Identity; // Shorthand for an identity matrix.
 };
 }
