@@ -5,7 +5,7 @@ namespace DXH
 {
 GameObject::GameObject()
 {
-	Add<Transform>();
+    Add<Transform>();
 }
 
 GameObject::~GameObject()
