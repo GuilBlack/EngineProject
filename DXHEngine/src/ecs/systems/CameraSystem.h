@@ -9,9 +9,9 @@ struct Camera;
 class CameraSystem : public System 
 {
 public:
-	CameraSystem(){}
-	~CameraSystem(){}
+    CameraSystem(){}
+    ~CameraSystem(){}
 
-	virtual void Update(const Timer& gt) override;
+    virtual void Update(const Timer& gt) override;
 };
 }

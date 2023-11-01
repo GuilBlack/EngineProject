@@ -9,14 +9,14 @@ namespace DXH
 {
 void System::UpdateAll(const Timer& gt)
 {
-	// Systems creation
-	static PhysicsSystem physicsSystem;
-	static RenderSystem renderSystem;
-	static CameraSystem cameraSystem;
+    // Systems creation
+    static PhysicsSystem physicsSystem;
+    static RenderSystem renderSystem;
+    static CameraSystem cameraSystem;
 
-	// Systems update
-	cameraSystem.Update(gt);
-	physicsSystem.Update(gt);
-	renderSystem.Update(gt);
+    // Systems update
+    physicsSystem.Update(gt);
+    cameraSystem.Update(gt);
+    renderSystem.Update(gt);
 }
 }

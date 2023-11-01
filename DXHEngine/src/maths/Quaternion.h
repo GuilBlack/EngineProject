@@ -4,42 +4,42 @@ namespace DXH
 {
 struct Quaternion : public DirectX::XMFLOAT4
 {
-	/// <summary>
-	/// Creates an identity quaternion.
-	/// </summary>
-	Quaternion();
-	Quaternion(float x, float y, float z, float w);
-	Quaternion(DirectX::FXMVECTOR v);
-	/// <summary>
-	/// Loads this quaternion in a XMVECTOR.
-	/// </summary>
-	inline DirectX::XMVECTOR Load() const
-	{
-		return XMLoadFloat4(this);
-	}
-	/// <summary>
-	/// Stores the provided XMVECTOR in this quaternion.
-	/// </summary>
-	inline void Store(DirectX::FXMVECTOR v)
-	{
-		XMStoreFloat4(this, v);
-	}
+    /// <summary>
+    /// Creates an identity quaternion.
+    /// </summary>
+    Quaternion();
+    Quaternion(float x, float y, float z, float w);
+    Quaternion(DirectX::FXMVECTOR v);
+    /// <summary>
+    /// Loads this quaternion in a XMVECTOR.
+    /// </summary>
+    inline DirectX::XMVECTOR Load() const
+    {
+        return XMLoadFloat4(this);
+    }
+    /// <summary>
+    /// Stores the provided XMVECTOR in this quaternion.
+    /// </summary>
+    inline void Store(DirectX::FXMVECTOR v)
+    {
+        XMStoreFloat4(this, v);
+    }
 
-	static const Quaternion Identity; // Shorthand for writing Quaternion(0, 0, 0, 1).
+    static const Quaternion Identity; // Shorthand for writing Quaternion(0, 0, 0, 1).
 
-	inline void SetRotationFromAngles(float yaw, float pitch, float roll)
-	{
-		using namespace DirectX;
-		Store(DirectX::XMQuaternionRotationRollPitchYaw(
-			XMConvertToRadians(pitch), 
-			XMConvertToRadians(yaw), 
-			XMConvertToRadians(roll)
-		));
-	}
+    inline void SetRotationFromAngles(float yaw, float pitch, float roll)
+    {
+        using namespace DirectX;
+        Store(DirectX::XMQuaternionRotationRollPitchYaw(
+            XMConvertToRadians(pitch), 
+            XMConvertToRadians(yaw), 
+            XMConvertToRadians(roll)
+        ));
+    }
 
-	inline DirectX::XMMATRIX GetRotationMatrix() const
-	{
-		return DirectX::XMMatrixRotationQuaternion(Load());
-	}
+    inline DirectX::XMMATRIX GetRotationMatrix() const
+    {
+        return DirectX::XMMatrixRotationQuaternion(Load());
+    }
 };
 }
