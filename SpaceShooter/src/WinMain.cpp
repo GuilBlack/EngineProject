@@ -2,10 +2,6 @@
 #include <Windows.h>
 #include "Game.h"
 
-#if defined(DEBUG) | defined(_DEBUG)
-#include <crtdbg.h>
-#endif
-
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) && !defined(__CYGWIN__)
 
 // Entry point for Windows applications

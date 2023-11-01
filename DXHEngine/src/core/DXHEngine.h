@@ -25,20 +25,49 @@ public:
 		static DXHEngine instance;
 		return instance;
 	}
+	Timer& GetTimer() noexcept { return m_GameTimer; }
 
 	// Initializes the application
-	bool Init(AppProperties props, UpdateFunc gameUpdate);
+	bool Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate, UpdateFunc gameDestroy);
 	// Starts the main loop
 	void Run();
+
+#pragma region FlagsGettersAndSetters
+	bool IsPaused() const noexcept { return m_AppPaused; }
+	bool IsMinimized() const noexcept { return m_Minimized; }
+	bool IsMaximized() const noexcept { return m_Maximized; }
+	bool IsResizing() const noexcept { return m_Resizing; }
+	bool IsFullScreen() const noexcept { return m_IsFullScreen; }
+
+	void SetPaused(bool paused) noexcept { m_AppPaused = paused; }
+	void SetMinimized(bool minimized) noexcept { m_Minimized = minimized; }
+	void SetMaximized(bool maximized) noexcept { m_Maximized = maximized; }
+	void SetResizing(bool resizing) noexcept { m_Resizing = resizing; }
+	void SetFullScreen(bool fullscreen) noexcept { m_IsFullScreen = fullscreen; }
+#pragma endregion
+
+protected:
+	// Updates the application
+	virtual void Update(const Timer&) {};
 
 private:
 	AppProperties m_Props;
 	Timer m_GameTimer = Timer();
 	InputManager m_InputManager = InputManager();
+	UpdateFunc m_GameInit = nullptr;
 	UpdateFunc m_GameUpdate = nullptr;
+	UpdateFunc m_GameDestroy = nullptr;
 	bool m_IsRunning = false;
 
 	RenderContext* m_pContext = nullptr;
+
+#pragma region Flags
+	bool m_AppPaused = false;
+	bool m_Minimized = false;
+	bool m_Maximized = false;
+	bool m_Resizing = false;
+	bool m_IsFullScreen = false;
+#pragma endregion
 
 private:
 	// Private constructor, only the static instance is allowed
@@ -51,7 +80,7 @@ private:
 	bool InitDX12();
 
 	// Updates the FPS counter
-	void UpdateFpsCounter(const Timer&);
+	void UpdateFpsCounter();
 
 	// Stops the main loop
 	void Shutdown();

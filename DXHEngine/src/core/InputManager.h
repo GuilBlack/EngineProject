@@ -29,13 +29,19 @@ public:
 	/// Sets the followed keys (keys that will be updated every frame).
 	/// </summary>
 	void SetFollowedKeys(const std::vector<int>& keys);
-    /// <summary>
-    /// Gets the state of the key.
-    /// </summary>
-    inline KeyState GetKeyState(int key) const { return m_KeyStates.at(key); }
+	/// <summary>
+	/// Gets the state of the key.
+	/// </summary>
+	inline KeyState GetKeyState(int key) const { return m_KeyStates.at(key); }
+	/// <summary>
+	/// Toggle the cursor lock and visibility.
+	/// </summary>
+	void ToggleCursorLock(bool locked);
+	void ToggleCursorLock();
 
 private:
 	Vector2 m_MouseDelta = Vector2::Zero;
 	std::unordered_map<int, KeyState> m_KeyStates;
+	bool m_CursorLocked = false;
 };
 }
