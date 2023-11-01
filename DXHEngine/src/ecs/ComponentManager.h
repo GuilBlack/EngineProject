@@ -31,14 +31,13 @@ public:
 	/// </summary>
 	T& Assign(GameObject* target)
 	{
-		if (HasComponent(target))
-			throw std::exception("The game object already has a component of this type.");
+		assert(!HasComponent(target) && "The target already has this component.");
 
 		// Find a component that is not in use
 		static size_t index = 0;
 		for (size_t i = 0; i < MAX_GO_COUNT; i++)
 		{
-			T& pComponent = s_Components[index];
+			T& pComponent = m_Components[index];
 			if (pComponent.pGameObject == nullptr)
 			{
 				pComponent.pGameObject = target; // Mark as used (by the target)
@@ -83,7 +82,7 @@ public:
 
 private:
 	// List of all components of the given type
-	T s_Components[MAX_GO_COUNT];
+	T m_Components[MAX_GO_COUNT];
 	// All game objects that have a component of T type
 	std::unordered_map<const GameObject*, T&> m_UsedComponentsMap;
 };

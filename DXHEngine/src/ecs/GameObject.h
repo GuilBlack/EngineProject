@@ -8,7 +8,7 @@ class GameObject
 	// GameObjects are not copyable, as they are managed by ComponentManagers
 	GameObject(const GameObject&) = delete;
 public:
-	GameObject() = default;
+	GameObject();
 	~GameObject();
 
 	/// <summary>
