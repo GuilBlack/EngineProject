@@ -57,6 +57,8 @@ private:
 	/// <param name="gameObjects">The gameObjects to check for collisions. All gameObjects must have a sphere collider</param>
 	static std::vector<Collision> DetectCollisions(Cell& cell);
 
-	void ApplyCollisions(std::vector<Collision> collision, float deltaTime);
+	void ApplyCollisions(std::vector<Collision>& collision, float deltaTime);
+
+	void UpdateRigidBodies(const Timer& gt);
 };
 }

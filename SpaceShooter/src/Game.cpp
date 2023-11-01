@@ -15,19 +15,30 @@ void Game::StartEngine()
 void Game::Init(const DXH::Timer& gt)
 {
 	using namespace DXH;
+
 	GameObject* pObject = new GameObject();
 	GameObject* pObject2 = new GameObject();
-	pObject->Add<Transform>();
-	Transform* transform = pObject2->Add<Transform>();
-	transform->Position = { 0.0f, 2.0f, 0.0f };
+	Transform* transform = pObject->Add<Transform>();
+	Transform* transform2 = pObject2->Add<Transform>();
+	RigidBody* rigidBody = pObject->Add<RigidBody>();
+	RigidBody* rigidBody2 = pObject2->Add<RigidBody>();
+	auto col1 = pObject->Add<SphereCollider>();
+	auto col2 = pObject2->Add<SphereCollider>();
+	col1->Radius = 1.0f;
+	col2->Radius = 1.0f;
+	transform->Position = { 0.f, 1.0f, 0.0f };
+	transform2->Position = { -5.0f, 1.0f, 0.0f };
 	Mesh* mesh = pObject->Add<Mesh>();
 	Mesh* mesh2 = pObject2->Add<Mesh>();
-	mesh->Geo = RendererResource::GetGeometry("Cube");
+	rigidBody->Velocity = { -500.0f, 0.0f, 0.0f };
+	rigidBody2->Velocity = { 500.0f, 0.0f, 0.0f };
+	mesh->Geo = RendererResource::GetGeometry("Sphere");
 	mesh->Mat = RendererResource::GetMaterial("SimpleMaterial");
 	mesh2->Geo = RendererResource::GetGeometry("Sphere");
 	mesh2->Mat = RendererResource::GetMaterial("SimpleMaterial");
 	m_GameObjects.emplace_back(pObject);
 	m_GameObjects.emplace_back(pObject2);
+
 }
 
 void Game::Update(const DXH::Timer& gt)
