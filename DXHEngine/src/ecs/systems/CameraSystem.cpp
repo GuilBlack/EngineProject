@@ -22,14 +22,13 @@ void DXH::CameraSystem::Update(const Timer& gt)
 		auto transform = transformMap.at(go);
 		Matrix rotationMatrix = transform->Rotation.GetRotationMatrix();
 		Vector3 forward = Vector3::Forward;
-		cam->Target = XMVector3Normalize(XMVector3Transform(forward.Load(), rotationMatrix.Load()));
+		cam->Target = XMVector3Normalize(XMVector3Transform(forward.Load(), rotationMatrix.Load())) + transform->Position.Load();
 		cam->View = XMMatrixLookAtLH(transform->Position.Load(), cam->Target.Load(), Vector3::Up.Load());
 		cam->Proj = XMMatrixPerspectiveFovLH(
-			cam->fieldOfView,
+			XMConvertToRadians(cam->FieldOfView),
 			(float)Window::GetInstance().GetWidth() / Window::GetInstance().GetHeight(),
 			cam->NearPlan,
 			cam->FarPlan
 		);
-
 	}
 }

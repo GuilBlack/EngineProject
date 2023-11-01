@@ -11,7 +11,7 @@ namespace DXH {
 		Matrix GetViewMatrix() const;
 		Matrix GetViewProjectionMatrix() const;
 
-		float fieldOfView = 65.f;
+		float FieldOfView = 65.f;
 		float NearPlan = 0.001f;
 		float FarPlan = 1000.f;
 		bool IsPrimary = false;

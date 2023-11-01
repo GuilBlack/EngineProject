@@ -98,8 +98,8 @@ void Renderer::BeginFrame(const Camera& camera)
 		.Proj = proj,
 		.ViewProj = viewProj,
 		.EyePosW = {0.f, 0.f, -5.f},
-		.NearZ = 0.001f,
-		.FarZ = 1000.f,
+		.NearZ = camera.NearPlan,
+		.FarZ = camera.FarPlan,
 		.TotalTime = 0.f,
 		.RenderTargetSize = 
 		{

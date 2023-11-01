@@ -17,9 +17,10 @@ void Game::Init(const DXH::Timer& gt)
 	using namespace DXH;
 	GameObject* pObject = new GameObject();
 	GameObject* pObject2 = new GameObject();
-	pObject->Add<Transform>();
+	Transform& t1 = *(pObject->Add<Transform>());
+	t1.Position = { 0.0f, -4.0f, 0.0f };
+
 	Transform* transform = pObject2->Add<Transform>();
-	transform->Position = { 0.0f, 2.0f, 0.0f };
 	Mesh* mesh = pObject->Add<Mesh>();
 	Mesh* mesh2 = pObject2->Add<Mesh>();
 	mesh->Geo = RendererResource::GetGeometry("Cube");
@@ -33,13 +34,19 @@ void Game::Init(const DXH::Timer& gt)
 	GameObject* pCamera = new GameObject();
 	Transform& camTransform = *(pCamera->Add<Transform>());
 	camTransform.Position = { 0.0f, 0.0f, -5.0f };
-	camTransform.Rotation.SetRotationFromAngles(300.0f, 0.0f, 0.0f);
+	camTransform.Rotation.SetRotationFromAngles(0.0f, 0.0f, 0.0f);
 	Camera& cam = *(pCamera->Add<Camera>());
 	cam.IsPrimary = true;
+	m_GameObjects.emplace_back(pCamera);
 }
 
 void Game::Update(const DXH::Timer& gt)
 {
+	DXH::Transform* transform = m_GameObjects[0]->Get<DXH::Transform>();
+	transform->Position.y = sinf(gt.TotalTime()) * 5.0f;
+	DXH::Transform* camTransform = m_GameObjects[2]->Get<DXH::Transform>();
+	camTransform->Rotation.SetRotationFromAngles(gt.TotalTime() * 60.f, 0.f, 0.f);
+
 	gt.DeltaTime();
 }
 
