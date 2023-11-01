@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Geometry.h"
 #include "RendererResource.h"
+#include "UploadBuffer.h"
 #include "Shader.h"
 #include "Material.h"
 #include "../ecs/components/Transform.h"
@@ -30,7 +31,7 @@ void Renderer::Init()
 
 	RendererResource::GetInstance().Init();
 	BaseShader::s_ObjectCB = std::vector<UploadBuffer<ObjectConstants>>();
-	BaseShader::s_ObjectCB.reserve(1000);
+	BaseShader::s_ObjectCB.reserve(MAX_GO_COUNT);
 
 	XMVECTOR pos = XMVectorSet(0.f, 0.f, -10.f, 1.f);
 	XMVECTOR target = XMVectorSet(0.f, 0.f, 0.f, 1.f);

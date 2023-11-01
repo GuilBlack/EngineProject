@@ -53,5 +53,7 @@
     <ClInclude Include="src\DXHMaths.h" />
     <ClInclude Include="src\maths\Vector2.h" />
     <ClInclude Include="src\ecs\systems\RenderSystem.h" />
+    <ClInclude Include="src\renderer\UploadBuffer.h" />
+    <ClInclude Include="src\maths\Vector4.h" />
   </ItemGroup>
 </Project>

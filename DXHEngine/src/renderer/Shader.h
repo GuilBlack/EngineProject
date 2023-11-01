@@ -1,4 +1,5 @@
 #pragma once
+#include "UploadBuffer.h"
 #include "ConstantBuffers.h"
 
 namespace DXH
@@ -8,7 +9,9 @@ namespace DXH
 /// </summary>
 enum class ShaderProgramType
 {
+	None,
 	SimpleShader,
+	BasicPhongShader
 };
 
 
@@ -20,6 +23,7 @@ enum class InputLayoutType
 	Position,
 	PositionColor,
 	PositionTexcoord,
+	PositionNormal,
 	PositionNormalColor,
 	PositionNormalTexcoord
 };
@@ -31,6 +35,12 @@ struct BasicVertex
 {
 	DirectX::XMFLOAT3 Position;
 	DirectX::XMFLOAT4 Color;
+};
+
+struct PosNormVertex
+{
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT3 Normal;
 };
 
 struct Geometry;
@@ -80,7 +90,10 @@ public:
 	/// <summary>
 	/// Unbinds the shader from the given graphics command list.
 	/// </summary>
-	virtual void Unbind(ID3D12GraphicsCommandList* cl) {}
+	virtual void Unbind(ID3D12GraphicsCommandList* cl) 
+	{
+		cl->SetGraphicsRootSignature(nullptr);
+	}
 
 	/// <summary>
 	/// Gets the type of the shader program.
@@ -116,7 +129,7 @@ protected:
 	std::vector<D3D12_INPUT_ELEMENT_DESC> m_InputLayout;
 
 	UploadBuffer<PassConstants> m_PassCB;
-	ShaderProgramType m_Type = ShaderProgramType::SimpleShader;
+	ShaderProgramType m_Type = ShaderProgramType::None;
 	static std::vector<UploadBuffer<ObjectConstants>> s_ObjectCB;
 
 protected:
@@ -149,12 +162,18 @@ public:
 	/// Binds the shader to the given graphics command list.
 	/// </summary>
 	virtual void Bind(ID3D12GraphicsCommandList* cl) override;
-
-	/// <summary>
-	/// Unbinds the shader from the given graphics command list.
-	/// </summary>
-	virtual void Unbind(ID3D12GraphicsCommandList* cl) override;
 private:
+};
+
+class BasicPhongShader : public BaseShader
+{
+public:
+	BasicPhongShader();
+
+	virtual void Bind(ID3D12GraphicsCommandList* cl) override;
+
+private:
+	PhongMaterialConstants m_MaterialCB;
 };
 }
 

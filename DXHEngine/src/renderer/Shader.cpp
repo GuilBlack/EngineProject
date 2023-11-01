@@ -127,31 +127,6 @@ std::vector<D3D12_INPUT_ELEMENT_DESC> BaseShader::CreateInputLayout(InputLayoutT
 	return inputLayout;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// SimpleShader //////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-SimpleShader::SimpleShader()
-	: BaseShader()
-{
-	CD3DX12_ROOT_PARAMETER rootParameters[2];
-
-	rootParameters[0].InitAsConstantBufferView(0); // b0
-	rootParameters[1].InitAsConstantBufferView(1); // b1
-
-	BuildRootSignature(rootParameters, 2);
-}
-
-void SimpleShader::Bind(ID3D12GraphicsCommandList* cl)
-{
-	BaseShader::Bind(cl);
-}
-
-void SimpleShader::Unbind(ID3D12GraphicsCommandList * cl)
-{
-	cl->SetGraphicsRootSignature(nullptr);
-}
-
 void BaseShader::BuildRootSignature(CD3DX12_ROOT_PARAMETER* rootParameters, uint32_t numParameters)
 {
 	ID3DBlob* serializedRootSignature = nullptr;
@@ -184,11 +159,13 @@ void BaseShader::BuildPSO()
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc =
 	{
 		.pRootSignature = m_pRootSignature,
-		.VS = {
+		.VS = 
+		{
 			reinterpret_cast<BYTE*>(m_pVS->GetBufferPointer()),
 			m_pVS->GetBufferSize()
 		},
-		.PS = {
+		.PS = 
+		{
 			reinterpret_cast<BYTE*>(m_pPS->GetBufferPointer()),
 			m_pPS->GetBufferSize()
 		},
@@ -206,6 +183,45 @@ void BaseShader::BuildPSO()
 	psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	Renderer::GetRenderContext()->CreatePSO(psoDesc, &m_pPSO);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// SimpleShader //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+SimpleShader::SimpleShader()
+	: BaseShader()
+{
+	m_Type = ShaderProgramType::SimpleShader;
+	CD3DX12_ROOT_PARAMETER rootParameters[2];
+
+	rootParameters[0].InitAsConstantBufferView(0); // b0
+	rootParameters[1].InitAsConstantBufferView(1); // b1
+
+	BuildRootSignature(rootParameters, 2);
+}
+
+void SimpleShader::Bind(ID3D12GraphicsCommandList* cl)
+{
+	BaseShader::Bind(cl);
+}
+
+BasicPhongShader::BasicPhongShader()
+{
+	m_Type = ShaderProgramType::BasicPhongShader;
+
+	CD3DX12_ROOT_PARAMETER rootParameters[3];
+
+	rootParameters[0].InitAsConstantBufferView(0); // b0
+	rootParameters[1].InitAsConstantBufferView(1); // b1
+	rootParameters[2].InitAsConstantBufferView(2); // b2
+
+	BuildRootSignature(rootParameters, 3);
+}
+
+void BasicPhongShader::Bind(ID3D12GraphicsCommandList* cl)
+{
+	BaseShader::Bind(cl);
 }
 
 }

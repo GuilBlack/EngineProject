@@ -27,11 +27,15 @@ void RendererResource::Init()
 
 void RendererResource::CreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout)
 {
+	if (m_Shaders.contains(name))
+		return;
 	m_Shaders[name] = BaseShader::Create(vsFilePath, psFilePath, type, layout);
 }
 
 void RendererResource::CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName)
 {
+	if (m_Materials.contains(materialName))
+		return;
 	if (!m_Shaders.contains(shaderName))
 	{
 		// TODO: Add error handling

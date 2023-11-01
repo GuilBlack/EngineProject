@@ -1,4 +1,5 @@
 #pragma once
+#include "../maths/Vector3.h"
 
 namespace DXH
 {
@@ -9,6 +10,15 @@ struct Geometry;
 struct Mesh;
 struct Material;
 enum class MaterialType;
+
+struct Environment
+{
+	Vector3 SunDirection = { 0.0f, 0.0f, 0.0f };
+	Vector3 SunColor = { 1.0f, 1.0f, 1.0f };
+	Vector3 AmbientColor = { 1.0f, 1.0f, 1.0f };
+	float AmbientIntensity = 0.1f;
+	float SunIntensity = 1.0f;
+};
 
 class RendererResource
 {

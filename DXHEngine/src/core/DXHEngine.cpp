@@ -70,6 +70,7 @@ bool DXHEngine::InitWindow()
 
 bool DXHEngine::InitDX12()
 {
+	// TODO: Move to Init Renderer
 #if defined(DEBUG) || defined(_DEBUG)
 	ID3D12Debug* debugController;
 	ASSERT_HRESULT(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
