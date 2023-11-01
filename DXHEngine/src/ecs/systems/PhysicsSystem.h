@@ -52,11 +52,11 @@ private:
 
 	std::vector<Cell> SortColliders(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects, float cellSize);
 	/// <summary>
-	/// Detects any collisions between all passed gameObjects
+	/// Detects any collisions between all gameObjects in the passed cell.
 	/// </summary>
 	/// <param name="gameObjects">The gameObjects to check for collisions. All gameObjects must have a sphere collider</param>
-	static std::vector<Collision> DetectCollisions(std::vector<Cell>);
+	static std::vector<Collision> DetectCollisions(Cell& cell);
 
-	void UpdateCollision(std::vector<Collision> collision, float deltaTime);
+	void ApplyCollisions(std::vector<Collision> collision, float deltaTime);
 };
 }
