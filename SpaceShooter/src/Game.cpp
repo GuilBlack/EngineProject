@@ -34,12 +34,8 @@ void Game::Init(const DXH::Timer& gt)
 
 void Game::Update(const DXH::Timer& gt)
 {
-    DXH::Transform* transform = m_GameObjects[0]->Get<DXH::Transform>();
-    transform->Position.y = sinf(gt.TotalTime()) * 5.0f;
-    DXH::Transform* camTransform = m_GameObjects[2]->Get<DXH::Transform>();
-    camTransform->Rotation.SetRotationFromAngles(gt.TotalTime() * 60.f, 0.f, 0.f);
-
-    gt.DeltaTime();
+    m_GameObjects[0]->Get<DXH::Transform>().Position.y = sinf(gt.TotalTime()) * 5.0f;
+    m_GameObjects[2]->Get<DXH::Transform>().Rotation.SetRotationFromAngles(gt.TotalTime() * 60.f, 0.f, 0.f);
 }
 
 void Game::Destroy(const DXH::Timer& gt)
