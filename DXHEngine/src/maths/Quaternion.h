@@ -31,5 +31,10 @@ struct Quaternion : public DirectX::XMFLOAT4
 	{
 		Store(DirectX::XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
 	}
+
+	inline DirectX::XMMATRIX GetRotationMatrix() const
+	{
+		return DirectX::XMMatrixRotationQuaternion(Load());
+	}
 };
 }
