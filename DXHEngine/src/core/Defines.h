@@ -3,6 +3,7 @@
 
 #if defined(_DEBUG) || defined(DEBUG)
 
+#include <crtdbg.h>
 #include <debugapi.h>
 
 // Debug output for std::string.
@@ -32,6 +33,9 @@
 		assert(false);									\
 	}													\
 }
+
+// Replace new to check for memory leaks
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 
 #else
 #define VS_DB_OUT_A( s )
