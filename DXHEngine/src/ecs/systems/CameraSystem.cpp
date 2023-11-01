@@ -11,6 +11,9 @@ void DXH::CameraSystem::Update(const Timer& gt)
 
 	for (auto& pair : cameraMap)
 	{
+		if (!pair.second->IsPrimary)
+			continue;
+
 		Vector3 forward = Vector3::Forward;
 		auto go = pair.first;
 		auto transform = transformMap.at(go);

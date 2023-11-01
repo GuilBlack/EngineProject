@@ -6,7 +6,7 @@ namespace DXH {
 
 	struct Camera : public Component
 	{
-		Camera();
+		Camera() {}
 
 		Matrix GetViewMatrix() const;
 		Matrix GetViewProjectionMatrix() const;
@@ -14,7 +14,7 @@ namespace DXH {
 		float fieldOfView = 65.f;
 		float NearPlan = 0.01f;
 		float FarPlan = 1000.f;
-		bool Primary = false;
+		bool IsPrimary = false;
 
 		Matrix View = Matrix::Identity;
 		Matrix Proj = Matrix::Identity;
