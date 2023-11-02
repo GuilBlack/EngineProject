@@ -144,6 +144,7 @@
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
     <ClCompile Include="src\ecs\systems\RenderSystem.cpp" />
     <ClCompile Include="src\ecs\components\Camera.cpp" />
+    <ClCompile Include="src\maths\Shorthands.cpp" />
     <ClCompile Include="src\maths\Vector4.cpp" />
     <ClCompile Include="src\renderer\RendererResource.cpp" />
     <ClCompile Include="src\renderer\Shader.cpp" />
