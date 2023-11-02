@@ -43,6 +43,10 @@ public:
     /// Gets the state of the key.
     /// </summary>
     inline KeyState GetKeyState(int key) const { return m_KeyStates.at(key); }
+    ///<summary>
+    /// Check key if is pressed
+    ///</summary> 
+    inline bool IsKeyPressed(int key) const { return GetKeyState(key) == KeyState::Held || m_KeyStates.at(key) == KeyState::Pressed; }
     /// <summary>
     /// Toggle the cursor lock and visibility.
     /// </summary>
