@@ -23,7 +23,7 @@ public:
         return ComponentManager<T>::GetInstance().Assign(this);
     }
     /// <summary>
-    /// Gets a component from the game object, or nullptr if it doesn't have it.
+    /// Gets a component from the game object.
     /// </summary>
     template <ComponentConcept T> inline T& Get() const
     {

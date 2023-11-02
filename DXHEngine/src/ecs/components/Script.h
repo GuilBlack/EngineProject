@@ -1,6 +1,6 @@
 #pragma once
 #include "src/ecs/systems/ScriptingSystem.h" // The system that will update the script
-#include "src/ecs/Component.h" // Base class: Component
+#include "src/ecs/ComponentManager.h" // Base class Component and friend class Manager
 
 namespace DXH
 {
@@ -9,7 +9,7 @@ class Timer;
 /// <summary>
 /// Base class for all scripts.
 /// </summary>
-class Script : private Component
+class Script : public Component
 {
 public:
     Script() = default;
@@ -26,9 +26,6 @@ public:
     // OnDestroy is called when the script is removed from a game object.
     virtual void OnDestroy() {}
 
-    const GameObject* pGameObject = Component::pGameObject;
-
-private:
     void OnAssign() override
     {
         Awake();

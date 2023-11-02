@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Scripts/Rotator.h"
 
 void Game::StartEngine()
 {
@@ -18,6 +19,7 @@ void Game::Init(const DXH::Timer& gt)
     GameObject* pObject = new GameObject();
     GameObject* pObject2 = new GameObject();
     pObject2->Get<Transform>().Position = { 0.0f, 2.0f, 0.0f };
+    pObject->Add<Rotator>(); // Scripting test
     pObject->Add<Mesh>().SetGeoAndMatByName("Cube", "SimpleMaterial");
     pObject2->Add<Mesh>().SetGeoAndMatByName("Sphere", "SimpleMaterial");
     m_GameObjects.emplace_back(pObject);
@@ -34,8 +36,6 @@ void Game::Init(const DXH::Timer& gt)
 
 void Game::Update(const DXH::Timer& gt)
 {
-    m_GameObjects[0]->Get<DXH::Transform>().Position.y = sinf(gt.TotalTime()) * 5.0f;
-    m_GameObjects[2]->Get<DXH::Transform>().Rotation.SetRotationFromAngles(gt.TotalTime() * 60.f, 0.f, 0.f);
 }
 
 void Game::Destroy(const DXH::Timer& gt)
