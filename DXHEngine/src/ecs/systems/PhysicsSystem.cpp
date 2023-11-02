@@ -112,11 +112,11 @@ std::vector<Collision> PhysicsSystem::DetectCollisions(Cell& cell)
 		DirectX::XMVECTOR posA = ColliderPosition(collA->pGameObject->Get<Transform>(), collA);
 
 		// For each pair after the current one
-		for (size_t j = i + 1; j < length - 1; j++)
+		for (size_t j = i + 1; j < length; j++)
 		{
 			// Get its collider position
 			SphereCollider* collB = cell.Colliders[j];
-			DirectX::XMVECTOR posB = ColliderPosition(collA->pGameObject->Get<Transform>(), collB);
+			DirectX::XMVECTOR posB = ColliderPosition(collB->pGameObject->Get<Transform>(), collB);
 
 			// Add the radii and compare them to the distance between the two positions
 			float radius = collA->Radius + collB->Radius;
@@ -125,7 +125,7 @@ std::vector<Collision> PhysicsSystem::DetectCollisions(Cell& cell)
 			{
 				// There is a collision, add it to the vector
 				collisions.push_back({collA, collB, CalculateCollisionNormal(posA, posB)});
-				VS_DB_OUT_A("Collision detected");
+				VS_DB_OUT_A("TEST");
 			}
 		}
 	}
