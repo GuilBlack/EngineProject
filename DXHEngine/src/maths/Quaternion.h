@@ -15,9 +15,22 @@ struct Quaternion : public Vector4
     // Shorthand for writing Quaternion(0, 0, 0, 1).
     static const Quaternion Identity;
 
-    inline void SetRotationFromAngles(float x, float y, float z)
+    Vector3 GetEulerAngles() const
+    {
+        return Vector3(
+            DirectX::XMConvertToDegrees(std::atan2(2.f * (x * y + w * z), 1.f - 2.f * (x * x + y * y))),
+            DirectX::XMConvertToDegrees(std::asin(-2.f * (y * z - w * x))),
+            DirectX::XMConvertToDegrees(std::atan2(2.f * (x * z + w * y), 1.f - 2.f * (y * y + z * z))));
+    }
+
+    inline void SetEulerAngles(float x, float y, float z)
     {
         Store(DirectX::XMQuaternionRotationRollPitchYaw(x, y, z));
+    }
+
+    inline void SetEulerAngles(Vector3 v)
+    {
+        Store(DirectX::XMQuaternionRotationRollPitchYawFromVector(v.Load()));
     }
 
     inline DirectX::XMMATRIX GetRotationMatrix() const
