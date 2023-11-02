@@ -9,71 +9,81 @@ namespace DXH
 template <ComponentConcept T>
 class ComponentManager
 {
-	// Delete the constructors, it's a static class
-	ComponentManager() = delete;
-	~ComponentManager() = delete;
+private:
+    ComponentManager()
+    {
+        // Initialize the used components map
+        m_UsedComponentsMap.reserve(MAX_GO_COUNT);
+    }
+    ~ComponentManager() = default;
 
 public:
-	/// <summary>
-	/// Gets a component from the pool and assigns it to the given game object.
-	/// </summary>
-	static T* Get(GameObject* target)
-	{
-		static bool initialized = false;
-		if (!initialized)
-		{
-			Init();
-			initialized = true;
-		}
+    /// <summary>
+    /// Gets the singleton instance of this component manager.
+    /// </summary>
+    static ComponentManager<T>& GetInstance()
+    {
+        static ComponentManager<T> instance;
+        return instance;
+    }
+    /// <summary>
+    /// Gets a component from the pool and assigns it to the given game object.
+    /// </summary>
+    T& Assign(GameObject* target)
+    {
+        assert(!HasComponent(target) && "The target already has this component.");
 
-		// Find a component that is not in use
-		static size_t index = 0;
-		for (size_t i = 0; i < MAX_GO_COUNT; i++)
-		{
-			if (s_Components[index].pGameObject == nullptr)
-			{
-				s_Components[index].pGameObject = target; // Mark as used (by the target)
-				return &s_Components[index];
-			}
-			index = (index + i) % MAX_GO_COUNT;
-		}
-		return nullptr; // No components available
-	}
-	/// <summary>
-	/// Releases a component back to the pool.
-	/// The component is then reset to its default state.
-	/// </summary>
-	static void Release(T* component)
-	{
-		if (component == nullptr) return;
-		UsedComponentsMap().erase(component->pGameObject);
-		component->pGameObject = nullptr; // Mark as unused
-		component->Reset();
-	}
-	/// <summary>
-	/// Gets the map of all used components of the given type.
-	/// </summary>
-	inline static std::unordered_map<const GameObject*, T*>& UsedComponentsMap()
-	{
-		static std::unordered_map<const GameObject*, T*> map;
-		return map;
-	}
+        // Find a component that is not in use
+        static size_t index = 0;
+        for (size_t i = 0; i < MAX_GO_COUNT; i++)
+        {
+            T& pComponent = m_Components[index];
+            if (pComponent.pGameObject == nullptr)
+            {
+                pComponent.pGameObject = target; // Mark as used (by the target)
+                pComponent.OnAssign();
+                m_UsedComponentsMap.insert({target, pComponent});
+                return pComponent;
+            }
+            index = (index + i) % MAX_GO_COUNT;
+        }
+        throw std::exception("No components available");
+    }
+    /// Detaches from the given game object the component of type T if it has one and returns it to the pool.
+    /// </summary>
+    void Detach(GameObject* pGameObject)
+    {
+        if (HasComponent(pGameObject))
+        {
+            T& pComponent = m_UsedComponentsMap.at(pGameObject);
+            pComponent.OnDetach();
+            pComponent.pGameObject = nullptr; // Mark as unused
+            m_UsedComponentsMap.erase(pGameObject);
+        }
+    }
+    /// <summary>
+    /// Returns true if the given game object has a component of type T.
+    /// </summary>
+    bool HasComponent(const GameObject* pGameObject) const
+    {
+        return m_UsedComponentsMap.contains(pGameObject);
+    }
+    /// <summary>
+    /// Returns the component of the given game object.
+    /// </summary>
+    T& GetComponent(const GameObject* pGameObject) const
+    {
+        return m_UsedComponentsMap.at(pGameObject);
+    }
+    /// <summary>
+    /// Returns the map of all game objects that have a component of type T.
+    /// </summary>
+    std::unordered_map<const GameObject*, T&>& GetUsedComponentsMap() { return m_UsedComponentsMap; }
 
 private:
-	/// <summary>
-	/// Initializes the component manager. Called automatically when the first component is requested.
-	/// </summary>
-	static void Init()
-	{
-		for (size_t i = 0; i < MAX_GO_COUNT; i++)
-		{
-			s_Components[i] = T();
-			s_Components[i].Reset();
-			s_Components[i].pGameObject = nullptr;
-		}
-	}
-
-	// Array of components (size is MAX_GO_COUNT)
-	inline static T* s_Components = new T[MAX_GO_COUNT];
+    // List of all components of the given type
+    T m_Components[MAX_GO_COUNT];
+    // All game objects that have a component of T type
+    std::unordered_map<const GameObject*, T&> m_UsedComponentsMap;
 };
 }

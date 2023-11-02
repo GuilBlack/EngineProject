@@ -100,6 +100,17 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\ecs\systems\ScriptingSystem.h" />
+    <ClInclude Include="src\ecs\components\Script.h" />
+    <ClInclude Include="src\ecs\systems\CameraSystem.h" />
+    <ClInclude Include="src\ecs\systems\RenderSystem.h" />
+    <ClInclude Include="src\maths\Vector4.h" />
+    <ClInclude Include="src\ecs\components\Camera.h" />
+    <ClInclude Include="src\renderer\Material.h" />
+    <ClInclude Include="src\renderer\RendererResource.h" />
+    <ClInclude Include="src\ecs\components\Render.h" />
+    <ClInclude Include="src\renderer\Shader.h" />
+    <ClInclude Include="src\renderer\Geometry.h" />
     <ClInclude Include="src\maths\Matrix.h" />
     <ClInclude Include="src\DXHMaths.h" />
     <ClInclude Include="src\maths\Quaternion.h" />
@@ -119,17 +130,28 @@
     <ClInclude Include="src\renderer\SwapChain.h" />
     <ClInclude Include="src\ecs\ComponentManager.h" />
     <ClInclude Include="src\ecs\components\Physics.h" />
+    <ClInclude Include="src\renderer\ConstantBuffers.h" />
+    <ClInclude Include="src\renderer\UploadBuffer.h" />
+    <ClInclude Include="src\renderer\Util.h" />
     <ClInclude Include="src\ecs\System.h" />
     <ClInclude Include="src\maths\Vector3.h" />
     <ClInclude Include="src\maths\Vector2.h" />
+    <ClInclude Include="src\DXHScripting.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
+    <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
+    <ClCompile Include="src\ecs\systems\RenderSystem.cpp" />
+    <ClCompile Include="src\ecs\components\Camera.cpp" />
+    <ClCompile Include="src\renderer\RendererResource.cpp" />
+    <ClCompile Include="src\renderer\Shader.cpp" />
+    <ClCompile Include="src\ecs\systems\PhysicsSystem.cpp" />
+    <ClCompile Include="src\renderer\Geometry.cpp" />
     <ClCompile Include="src\core\InputManager.cpp" />
     <ClCompile Include="src\maths\Matrix.cpp" />
     <ClCompile Include="src\maths\Quaternion.cpp" />
     <ClCompile Include="src\ecs\GameObject.cpp" />
     <ClCompile Include="src\ecs\System.cpp" />
-    <ClCompile Include="src\ecs\systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\renderer\RenderContext.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
     <ClCompile Include="src\core\DXHEngine.cpp" />
