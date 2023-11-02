@@ -8,7 +8,6 @@ void Game::StartEngine()
             .WindowTitle = L"Space Shooter",
         },
         [](const Timer& gt) { GetInstance().Init(gt); },
-        [](const Timer& gt) { GetInstance().Update(gt); },
         [](const Timer& gt) { GetInstance().Destroy(gt); });
     DXHEngine::GetInstance().Run();
 }
@@ -32,10 +31,6 @@ void Game::Init(const DXH::Timer& gt)
     camTransform.Rotation.SetRotationFromAngles(0.0f, 0.0f, 0.0f);
     pCamera->Add<Camera>().IsPrimary = true;
     m_GameObjects.emplace_back(pCamera);
-}
-
-void Game::Update(const DXH::Timer& gt)
-{
 }
 
 void Game::Destroy(const DXH::Timer& gt)

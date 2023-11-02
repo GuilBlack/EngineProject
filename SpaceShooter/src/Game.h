@@ -31,12 +31,6 @@ private:
     void Init(const DXH::Timer& gt);
 
     /// <summary>
-    /// Called every frame from the engine.
-    /// </summary>
-    /// <param name="gt">Game timer, contains variables such as DeltaTime or TotalTime.</param>
-    void Update(const DXH::Timer& gt);
-
-    /// <summary>
     /// Destroys the game. Called once before the engine shuts down.
     ///  </summary>
     void Destroy(const DXH::Timer& gt);

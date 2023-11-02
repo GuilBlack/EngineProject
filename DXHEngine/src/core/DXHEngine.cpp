@@ -4,7 +4,7 @@
 
 namespace DXH
 {
-bool DXHEngine::Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate, UpdateFunc gameDestroy)
+bool DXHEngine::Init(AppProperties props, GameTimerFunc gameInit, GameTimerFunc gameDestroy)
 {
     VS_DB_OUT_W(L"Initializing DXHEngine...\n");
 
@@ -18,7 +18,6 @@ bool DXHEngine::Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUp
 
     m_InputManager.Update(); // First update to reset the mouse position
     m_GameInit = gameInit;
-    m_GameUpdate = gameUpdate;
     m_GameDestroy = gameDestroy;
 
     m_IsRunning = true;
@@ -31,20 +30,19 @@ void DXHEngine::Run()
     VS_DB_OUT_W(L"Welcome to DXHEngine! Main loop is starting...\n");
 
     m_GameTimer.Reset();
-    m_GameInit(m_GameTimer);
+    m_GameInit(m_GameTimer); // Allow the game to init its game objects
     while (m_IsRunning)
     {
         Window::GetInstance().PollEvents();
         UpdateFpsCounter();
         m_InputManager.Update();
         m_GameTimer.Tick();
-        m_GameUpdate(m_GameTimer);
 
         System::UpdateAll(m_GameTimer);
         UpdateFpsCounter();
     }
 
-    m_GameDestroy(m_GameTimer);
+    m_GameDestroy(m_GameTimer); // Allow the game to delete itself
     Cleanup();
 }
 

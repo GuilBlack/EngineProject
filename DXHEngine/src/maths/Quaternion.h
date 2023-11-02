@@ -1,40 +1,23 @@
 #pragma once
+#include "Vector4.h"
 
 namespace DXH
 {
-struct Quaternion : public DirectX::XMFLOAT4
+struct Quaternion : public Vector4
 {
     /// <summary>
     /// Creates an identity quaternion.
     /// </summary>
-    Quaternion();
-    Quaternion(float x, float y, float z, float w);
-    Quaternion(DirectX::FXMVECTOR v);
-    /// <summary>
-    /// Loads this quaternion in a XMVECTOR.
-    /// </summary>
-    inline DirectX::XMVECTOR Load() const
-    {
-        return XMLoadFloat4(this);
-    }
-    /// <summary>
-    /// Stores the provided XMVECTOR in this quaternion.
-    /// </summary>
-    inline void Store(DirectX::FXMVECTOR v)
-    {
-        XMStoreFloat4(this, v);
-    }
+    Quaternion() : Vector4(0.0f, 0.0f, 0.0f, 1.0f) {}
+    Quaternion(float x, float y, float z, float w) : Vector4(x, y, z, w) {}
+    Quaternion(DirectX::FXMVECTOR v) : Vector4(v) {}
 
-    static const Quaternion Identity; // Shorthand for writing Quaternion(0, 0, 0, 1).
+    // Shorthand for writing Quaternion(0, 0, 0, 1).
+    static const Quaternion Identity;
 
-    inline void SetRotationFromAngles(float yaw, float pitch, float roll)
+    inline void SetRotationFromAngles(float x, float y, float z)
     {
-        using namespace DirectX;
-        Store(DirectX::XMQuaternionRotationRollPitchYaw(
-            XMConvertToRadians(pitch), 
-            XMConvertToRadians(yaw), 
-            XMConvertToRadians(roll)
-        ));
+        Store(DirectX::XMQuaternionRotationRollPitchYaw(x, y, z));
     }
 
     inline DirectX::XMMATRIX GetRotationMatrix() const
@@ -42,4 +25,6 @@ struct Quaternion : public DirectX::XMFLOAT4
         return DirectX::XMMatrixRotationQuaternion(Load());
     }
 };
+
+const Quaternion Quaternion::Identity = Quaternion();
 }

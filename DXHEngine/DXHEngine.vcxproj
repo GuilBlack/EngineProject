@@ -104,6 +104,7 @@
     <ClInclude Include="src\ecs\components\Script.h" />
     <ClInclude Include="src\ecs\systems\CameraSystem.h" />
     <ClInclude Include="src\ecs\systems\RenderSystem.h" />
+    <ClInclude Include="src\maths\Color.h" />
     <ClInclude Include="src\maths\Vector4.h" />
     <ClInclude Include="src\ecs\components\Camera.h" />
     <ClInclude Include="src\renderer\Material.h" />
@@ -143,13 +144,13 @@
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
     <ClCompile Include="src\ecs\systems\RenderSystem.cpp" />
     <ClCompile Include="src\ecs\components\Camera.cpp" />
+    <ClCompile Include="src\maths\Vector4.cpp" />
     <ClCompile Include="src\renderer\RendererResource.cpp" />
     <ClCompile Include="src\renderer\Shader.cpp" />
     <ClCompile Include="src\ecs\systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\renderer\Geometry.cpp" />
     <ClCompile Include="src\core\InputManager.cpp" />
     <ClCompile Include="src\maths\Matrix.cpp" />
-    <ClCompile Include="src\maths\Quaternion.cpp" />
     <ClCompile Include="src\ecs\GameObject.cpp" />
     <ClCompile Include="src\ecs\System.cpp" />
     <ClCompile Include="src\renderer\RenderContext.cpp" />
