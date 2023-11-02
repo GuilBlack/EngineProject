@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector4.h"
+#include "Vector3.h"
 
 namespace DXH
 {
@@ -38,6 +39,4 @@ struct Quaternion : public Vector4
         return DirectX::XMMatrixRotationQuaternion(Load());
     }
 };
-
-const Quaternion Quaternion::Identity = Quaternion();
 }
