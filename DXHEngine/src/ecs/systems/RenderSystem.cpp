@@ -15,25 +15,26 @@ void DXH::RenderSystem::Update(const Timer& gt)
     auto& map = ComponentManager<Mesh>::GetInstance().GetUsedComponentsMap();
     auto& transformMap = ComponentManager<Transform>::GetInstance().GetUsedComponentsMap();
     auto& cameraMap = ComponentManager<Camera>::GetInstance().GetUsedComponentsMap();
-    Camera* cam = nullptr;
 
+    bool camInMap = false;
     for (auto& pair : cameraMap)
     {
-        if (pair.second->IsPrimary)
+        if (pair.second.IsPrimary)
         {
-            cam = pair.second;
+            Renderer::GetInstance().BeginFrame(pair.second);
+            camInMap = true;
             break;
         }
     }
 
-    Camera defaultCam;
-    if (cam == nullptr)
+    if (!camInMap)
     {
-        XMVECTOR pos = Vector3(0.f,0.f,-10.f).Load();
+        XMVECTOR pos = Vector3(0.f, 0.f, -10.f).Load();
         XMVECTOR target = XMVectorSet(0.f, 0.f, 0.f, 1.f);
         XMVECTOR up = XMVectorSet(0.f, 1.f, 0.f, 1.f);
         XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 
+        Camera defaultCam;
         defaultCam.View = view;
         defaultCam.Target = target;
         XMMATRIX proj = XMMatrixPerspectiveFovLH(
@@ -45,21 +46,18 @@ void DXH::RenderSystem::Update(const Timer& gt)
         defaultCam.Proj = proj;
         Renderer::GetInstance().BeginFrame(defaultCam);
     }
-    else
-    {
-        Renderer::GetInstance().BeginFrame(*cam);
-    }
 
     for (auto& pair : map)
     {
         auto go = pair.first;
-        auto mesh = pair.second;
-        auto transform = transformMap.at(go);
-        Renderer::GetInstance().Draw(*mesh, *transform);
+        auto& mesh = pair.second;
+        auto& transform = transformMap.at(go);
+        Renderer::GetInstance().Draw(mesh, transform);
     }
     Renderer::GetInstance().EndFrame();
 }
 
-void DXH::RenderSystem::Draw(Mesh * mesh, Transform transform)
-{}
+void DXH::RenderSystem::Draw(Mesh* mesh, Transform transform)
+{
+}
 }

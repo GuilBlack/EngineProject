@@ -20,6 +20,7 @@
     <ClCompile Include="src\maths\Matrix.cpp" />
     <ClCompile Include="src\maths\Vector2.cpp" />
     <ClCompile Include="src\ecs\systems\RenderSystem.cpp" />
+    <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
     <ClCompile Include="src\ecs\components\Camera.cpp" />
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
   </ItemGroup>
@@ -57,6 +58,9 @@
     <ClInclude Include="src\ecs\systems\RenderSystem.h" />
     <ClInclude Include="src\renderer\UploadBuffer.h" />
     <ClInclude Include="src\maths\Vector4.h" />
+    <ClInclude Include="src\ecs\components\Script.h" />
+    <ClInclude Include="src\ecs\systems\ScriptingSystem.h" />
+    <ClInclude Include="src\DXHScripting.h" />
     <ClInclude Include="src\ecs\components\Camera.h" />
     <ClInclude Include="src\ecs\systems\CameraSystem.h" />
   </ItemGroup>

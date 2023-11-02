@@ -1,10 +1,10 @@
 #pragma once
 #include "../../renderer/Shader.h"
-#include "../Component.h"
+#include "../Component.h" // Base class
+#include "src/renderer/RendererResource.h"
 
 namespace DXH
 {
-class BaseShader;
 struct Geometry;
 struct Material;
 
@@ -26,6 +26,12 @@ struct Mesh : public Component
             isInitialized = true;
             CBVIndex = BaseShader::AddObjectCB();
         }
+    }
+
+    void SetGeoAndMatByName(const std::string& geometry, const std::string& material)
+    {
+        Geo = RendererResource::GetGeometry(geometry);
+        Mat = RendererResource::GetMaterial(material);
     }
 
     uint32_t GetCBIndex() const
