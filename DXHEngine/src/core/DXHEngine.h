@@ -6,7 +6,7 @@
 namespace DXH
 {
 // Delegate for update functions
-typedef void(*UpdateFunc)(const Timer&);
+typedef void(*GameTimerFunc)(const Timer&);
 
 // Application properties that are set on startup
 struct AppProperties
@@ -28,7 +28,7 @@ public:
     Timer& GetTimer() noexcept { return m_GameTimer; }
 
     // Initializes the application
-    bool Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate, UpdateFunc gameDestroy);
+    bool Init(AppProperties props, GameTimerFunc gameInit, GameTimerFunc gameDestroy);
     // Starts the main loop
     void Run();
 
@@ -54,9 +54,8 @@ private:
     AppProperties m_Props;
     Timer m_GameTimer = Timer();
     InputManager m_InputManager = InputManager();
-    UpdateFunc m_GameInit = nullptr;
-    UpdateFunc m_GameUpdate = nullptr;
-    UpdateFunc m_GameDestroy = nullptr;
+    GameTimerFunc m_GameInit = nullptr;
+    GameTimerFunc m_GameDestroy = nullptr;
     bool m_IsRunning = false;
 
     RenderContext* m_pContext = nullptr;
