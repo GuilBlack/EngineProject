@@ -10,11 +10,11 @@ struct Transform;
 class RenderSystem : public System
 {
 public:
-	RenderSystem() {}
-	~RenderSystem() {}
+    RenderSystem() {}
+    ~RenderSystem() {}
 
-	virtual void Update(const Timer& gt) override;
-	void Draw(Mesh* mesh, Transform transform);
+    virtual void Update(const Timer& gt) override;
+    void Draw(Mesh* mesh, Transform transform);
 };
 }
 

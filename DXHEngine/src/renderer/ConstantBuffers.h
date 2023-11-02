@@ -9,20 +9,20 @@ namespace DXH
 /// </summary>
 struct PassConstants
 {
-	DirectX::XMFLOAT4X4 View;
-	DirectX::XMFLOAT4X4 Proj;
-	DirectX::XMFLOAT4X4 ViewProj;
-	DirectX::XMFLOAT3 EyePosW;
-	float NearZ;
-	float FarZ;
-	float TotalTime;
-	DirectX::XMFLOAT2 RenderTargetSize;
-	float DeltaTime;
-	DirectX::XMFLOAT3 SunDirection;
-	DirectX::XMFLOAT3 SunColor;
-	DirectX::XMFLOAT3 AmbientColor;
-	float AmbientIntensity;
-	float SunIntensity;
+    DirectX::XMFLOAT4X4 View;
+    DirectX::XMFLOAT4X4 Proj;
+    DirectX::XMFLOAT4X4 ViewProj;
+    DirectX::XMFLOAT3 EyePosW;
+    float NearZ;
+    float FarZ;
+    float TotalTime;
+    DirectX::XMFLOAT2 RenderTargetSize;
+    float DeltaTime;
+    DirectX::XMFLOAT3 SunDirection;
+    DirectX::XMFLOAT3 SunColor;
+    DirectX::XMFLOAT3 AmbientColor;
+    float AmbientIntensity;
+    float SunIntensity;
 };
 
 /// <summary>
@@ -30,11 +30,11 @@ struct PassConstants
 /// </summary>
 struct ObjectConstants
 {
-	DirectX::XMFLOAT4X4 World = DirectX::XMFLOAT4X4(
-		1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f);
+    DirectX::XMFLOAT4X4 World = DirectX::XMFLOAT4X4(
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f);
 };
 
 /// <summary>
@@ -42,8 +42,8 @@ struct ObjectConstants
 /// </summary>
 struct PhongMaterialConstants
 {
-	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
-	DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
-	float Roughness = 0.25f;
+    DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+    DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
+    float Roughness = 0.25f;
 };
 }
