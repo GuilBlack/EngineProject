@@ -16,10 +16,11 @@ void Game::Init(const DXH::Timer& gt)
 {
 	using namespace DXH;
 
-	for (int i = 0; i < MAX_GO_COUNT; i++)
+	for (int i = 0; i < 50; i++)
 	{
 		GameObject* pObject = new GameObject();
 		Transform* transform = pObject->Add<Transform>();
+		pObject->Get<Transform>()->Position = { i-5.0f, 0.0f, 0.0f };
 		RigidBody* rigidBody = pObject->Add<RigidBody>();
 		auto col1 = pObject->Add<SphereCollider>();
 		col1->Radius = 1.f;

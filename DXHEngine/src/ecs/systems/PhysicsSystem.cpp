@@ -20,17 +20,15 @@ void PhysicsSystem::Update(const Timer& gt)
 	auto& map = ComponentManager<SphereCollider>::GetInstance().GetUsedComponentsMap();
 
 
-	std::vector<Cell> cells = SortColliders(map, 10.0f);
+	SortColliders(map, 10.0f);
 
-	std::vector<Collision> collisions;
-	for (auto& cell : cells)
+	for (auto& cell : m_Cells)
 	{
-		std::vector<Collision> newCollisions = DetectCollisions(cell);
-		if(!newCollisions.empty())
-			collisions.insert(collisions.end(), newCollisions.begin(), newCollisions.end());
+		DetectCollisions(cell);
+		ApplyCollisions(gt.DeltaTime());
+		cell.Colliders.clear();
 	}
 
-	ApplyCollisions(collisions, gt.DeltaTime());
 	UpdateRigidBodies(gt);
 }
 
@@ -49,26 +47,15 @@ inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::FXMVECTOR posA, 
 	return Vector3(DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(posB, posA)));
 }
 
-void PhysicsSystem::UpdateRigidBodies(const Timer& gt)
-{
-	using namespace DirectX; 
-	auto& rigidBodies = ComponentManager<RigidBody>::GetInstance().GetUsedComponentsMap();
-	for (auto& [gameObject, rigidBody] : rigidBodies)
-	{
-		XMVECTOR velocity = XMVectorScale(rigidBody->Force.Load(), 1.f/rigidBody->Mass);
-		rigidBody->Velocity = XMVectorAdd(rigidBody->Velocity.Load(), XMVectorScale(velocity, gt.DeltaTime()));
-		gameObject->Get<Transform>()->Position = XMVectorAdd(gameObject->Get<Transform>()->Position.Load(), XMVectorScale(rigidBody->Velocity.Load(), gt.DeltaTime()));
-	}
-}
 
-std::vector<Cell> PhysicsSystem::SortColliders(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects, float cellSize)
+void PhysicsSystem::SortColliders(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects, float cellSize)
 {
-	std::vector<Cell> cells;
+	m_NumberOfCells = 0;
 	for (auto& [gameObject, collider] : gameObjects)
 	{
 		Vector3 center = ColliderPosition(gameObject->Get<Transform>(), collider);
 		bool Found = false;
-		for (auto& cell : cells)
+		for (auto& cell : m_Cells)
 		{
 			if (center.x >= cell.Min.x && center.x <= cell.Max.x &&
 				center.y >= cell.Min.y && center.y <= cell.Max.y &&
@@ -76,33 +63,33 @@ std::vector<Cell> PhysicsSystem::SortColliders(std::unordered_map<const GameObje
 			{
 				cell.Colliders.push_back(collider); 
 				Found = true;
+				m_NumberOfCollisions++;
 				break;
 			}
 		}
 		// If not found create a new cell and add it to the vector of cells
 		if (!Found)
 		{
-			Cell cell;
-			cell.Min = Vector3(floorf(center.x / cellSize) * cellSize, floorf(center.y / cellSize) * cellSize, floorf(center.z / cellSize) * cellSize);
-			cell.Max = Vector3(cell.Min.x + cellSize, cell.Min.y + cellSize, cell.Min.z + cellSize);
-			cell.Colliders.push_back(collider);
-			cells.push_back(cell);
+			if (m_Cells.size() <= m_NumberOfCells)
+				m_Cells.emplace_back(); 
+
+			m_Cells[m_NumberOfCells].Min = Vector3(floorf(center.x / cellSize) * cellSize, floorf(center.y / cellSize) * cellSize, floorf(center.z / cellSize) * cellSize);
+			m_Cells[m_NumberOfCells].Max = Vector3(m_Cells[m_NumberOfCells].Min.x + cellSize, m_Cells[m_NumberOfCells].Min.y + cellSize, m_Cells[m_NumberOfCells].Min.z + cellSize);
+			m_Cells[m_NumberOfCells].Colliders.push_back(collider);
+			m_NumberOfCells++;
+			
 		}
 	}
-	return cells;
 }
 
 
-std::vector<Collision> PhysicsSystem::DetectCollisions(Cell& cell)
+void PhysicsSystem::DetectCollisions(Cell& cell)
 {
 	size_t length = cell.Colliders.size(); // Number of gameObjects
-	std::vector<Collision> collisions; // Vector of collisions
+	m_NumberOfCollisions = 0;
 
 	// If there is less than 2 game objects, there can't be any collision
-	if (length < 2) return collisions;
-
-	// At most, there can be length * (length - 1) / 2 collisions (binomial coefficient)
-	collisions.reserve(length * (length - 1) / 2);
+	if (length < 2) return;
 
 	// For each game object / collider pair
 	for (size_t i = 0; i < length - 1; i++)
@@ -124,22 +111,27 @@ std::vector<Collision> PhysicsSystem::DetectCollisions(Cell& cell)
 			if (radius * radius >= sqrDistance)
 			{
 				// There is a collision, add it to the vector
-				collisions.push_back({collA, collB, CalculateCollisionNormal(posA, posB)});
-				VS_DB_OUT_A("TEST");
+				if(m_Collisions.size() <= m_NumberOfCollisions)
+					m_Collisions.emplace_back();
+
+				m_Collisions[m_NumberOfCollisions].First = collA;
+				m_Collisions[m_NumberOfCollisions].Second = collB;
+				m_Collisions[m_NumberOfCollisions].Normal = CalculateCollisionNormal(posA, posB);
+				m_NumberOfCollisions++;
+				VS_DB_OUT_A("TEST \n");
 			}
 		}
 	}
-	return collisions;
 }
 
-void PhysicsSystem::ApplyCollisions(std::vector<Collision>& collision, float deltaTime)
+void PhysicsSystem::ApplyCollisions(float deltaTime)
 {
 	using namespace DirectX;
 
-	for (const auto& col : collision)
+	for (int i = 0; i < m_NumberOfCollisions; i++)
 	{
-		SphereCollider* firstSphere = col.First;
-		SphereCollider* secondSphere = col.Second;
+		SphereCollider* firstSphere = m_Collisions[i].First;
+		SphereCollider* secondSphere = m_Collisions[i].Second;
 
 		//Vector3 collisionNormal = col.Normal;
 
@@ -147,7 +139,7 @@ void PhysicsSystem::ApplyCollisions(std::vector<Collision>& collision, float del
 		XMVECTOR firstSphereVelocityLoaded = firstSphere->pGameObject->Get<RigidBody>()->Velocity.Load();
 		XMVECTOR secondSphereVelocityLoaded = secondSphere->pGameObject->Get<RigidBody>()->Velocity.Load();
 		XMVECTOR relativeVelocity = XMVectorSubtract(firstSphereVelocityLoaded, secondSphereVelocityLoaded);
-		XMVECTOR collisionNormal = col.Normal.Load();
+		XMVECTOR collisionNormal = m_Collisions[i].Normal.Load();
 
 		// Calculate impulse
 		XMVECTOR impulse = XMVectorScale(XMVector3Dot(relativeVelocity, collisionNormal), -2.0f / (firstSphere->pGameObject->Get<RigidBody>()->Mass + secondSphere->pGameObject->Get<RigidBody>()->Mass));
@@ -159,6 +151,17 @@ void PhysicsSystem::ApplyCollisions(std::vector<Collision>& collision, float del
 
 		firstSphere->pGameObject->Get<RigidBody>()->Velocity.Store(firstSphereVelocity);
 		secondSphere->pGameObject->Get<RigidBody>()->Velocity.Store(secondSphereVelocity);
+	}
+}
+void PhysicsSystem::UpdateRigidBodies(const Timer& gt)
+{
+	using namespace DirectX; 
+	auto& rigidBodies = ComponentManager<RigidBody>::GetInstance().GetUsedComponentsMap();
+	for (auto& [gameObject, rigidBody] : rigidBodies)
+	{
+		XMVECTOR velocity = XMVectorScale(rigidBody->Force.Load(), 1.f/rigidBody->Mass);
+		rigidBody->Velocity = XMVectorAdd(rigidBody->Velocity.Load(), XMVectorScale(velocity, gt.DeltaTime()));
+		gameObject->Get<Transform>()->Position = XMVectorAdd(gameObject->Get<Transform>()->Position.Load(), XMVectorScale(rigidBody->Velocity.Load(), gt.DeltaTime()));
 	}
 }
 }

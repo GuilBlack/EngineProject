@@ -35,6 +35,13 @@ public:
 	void Update(const Timer& gt) override;
 
 private:
+
+	std::vector<Cell> m_Cells;
+	std::vector<Collision> m_Collisions;
+
+	int m_NumberOfCollisions = 0;
+	int m_NumberOfCells = 0;
+
 	/// <summary>
 	/// Calculates the position of the collider in world space
 	/// </summary>
@@ -50,14 +57,14 @@ private:
 	/// </summary>
 	inline static Vector3 CalculateCollisionNormal(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB);
 
-	std::vector<Cell> SortColliders(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects, float cellSize);
+	void SortColliders(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects, float cellSize);
 	/// <summary>
 	/// Detects any collisions between all gameObjects in the passed cell.
 	/// </summary>
 	/// <param name="gameObjects">The gameObjects to check for collisions. All gameObjects must have a sphere collider</param>
-	static std::vector<Collision> DetectCollisions(Cell& cell);
+	void DetectCollisions(Cell& cell);
 
-	void ApplyCollisions(std::vector<Collision>& collision, float deltaTime);
+	void ApplyCollisions(float deltaTime);
 
 	void UpdateRigidBodies(const Timer& gt);
 };
