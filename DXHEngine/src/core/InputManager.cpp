@@ -21,13 +21,13 @@ InputManager::~InputManager()
 
 void InputManager::Update()
 {
+     // Get mouse position
+     POINT mousePos;
+     GetCursorPos(&mousePos);
+     ScreenToClient(Window::GetInstance().GetWindowHandle(), &mousePos);
+
     if (m_CursorLocked)
     {
-        // Get mouse position
-        POINT mousePos;
-        GetCursorPos(&mousePos);
-        ScreenToClient(Window::GetInstance().GetWindowHandle(), &mousePos);
-
         // Calculate mouse delta relative to center of screen
         int screenCenterX = Window::GetInstance().GetWidth() / 2;
         int screenCenterY = Window::GetInstance().GetHeight() / 2;
@@ -36,6 +36,11 @@ void InputManager::Update()
 
         // Reset cursor position to center of screen
         SetCursorPos(screenCenterX, screenCenterY);
+    }
+    else
+    {
+        m_MousePosition.x = (float)(mousePos.x);
+        m_MousePosition.y = (float)(mousePos.y);
     }
 
     // Get buttons
@@ -70,6 +75,7 @@ void InputManager::ToggleCursorLock(bool locked)
 {
     m_CursorLocked = locked;
     m_MouseDelta = Vector2::Zero;
+    m_MousePosition = Vector2::Zero;
     ShowCursor(!locked);
 }
 

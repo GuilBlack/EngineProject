@@ -17,6 +17,12 @@ class InputManager
 public:
     InputManager();
     ~InputManager();
+
+    inline static InputManager& GetInstance()
+    {
+        static InputManager instance;
+        return instance;
+    }
     /// <summary>
     /// Checks for the mouse movement and updates the key states.
     /// </summary>
@@ -25,6 +31,10 @@ public:
     /// Gets the mouse delta since the last update.
     /// </summary>
     inline Vector2 GetMouseDelta() const { return m_MouseDelta; }
+    /// <summary>
+    /// Gets the mouse actual position.
+    /// </summary>
+    inline Vector2 GetMousePosition() const { return m_MousePosition; }
     /// <summary>
     /// Sets the followed keys (keys that will be updated every frame).
     /// </summary>
@@ -41,6 +51,7 @@ public:
 
 private:
     Vector2 m_MouseDelta = Vector2::Zero;
+    Vector2 m_MousePosition;
     std::unordered_map<int, KeyState> m_KeyStates;
     bool m_CursorLocked = false;
 };
