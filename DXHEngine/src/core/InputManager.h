@@ -14,9 +14,9 @@ enum class KeyState
 
 class InputManager
 {
-public:
     InputManager();
     ~InputManager();
+public:
 
     inline static InputManager& GetInstance()
     {

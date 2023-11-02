@@ -30,6 +30,7 @@ void Game::Init(const DXH::Timer& gt)
     Transform& camTransform = pCamera->Get<Transform>();
     camTransform.Position = { 0.0f, 0.0f, -5.0f };
     camTransform.Rotation.SetEulerAngles(0.0f, 0.0f, 0.0f);
+    pCamera->Add<CameraRotator>();
     pCamera->Add<Camera>().IsPrimary = true;
     m_GameObjects.emplace_back(pCamera);
 }

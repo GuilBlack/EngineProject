@@ -13,9 +13,8 @@ private:
 	float m_pitch;
 	float m_yaw;
 	float m_roll = 0;
-	//Mouse
-	float m_MouseX;
-	float m_MouseY;
+
+
 
 	DXH::Transform* m_camTransform;
 };

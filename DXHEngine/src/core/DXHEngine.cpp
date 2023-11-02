@@ -1,6 +1,7 @@
 #include "DXHEngine.h"
 #include "Window.h"
 #include "src/ecs/System.h"
+#include "InputManager.h"
 
 namespace DXH
 {
@@ -16,7 +17,7 @@ bool DXHEngine::Init(AppProperties props, GameTimerFunc gameInit, GameTimerFunc 
     if (!InitDX12())
         return false;
 
-    m_InputManager.Update(); // First update to reset the mouse position
+    InputManager::GetInstance().Update(); // First update to reset the mouse position
     m_GameInit = gameInit;
     m_GameDestroy = gameDestroy;
 
@@ -28,6 +29,7 @@ void DXHEngine::Run()
 {
     assert(m_IsRunning && "DXHEngine is not initialized!");
     VS_DB_OUT_W(L"Welcome to DXHEngine! Main loop is starting...\n");
+    InputManager& im = InputManager::GetInstance();
 
     m_GameTimer.Reset();
     m_GameInit(m_GameTimer); // Allow the game to init its game objects
@@ -35,7 +37,7 @@ void DXHEngine::Run()
     {
         Window::GetInstance().PollEvents();
         UpdateFpsCounter();
-        m_InputManager.Update();
+        im.Update();
         m_GameTimer.Tick();
 
         System::UpdateAll(m_GameTimer);
