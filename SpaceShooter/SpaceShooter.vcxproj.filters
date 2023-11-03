@@ -24,7 +24,7 @@
     <ClCompile Include="src\scripts\Rotator.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\scripts\Player.cpp">
+    <ClCompile Include="src\scripts\Controller.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClInclude Include="src\scripts\Rotator.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\Player.h">
+    <ClInclude Include="src\scripts\Controller.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

@@ -29,7 +29,6 @@ bool DXHEngine::Init(AppProperties props, GameTimerFunc gameInit, GameTimerFunc 
     if (!InitDX12())
         return false;
 
-    InputManager::GetInstance().Update(); // First update to reset the mouse position
     m_GameInit = gameInit;
     m_GameDestroy = gameDestroy;
 
@@ -41,8 +40,8 @@ void DXHEngine::Run()
 {
     assert(m_IsRunning && "DXHEngine is not initialized!");
     VS_DB_OUT_W(L"Welcome to DXHEngine! Main loop is starting...\n");
-    InputManager& im = InputManager::GetInstance();
 
+    InputManager& im = InputManager::GetInstance();
     m_GameTimer->Reset();
     m_GameInit(*m_GameTimer); // Allow the game to init its game objects
     while (m_IsRunning)

@@ -29,13 +29,17 @@ void InputManager::Update()
     if (m_CursorLocked)
     {
         // Calculate mouse delta relative to center of screen
-        int screenCenterX = Window::GetInstance().GetWidth() / 2;
-        int screenCenterY = Window::GetInstance().GetHeight() / 2;
-        m_MouseDelta.x = (float)(mousePos.x) - screenCenterX;
-        m_MouseDelta.y = (float)(mousePos.y) - screenCenterY;
+        POINT screenCenter
+        {
+            .x = Window::GetInstance().GetWidth() / 2,
+            .y = Window::GetInstance().GetHeight() / 2,
+        };
+        m_MouseDelta.x = (float)(mousePos.x) - screenCenter.x;
+        m_MouseDelta.y = screenCenter.y - (float)(mousePos.y); // Inverted, since Windows positive y is downward
 
         // Reset cursor position to center of screen
-        SetCursorPos(screenCenterX, screenCenterY);
+        ClientToScreen(Window::GetInstance().GetWindowHandle(), &screenCenter);
+        SetCursorPos((int)screenCenter.x, (int)screenCenter.y);
     }
     else
     {
@@ -74,6 +78,7 @@ void InputManager::SetFollowedKeys(const std::vector<int>& newKeys)
 void InputManager::ToggleCursorLock(bool locked)
 {
     m_CursorLocked = locked;
+    Update(); // Update for catching first mouseDelta
     m_MouseDelta = Vector2::Zero;
     m_MousePosition = Vector2::Zero;
     ShowCursor(!locked);

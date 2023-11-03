@@ -90,13 +90,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\scripts\Player.cpp" />
+    <ClCompile Include="src\scripts\Controller.cpp" />
     <ClCompile Include="src\scripts\Rotator.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\scripts\Player.h" />
+    <ClInclude Include="src\scripts\Controller.h" />
     <ClInclude Include="src\scripts\Rotator.h" />
     <ClInclude Include="src\Game.h" />
   </ItemGroup>

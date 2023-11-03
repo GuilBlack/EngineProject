@@ -55,7 +55,7 @@ public:
 
 private:
     Vector2 m_MouseDelta = Vector2::Zero;
-    Vector2 m_MousePosition;
+    Vector2 m_MousePosition = Vector2::Zero;
     std::unordered_map<int, KeyState> m_KeyStates;
     bool m_CursorLocked = false;
 };

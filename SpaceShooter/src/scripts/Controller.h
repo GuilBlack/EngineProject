@@ -1,8 +1,7 @@
 #pragma once
 #include <DXHScripting.h>
 
-
-class Player : public DXH::Script
+class Controller : public DXH::Script
 {
 public:
 	void Start() override;
@@ -14,8 +13,6 @@ private:
 	float m_yaw;
 	float m_roll = 0;
 
-	void SetYaw();
-	void SetPitch();
-
-	DXH::Transform* m_camTransform;
+	DXH::Transform* m_camTransform = nullptr;
+	DXH::Vector3 m_rotation = DXH::Vector3(180.f, 180.f, 0.f);
 };
