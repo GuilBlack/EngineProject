@@ -10,6 +10,9 @@ void Controller::Start()
 
 void Controller::Update(const DXH::Timer& gt)
 {
+	if (InputManager::IsKeyPressed(VK_ESCAPE))
+		InputManager::ToggleCursorLock();
+
 	Vector2 tMouseDelta = InputManager::GetInstance().GetMouseDelta();
 	// Don't forget to put mouseDelta X in rotation Y, and mouseDelta Y in rotation X!
 	m_rotation.x += tMouseDelta.y * m_MouseSensitivity;

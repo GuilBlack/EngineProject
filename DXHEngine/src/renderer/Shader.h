@@ -177,4 +177,3 @@ private:
     PhongMaterialConstants m_MaterialCB;
 };
 }
-

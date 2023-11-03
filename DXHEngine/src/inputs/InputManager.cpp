@@ -10,7 +10,7 @@ InputManager::InputManager()
     {
         'w', 'a', 's', 'd',
         VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
-        VK_XBUTTON1, VK_XBUTTON2
+        VK_XBUTTON1, VK_XBUTTON2, VK_ESCAPE
     };
     SetFollowedKeys(keys);
 }
@@ -82,10 +82,5 @@ void InputManager::ToggleCursorLock(bool locked)
     m_MouseDelta = Vector2::Zero;
     m_MousePosition = Vector2::Zero;
     ShowCursor(!locked);
-}
-
-void InputManager::ToggleCursorLock()
-{
-    ToggleCursorLock(!m_CursorLocked);
 }
 }

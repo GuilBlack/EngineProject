@@ -16,4 +16,3 @@ public:
     void Draw(Mesh* mesh, Transform transform);
 };
 }
-

@@ -24,7 +24,6 @@
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
     <ClCompile Include="src\maths\Vector4.cpp" />
     <ClCompile Include="src\maths\Shorthands.cpp" />
-    <ClCompile Include="src\ecs\components\scripts\StateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHCore.h" />

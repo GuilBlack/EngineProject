@@ -147,7 +147,6 @@
     <ClInclude Include="src\ecs\components\scripts\StateMachine.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\ecs\components\scripts\StateMachine.cpp" />
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
     <ClCompile Include="src\ecs\systems\RenderSystem.cpp" />
