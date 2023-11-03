@@ -1,5 +1,9 @@
 #pragma once
-#include "pch.h"
+#include "vendor/d3dx12.h"
+
+struct DXGI_SWAP_CHAIN_DESC;
+struct IDXGISwapChain;
+struct IDXGIFactory4;
 
 namespace DXH
 {
@@ -34,10 +38,7 @@ public:
     /// Creates a fence.
     /// </summary>
     /// <param name="fence">Pointer to the fence</param>
-    void CreateFence(ID3D12Fence** fence)
-    {
-        ASSERT_HRESULT(m_pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence)));
-    }
+    inline void CreateFence(ID3D12Fence** fence);
 
     /// <summary>
     /// Creates a swap chain.
@@ -52,48 +53,21 @@ public:
     /// </summary>
     /// <param name="numDescriptors">Number of descriptors in the heap</param>
     /// <param name="rtvHeap">Pointer to the heap</param>
-    void CreateRTVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** rtvHeap)
-    {
-        D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = 
-        {
-            .Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
-            .NumDescriptors = numDescriptors,
-            .Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
-        };
-        ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(rtvHeap)));
-    }
+    void CreateRTVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** rtvHeap);
 
     /// <summary>
     /// Creates a depth stencil descriptor heap.
     /// </summary>
     /// <param name="numDescriptors">Number of descriptors in the heap</param>
     /// <param name="dsvHeap">Pointer to the heap</param>
-    void CreateDSVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** dsvHeap)
-    {
-        D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc =
-        {
-            .Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV,
-            .NumDescriptors = numDescriptors,
-            .Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
-        };
-        ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(dsvHeap)));
-    }
+    inline void CreateDSVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** dsvHeap);
 
     /// <summary>
     /// Creates a constant buffer view, shader resource view and unordered access view heap.
     /// </summary>
     /// <param name="numDescriptors">Number of descriptors in the heap</param>
     /// <param name="cbvSrvUavHeap">Pointer to the heap</param>
-    void CreateCBVSRVUAVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** cbvSrvUavHeap)
-    {
-        D3D12_DESCRIPTOR_HEAP_DESC cbvSrvUavHeapDesc =
-        {
-            .Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
-            .NumDescriptors = numDescriptors,
-            .Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
-        };
-        ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&cbvSrvUavHeapDesc, IID_PPV_ARGS(cbvSrvUavHeap)));
-    }
+    inline void CreateCBVSRVUAVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** cbvSrvUavHeap);
 
     /// <summary>
     /// Creates the render target descriptor
@@ -138,45 +112,21 @@ public:
     /// <param name="heapProps">Heap properties</param>
     /// <param name="bufferDesc">Description of the resource</param>
     /// <param name="state">State of the resource</param>
-    void CreateResource(ID3D12Resource** res, const D3D12_HEAP_PROPERTIES& heapProps, const D3D12_RESOURCE_DESC& bufferDesc, D3D12_RESOURCE_STATES state)
-    {
-        ASSERT_HRESULT(m_pDevice->CreateCommittedResource(
-            &heapProps,
-            D3D12_HEAP_FLAG_NONE,
-            &bufferDesc,
-            state,
-            nullptr,
-            IID_PPV_ARGS(res)
-        ));
-    }
+    inline void CreateResource(ID3D12Resource** res, const D3D12_HEAP_PROPERTIES& heapProps, const D3D12_RESOURCE_DESC& bufferDesc, D3D12_RESOURCE_STATES state);
 
     /// <summary>
     /// Creates a root signature.
     /// </summary>
     /// <param name="serializedRootSignature">Pointer to the serialized root signature</param>
     /// <param name="rs">Pointer to the root signature</param>
-    void CreateRootSignature(ID3DBlob* serializedRootSignature, ID3D12RootSignature** rs)
-    {
-            ASSERT_HRESULT(m_pDevice->CreateRootSignature(
-                    0,
-                serializedRootSignature->GetBufferPointer(),
-                serializedRootSignature->GetBufferSize(),
-                IID_PPV_ARGS(rs)
-            ));
-    }
+    inline void CreateRootSignature(ID3DBlob* serializedRootSignature, ID3D12RootSignature** rs);
 
     /// <summary>
     /// Creates a graphics pipeline state object.
     /// </summary>
     /// <param name="psoDesc">Description of the PSO</param>
     /// <param name="pso">Pointer to the PSO</param>
-    void CreatePSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc, ID3D12PipelineState** pso)
-    {
-        ASSERT_HRESULT(m_pDevice->CreateGraphicsPipelineState(
-            &psoDesc,
-            IID_PPV_ARGS(pso)
-        ));
-    }
+    inline void CreatePSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc, ID3D12PipelineState** pso);
 
     /// <summary>
     /// Creates a constant buffer view.

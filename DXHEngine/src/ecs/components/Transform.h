@@ -1,6 +1,6 @@
 #pragma once
 #include "src/ecs/Component.h" // For the Component base class
-#include "src/DXHMaths.h" // For math structs and functions
+#include "DXHMaths.h" // For math structs and functions
 
 namespace DXH
 {

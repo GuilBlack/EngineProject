@@ -1,10 +1,8 @@
 #pragma once
-#include <pch.h>
 
 #if defined(_DEBUG) || defined(DEBUG)
 
 #include <crtdbg.h>
-#include <debugapi.h>
 
 // Debug output for std::string.
 #define VS_DB_OUT_A( s )                                \

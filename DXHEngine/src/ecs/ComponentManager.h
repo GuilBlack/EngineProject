@@ -1,5 +1,7 @@
 #pragma once
 #include "src/ecs/Component.h" // The manager needs to know what a component is
+#include "src/core/Defines.h" // Macro MAX_GO_COUNT
+#include <unordered_map>
 
 namespace DXH
 {

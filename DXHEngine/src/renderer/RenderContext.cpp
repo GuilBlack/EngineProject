@@ -51,10 +51,49 @@ void RenderContext::CreateCommandObjects(ID3D12CommandQueue** commandQueue, ID3D
     (*commandList)->Close();
 }
 
+inline void RenderContext::CreateFence(ID3D12Fence** fence)
+{
+    ASSERT_HRESULT(m_pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence)));
+}
+
 void RenderContext::CreateSwapChain(ID3D12CommandQueue* commandQueue, DXGI_SWAP_CHAIN_DESC& swapChainDesc, IDXGISwapChain** swapChain)
 {
     ASSERT_HRESULT(m_pDXGIFactory->CreateSwapChain(commandQueue, &swapChainDesc, swapChain));
 }
+
+void RenderContext::CreateRTVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** rtvHeap)
+{
+    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc =
+    {
+        .Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
+        .NumDescriptors = numDescriptors,
+        .Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
+    };
+    ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(rtvHeap)));
+}
+
+inline void RenderContext::CreateDSVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** dsvHeap)
+{
+    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc =
+    {
+        .Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV,
+        .NumDescriptors = numDescriptors,
+        .Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
+    };
+    ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(dsvHeap)));
+}
+
+inline void RenderContext::CreateCBVSRVUAVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** cbvSrvUavHeap)
+{
+    D3D12_DESCRIPTOR_HEAP_DESC cbvSrvUavHeapDesc =
+    {
+        .Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+        .NumDescriptors = numDescriptors,
+        .Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
+    };
+    ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&cbvSrvUavHeapDesc, IID_PPV_ARGS(cbvSrvUavHeap)));
+}
+
 void RenderContext::CreateDSV(
     ID3D12Resource** dsv,
     D3D12_CPU_DESCRIPTOR_HANDLE& dsvHeapHandle,
@@ -75,5 +114,33 @@ void RenderContext::CreateDSV(
     m_pDevice->CreateDepthStencilView(*dsv, &dsvDesc, dsvHeapHandle);
 }
 
+inline void RenderContext::CreateResource(ID3D12Resource** res, const D3D12_HEAP_PROPERTIES& heapProps, const D3D12_RESOURCE_DESC& bufferDesc, D3D12_RESOURCE_STATES state)
+{
+    ASSERT_HRESULT(m_pDevice->CreateCommittedResource(
+        &heapProps,
+        D3D12_HEAP_FLAG_NONE,
+        &bufferDesc,
+        state,
+        nullptr,
+        IID_PPV_ARGS(res)
+    ));
 }
 
+inline void RenderContext::CreateRootSignature(ID3DBlob* serializedRootSignature, ID3D12RootSignature** rs)
+{
+    ASSERT_HRESULT(m_pDevice->CreateRootSignature(
+        0,
+        serializedRootSignature->GetBufferPointer(),
+        serializedRootSignature->GetBufferSize(),
+        IID_PPV_ARGS(rs)
+    ));
+}
+
+inline void RenderContext::CreatePSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc, ID3D12PipelineState** pso)
+{
+    ASSERT_HRESULT(m_pDevice->CreateGraphicsPipelineState(
+        &psoDesc,
+        IID_PPV_ARGS(pso)
+    ));
+}
+}

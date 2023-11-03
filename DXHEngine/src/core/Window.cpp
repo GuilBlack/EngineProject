@@ -1,6 +1,7 @@
 #include "Window.h"
-#include "../renderer/Renderer.h"
+#include "src/renderer/Renderer.h"
 #include "DXHEngine.h"
+#include "src/time/Timer.h"
 
 namespace DXH
 {

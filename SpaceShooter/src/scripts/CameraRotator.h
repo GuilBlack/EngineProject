@@ -1,5 +1,5 @@
 #pragma once
-#include "src/DXHScripting.h"
+#include <DXHScripting.h>
 
 
 class CameraRotator : public DXH::Script
