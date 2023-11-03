@@ -19,17 +19,35 @@ void PhysicsSystem::Update(const Timer& gt)
 	// Get all GO with a sphere collider
 	auto& map = ComponentManager<SphereCollider>::GetInstance().GetUsedComponentsMap();
 
-
+	Timer t;
+	t.Tick();
 	SortColliders(map, 10.0f);
+	t.Tick();
+	VS_DB_OUT_A("SortColliders: " << t.DeltaTime() * 1000<< "ms\n");
 
-	for (auto& cell : m_Cells)
+	
+	for (int i = 0; i < m_NumberOfCells ; i++)
 	{
-		DetectCollisions(cell);
-		ApplyCollisions(gt.DeltaTime());
-		cell.Colliders.clear();
-	}
 
+		t.Tick();
+		DetectCollisions(m_Cells[i]);
+		t.Tick();
+		VS_DB_OUT_A("DetectCollisions" << t.DeltaTime() * 1000 << "ms\n");
+		t.Tick();
+		ApplyCollisions(gt.DeltaTime());
+		t.Tick();
+		VS_DB_OUT_A("Apply: " << t.DeltaTime() * 1000 << "ms\n");
+		t.Tick();
+		m_Cells[i].Colliders.clear();
+		t.Tick();
+		VS_DB_OUT_A("Clear: " << t.DeltaTime() * 1000 << "ms\n");
+	}
+	
+
+	t.Tick();
 	UpdateRigidBodies(gt);
+	t.Tick();
+	VS_DB_OUT_A("UpdateRigidBodies: " << t.DeltaTime() * 1000 << "ms\n");
 }
 
 inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform* transform, SphereCollider* collider)
@@ -50,7 +68,7 @@ inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::FXMVECTOR posA, 
 
 void PhysicsSystem::SortColliders(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects, float cellSize)
 {
-	m_NumberOfCells = 0;
+	
 	for (auto& [gameObject, collider] : gameObjects)
 	{
 		Vector3 center = ColliderPosition(gameObject->Get<Transform>(), collider);
@@ -108,7 +126,8 @@ void PhysicsSystem::DetectCollisions(Cell& cell)
 			// Add the radii and compare them to the distance between the two positions
 			float radius = collA->Radius + collB->Radius;
 			float sqrDistance = SqrDistanceBetween(posA, posB);
-			if (radius * radius >= sqrDistance)
+			float diff = radius * radius - sqrDistance;
+			if (diff >= 0)
 			{
 				// There is a collision, add it to the vector
 				if(m_Collisions.size() <= m_NumberOfCollisions)
@@ -117,8 +136,8 @@ void PhysicsSystem::DetectCollisions(Cell& cell)
 				m_Collisions[m_NumberOfCollisions].First = collA;
 				m_Collisions[m_NumberOfCollisions].Second = collB;
 				m_Collisions[m_NumberOfCollisions].Normal = CalculateCollisionNormal(posA, posB);
+				m_Collisions[m_NumberOfCollisions].sqrDiff = diff;
 				m_NumberOfCollisions++;
-				VS_DB_OUT_A("TEST \n");
 			}
 		}
 	}
@@ -130,27 +149,14 @@ void PhysicsSystem::ApplyCollisions(float deltaTime)
 
 	for (int i = 0; i < m_NumberOfCollisions; i++)
 	{
+		if(m_Collisions[i].sqrDiff == 0) continue; //They're exaclty on top of each other, no need to apply impulse
+
 		SphereCollider* firstSphere = m_Collisions[i].First;
 		SphereCollider* secondSphere = m_Collisions[i].Second;
 
-		//Vector3 collisionNormal = col.Normal;
+		firstSphere->pGameObject->Get<RigidBody>()->Velocity.Store(firstSphere->pGameObject->Get<RigidBody>()->Velocity.Load() + XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].sqrDiff * -1));
+		secondSphere->pGameObject->Get<RigidBody>()->Velocity.Store(secondSphere->pGameObject->Get<RigidBody>()->Velocity.Load() + XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].sqrDiff));
 
-		// Calculate relative velocity
-		XMVECTOR firstSphereVelocityLoaded = firstSphere->pGameObject->Get<RigidBody>()->Velocity.Load();
-		XMVECTOR secondSphereVelocityLoaded = secondSphere->pGameObject->Get<RigidBody>()->Velocity.Load();
-		XMVECTOR relativeVelocity = XMVectorSubtract(firstSphereVelocityLoaded, secondSphereVelocityLoaded);
-		XMVECTOR collisionNormal = m_Collisions[i].Normal.Load();
-
-		// Calculate impulse
-		XMVECTOR impulse = XMVectorScale(XMVector3Dot(relativeVelocity, collisionNormal), -2.0f / (firstSphere->pGameObject->Get<RigidBody>()->Mass + secondSphere->pGameObject->Get<RigidBody>()->Mass));
-
-		// Apply impulse
-		XMVECTOR firstSphereVelocity = XMVectorAdd(firstSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f / firstSphere->pGameObject->Get<RigidBody>()->Mass), collisionNormal));
-	
-		XMVECTOR secondSphereVelocity = XMVectorSubtract(secondSphereVelocityLoaded, XMVector3Dot(XMVectorScale(impulse, 1.0f / secondSphere->pGameObject->Get<RigidBody>()->Mass), collisionNormal));
-
-		firstSphere->pGameObject->Get<RigidBody>()->Velocity.Store(firstSphereVelocity);
-		secondSphere->pGameObject->Get<RigidBody>()->Velocity.Store(secondSphereVelocity);
 	}
 }
 void PhysicsSystem::UpdateRigidBodies(const Timer& gt)
