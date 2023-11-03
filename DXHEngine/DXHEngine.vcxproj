@@ -137,6 +137,8 @@
     <ClInclude Include="src\maths\Vector3.h" />
     <ClInclude Include="src\maths\Vector2.h" />
     <ClInclude Include="src\DXHScripting.h" />
+    <ClInclude Include="src\ecs\components\scripts\BaseState.h" />
+    <ClInclude Include="src\ecs\components\scripts\StateMachine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
