@@ -64,5 +64,7 @@
     <ClInclude Include="src\ecs\components\Camera.h" />
     <ClInclude Include="src\ecs\systems\CameraSystem.h" />
     <ClInclude Include="src\ecs\Event.h" />
+    <ClInclude Include="src\ecs\components\scripts\StateMachine.h" />
+    <ClInclude Include="src\ecs\components\scripts\BaseState.h" />
   </ItemGroup>
 </Project>
