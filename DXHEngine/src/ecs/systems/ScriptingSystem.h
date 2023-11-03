@@ -1,5 +1,6 @@
 #pragma once
 #include "src/ecs/System.h" // Base class: System
+#include <vector>
 
 namespace DXH
 {
@@ -7,9 +8,10 @@ class Script;
 
 class ScriptingSystem : public System
 {
-public:
+    friend class System;
     ScriptingSystem() = default;
     ~ScriptingSystem() = default;
+public:
 
     // Register a script component to be updated
     static inline void Register(Script* pScript) { s_Scripts.push_back(pScript); s_ScriptsToStart.push_back(pScript); }

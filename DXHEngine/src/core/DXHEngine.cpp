@@ -1,10 +1,22 @@
 #include "DXHEngine.h"
 #include "Window.h"
 #include "src/ecs/System.h"
-#include "InputManager.h"
+#include "src/inputs/InputManager.h"
+#include "src/renderer/Renderer.h"
+#include "src/time/Timer.h"
 
 namespace DXH
 {
+DXHEngine::DXHEngine()
+    : m_GameTimer(new Timer())
+{
+}
+
+DXHEngine::~DXHEngine()
+{
+    DELETE_PTR(m_GameTimer);
+}
+
 bool DXHEngine::Init(AppProperties props, GameTimerFunc gameInit, GameTimerFunc gameDestroy)
 {
     VS_DB_OUT_W(L"Initializing DXHEngine...\n");
@@ -31,20 +43,20 @@ void DXHEngine::Run()
     VS_DB_OUT_W(L"Welcome to DXHEngine! Main loop is starting...\n");
     InputManager& im = InputManager::GetInstance();
 
-    m_GameTimer.Reset();
-    m_GameInit(m_GameTimer); // Allow the game to init its game objects
+    m_GameTimer->Reset();
+    m_GameInit(*m_GameTimer); // Allow the game to init its game objects
     while (m_IsRunning)
     {
         Window::GetInstance().PollEvents();
         UpdateFpsCounter();
         im.Update();
-        m_GameTimer.Tick();
+        m_GameTimer->Tick();
 
-        System::UpdateAll(m_GameTimer);
+        System::UpdateAll(*m_GameTimer);
         UpdateFpsCounter();
     }
 
-    m_GameDestroy(m_GameTimer); // Allow the game to delete itself
+    m_GameDestroy(*m_GameTimer); // Allow the game to delete itself
     Cleanup();
 }
 
@@ -89,10 +101,10 @@ void DXHEngine::UpdateFpsCounter()
 {
     static int frameCnt = 0;
     static float timeElapsed = 0.0f;
-    m_GameTimer.Tick();
+    m_GameTimer->Tick();
     frameCnt++;
 
-    if ((m_GameTimer.TotalTime() - timeElapsed) >= 1.0f)
+    if ((m_GameTimer->TotalTime() - timeElapsed) >= 1.0f)
     {
         float mspf = 1000.0f / frameCnt;
         Window::GetInstance().SetTitle(m_Props.WindowTitle +

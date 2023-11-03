@@ -1,5 +1,5 @@
 #pragma once
-#include "src/DXHMaths.h" // Vector2
+#include "DXHMaths.h" // Vector2
 
 namespace DXH
 {

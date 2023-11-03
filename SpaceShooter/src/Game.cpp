@@ -1,6 +1,6 @@
 #include "Game.h"
-#include "Scripts/Rotator.h"
-#include"scripts/CameraRotator.h"
+#include "scripts/Rotator.h"
+#include "scripts/CameraRotator.h"
 
 void Game::StartEngine()
 {

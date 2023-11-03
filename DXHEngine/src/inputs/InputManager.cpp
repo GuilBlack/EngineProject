@@ -1,5 +1,5 @@
 #include "InputManager.h"
-#include "Window.h"
+#include "src/core/Window.h"
 
 namespace DXH
 {

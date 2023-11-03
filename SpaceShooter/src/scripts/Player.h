@@ -1,5 +1,5 @@
 #pragma once
-#include "src/DXHScripting.h"
+#include <DXHScripting.h>
 
 
 class Player : public DXH::Script

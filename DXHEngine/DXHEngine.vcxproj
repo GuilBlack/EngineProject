@@ -61,7 +61,9 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>src/pch.h</ForcedIncludeFiles>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>src/pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -84,7 +86,9 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>src/pch.h</ForcedIncludeFiles>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>src/pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,11 +117,11 @@
     <ClInclude Include="src\renderer\Shader.h" />
     <ClInclude Include="src\renderer\Geometry.h" />
     <ClInclude Include="src\maths\Matrix.h" />
-    <ClInclude Include="src\DXHMaths.h" />
+    <ClInclude Include="DXHMaths.h" />
     <ClInclude Include="src\maths\Quaternion.h" />
     <ClInclude Include="src\ecs\Component.h" />
-    <ClInclude Include="DXHInclude.h" />
-    <ClInclude Include="src\core\InputManager.h" />
+    <ClInclude Include="DXHCore.h" />
+    <ClInclude Include="src\inputs\InputManager.h" />
     <ClInclude Include="src\ecs\GameObject.h" />
     <ClInclude Include="src\ecs\components\Transform.h" />
     <ClInclude Include="src\ecs\systems\PhysicsSystem.h" />
@@ -125,9 +129,9 @@
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\core\Defines.h" />
     <ClInclude Include="src\core\DXHEngine.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\core\Window.h" />
-    <ClInclude Include="src\core\Timer.h" />
+    <ClInclude Include="src\time\Timer.h" />
     <ClInclude Include="src\renderer\SwapChain.h" />
     <ClInclude Include="src\ecs\ComponentManager.h" />
     <ClInclude Include="src\ecs\components\Physics.h" />
@@ -137,9 +141,12 @@
     <ClInclude Include="src\ecs\System.h" />
     <ClInclude Include="src\maths\Vector3.h" />
     <ClInclude Include="src\maths\Vector2.h" />
-    <ClInclude Include="src\DXHScripting.h" />
+    <ClInclude Include="DXHScripting.h" />
+    <ClInclude Include="src\ecs\components\scripts\BaseState.h" />
+    <ClInclude Include="src\ecs\components\scripts\StateMachine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ecs\components\scripts\StateMachine.cpp" />
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
     <ClCompile Include="src\ecs\systems\RenderSystem.cpp" />
@@ -150,16 +157,19 @@
     <ClCompile Include="src\renderer\Shader.cpp" />
     <ClCompile Include="src\ecs\systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\renderer\Geometry.cpp" />
-    <ClCompile Include="src\core\InputManager.cpp" />
+    <ClCompile Include="src\inputs\InputManager.cpp" />
     <ClCompile Include="src\maths\Matrix.cpp" />
     <ClCompile Include="src\ecs\GameObject.cpp" />
     <ClCompile Include="src\ecs\System.cpp" />
     <ClCompile Include="src\renderer\RenderContext.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
     <ClCompile Include="src\core\DXHEngine.cpp" />
-    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="src\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\core\Window.cpp" />
-    <ClCompile Include="src\core\Timer.cpp" />
+    <ClCompile Include="src\time\Timer.cpp" />
     <ClCompile Include="src\renderer\SwapChain.cpp" />
     <ClCompile Include="src\maths\Vector3.cpp" />
     <ClCompile Include="src\maths\Vector2.cpp" />

@@ -1,6 +1,6 @@
 #pragma once
 #include "Shader.h"
-#include "../DXHMaths.h"
+#include "DXHMaths.h"
 
 
 namespace DXH

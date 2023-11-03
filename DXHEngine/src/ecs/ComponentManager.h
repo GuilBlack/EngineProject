@@ -1,5 +1,7 @@
 #pragma once
 #include "src/ecs/Component.h" // The manager needs to know what a component is
+#include "src/core/Defines.h" // Macro MAX_GO_COUNT
+#include <unordered_map>
 
 namespace DXH
 {
@@ -31,7 +33,8 @@ public:
     /// </summary>
     T& Assign(GameObject* target)
     {
-        assert(!HasComponent(target) && "The target already has this component.");
+        if (HasComponent(target))
+            throw std::exception("The target already has this component.");
 
         // Find a component that is not in use
         static size_t index = 0;

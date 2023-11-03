@@ -1,6 +1,5 @@
 #include "Player.h"
-#include "src/core/InputManager.h"
-#include "src/ecs/components/Camera.h"
+#include "DXHScripting.h"
 
 using namespace DXH;
 

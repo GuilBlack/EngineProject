@@ -1,7 +1,13 @@
 #pragma once
-#include <DXHInclude.h>
+#include <DXHCore.h>
+#include <vector>
 
-namespace DXH { class Timer; } // Forward declaration
+namespace DXH // Forward declaration
+{
+class GameObject;
+class Timer;
+}
+
 class Game
 {
 public:
