@@ -32,7 +32,7 @@ public:
     /// </summary>
     inline Vector2 GetMouseDelta() const { return m_MouseDelta; }
     /// <summary>
-    /// Gets the mouse actual position.
+    /// Gets the current mouse position.
     /// </summary>
     inline Vector2 GetMousePosition() const { return m_MousePosition; }
     /// <summary>
@@ -40,15 +40,15 @@ public:
     /// </summary>
     void SetFollowedKeys(const std::vector<int>& keys);
     /// <summary>
-    /// Gets the state of the key.
+    /// Gets the key's current state.
     /// </summary>
     inline KeyState GetKeyState(int key) const { return m_KeyStates.at(key); }
     ///<summary>
-    /// Check key if is pressed
+    /// Checks if a key if is pressed.
     ///</summary> 
     inline bool IsKeyPressed(int key) const { return GetKeyState(key) == KeyState::Held || m_KeyStates.at(key) == KeyState::Pressed; }
     /// <summary>
-    /// Toggle the cursor lock and visibility.
+    /// Toggles the cursor lock and visibility.
     /// </summary>
     void ToggleCursorLock(bool locked);
     void ToggleCursorLock();

@@ -190,7 +190,7 @@ void Renderer::FlushCommandQueue()
     }
 }
 
-inline void Renderer::Clear()
+void Renderer::Clear()
 {
     m_pCommandList->ClearRenderTargetView(
         m_pSwapChain->GetCurrentBackBufferDescriptorHeap(),
