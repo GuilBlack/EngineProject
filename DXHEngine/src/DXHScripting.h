@@ -6,3 +6,6 @@
 #include "src/ecs/components/Transform.h"
 #include "src/ecs/GameObject.h"
 #include "src/core/Timer.h"
+
+// Pre-made scripts templates
+#include "src/ecs/components/scripts/StateMachine.h"
