@@ -23,6 +23,7 @@
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
     <ClCompile Include="src\ecs\components\Camera.cpp" />
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
+    <ClCompile Include="src\renderer\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHInclude.h" />

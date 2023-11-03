@@ -1,7 +1,12 @@
 #pragma once
+#include <limits>
+#include "Util.h"
+#include "Shader.h"
 
 namespace DXH
 {
+struct SphereBoundingVolume;
+
 /// <summary>
 /// Geometry struct that contains all the data about a geometry on the CPU and the GPU
 /// </summary>
@@ -21,6 +26,8 @@ struct Geometry
     uint32_t VertexBufferByteSize = 0;
     uint32_t IndexBufferByteSize = 0;
     DXGI_FORMAT IndexFormat = DXGI_FORMAT_R16_UINT;
+
+    SphereBoundingVolume BoundingSphere;
 
     /// <summary>
     /// Returns the vertex buffer view
@@ -47,6 +54,8 @@ struct Geometry
 
         return ibv;
     }
+
+    static SphereBoundingVolume ComputeBoundingSphere(std::vector<BasicVertex> vertices);
 };
 
 }

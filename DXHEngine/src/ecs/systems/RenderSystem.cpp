@@ -6,21 +6,28 @@
 #include "../components/Camera.h"
 #include "../GameObject.h"
 #include "src/core/Window.h"
+#include "src/renderer/Geometry.h"
 
 namespace DXH
 {
+
 void DXH::RenderSystem::Update(const Timer& gt)
 {
     using namespace DirectX;
     auto& map = ComponentManager<Mesh>::GetInstance().GetUsedComponentsMap();
     auto& transformMap = ComponentManager<Transform>::GetInstance().GetUsedComponentsMap();
     auto& cameraMap = ComponentManager<Camera>::GetInstance().GetUsedComponentsMap();
-
+    Frustum camFrustum;
     bool camInMap = false;
     for (auto& pair : cameraMap)
     {
         if (pair.second.IsPrimary)
         {
+            camFrustum = Frustum::CreateFromCamera(
+                pair.second, 
+                transformMap.at(pair.first), 
+                (float)Window::GetInstance().GetWidth() / Window::GetInstance().GetHeight()
+            );
             Renderer::GetInstance().BeginFrame(pair.second);
             camInMap = true;
             break;
@@ -46,14 +53,21 @@ void DXH::RenderSystem::Update(const Timer& gt)
         defaultCam.Proj = proj;
         Renderer::GetInstance().BeginFrame(defaultCam);
     }
-
+    int objCount = 0;
+    int drawCount = 0;
     for (auto& pair : map)
     {
+        ++objCount;
         auto go = pair.first;
         auto& mesh = pair.second;
         auto& transform = transformMap.at(go);
-        Renderer::GetInstance().Draw(mesh, transform);
+        if (mesh.Geo->BoundingSphere.IsOnFrustum(camFrustum, transform))
+        {
+            ++drawCount;
+            Renderer::GetInstance().Draw(mesh, transform);
+        }
     }
+    VS_DB_OUT_A(objCount << "; " << drawCount << std::endl);
     Renderer::GetInstance().EndFrame();
 }
 
