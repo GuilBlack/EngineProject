@@ -63,5 +63,6 @@
     <ClInclude Include="src\DXHScripting.h" />
     <ClInclude Include="src\ecs\components\Camera.h" />
     <ClInclude Include="src\ecs\systems\CameraSystem.h" />
+    <ClInclude Include="src\ecs\Event.h" />
   </ItemGroup>
 </Project>
