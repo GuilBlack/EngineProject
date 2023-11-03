@@ -8,7 +8,7 @@ public:
 	void Start() override;
 	void Update(const DXH::Timer& gt) override;
 private:
-	const float m_MouseSensitivity = 0.1f;
+	const float m_MouseSensitivity = 0.5f;
 	//Rotation Axes in Quaternion 
 	float m_pitch;
 	float m_yaw;

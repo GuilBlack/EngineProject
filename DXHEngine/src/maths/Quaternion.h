@@ -32,14 +32,7 @@ struct Quaternion : public Vector4
             DirectX::XMConvertToRadians(z)));
     }
 
-    inline void SetEulerAngles(Vector3 v)
-    {
-        Store(DirectX::XMQuaternionRotationRollPitchYaw(
-        DirectX::XMConvertToRadians(v.x),
-        DirectX::XMConvertToRadians(v.y),
-        DirectX::XMConvertToRadians(v.z)
-        ));
-    }
+    inline void SetEulerAngles(Vector3 v) { SetEulerAngles(v.x, v.y, v.z); }
 
     inline DirectX::XMMATRIX GetRotationMatrix() const
     {
