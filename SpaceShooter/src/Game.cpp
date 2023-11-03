@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Scripts/Rotator.h"
-#include"scripts/CameraRotator.h"
+#include"scripts/Player.h"
 
 void Game::StartEngine()
 {
@@ -30,7 +30,7 @@ void Game::Init(const DXH::Timer& gt)
     Transform& camTransform = pCamera->Get<Transform>();
     camTransform.Position = { 0.0f, 0.0f, -5.0f };
     camTransform.Rotation.SetEulerAngles(0.0f, 0.0f, 0.0f);
-    pCamera->Add<CameraRotator>();
+    pCamera->Add<Player>();
     pCamera->Add<Camera>().IsPrimary = true;
     m_GameObjects.emplace_back(pCamera);
 }
