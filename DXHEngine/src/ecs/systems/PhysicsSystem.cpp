@@ -23,7 +23,7 @@ void PhysicsSystem::Update(const Timer& gt)
 	t.Tick();
 	SortColliders(map, 10.0f);
 	t.Tick();
-	VS_DB_OUT_A("SortColliders: " << t.DeltaTime() * 1000<< "ms\n");
+	//VS_DB_OUT_A("SortColliders: " << t.DeltaTime() * 1000<< "ms\n");
 
 	
 	for (int i = 0; i < m_NumberOfCells ; i++)
@@ -32,22 +32,22 @@ void PhysicsSystem::Update(const Timer& gt)
 		t.Tick();
 		DetectCollisions(m_Cells[i]);
 		t.Tick();
-		VS_DB_OUT_A("DetectCollisions" << t.DeltaTime() * 1000 << "ms\n");
+		//VS_DB_OUT_A("DetectCollisions" << t.DeltaTime() * 1000 << "ms\n");
 		t.Tick();
 		ApplyCollisions(gt.DeltaTime());
 		t.Tick();
-		VS_DB_OUT_A("Apply: " << t.DeltaTime() * 1000 << "ms\n");
+		//VS_DB_OUT_A("Apply: " << t.DeltaTime() * 1000 << "ms\n");
 		t.Tick();
 		m_Cells[i].Colliders.clear();
 		t.Tick();
-		VS_DB_OUT_A("Clear: " << t.DeltaTime() * 1000 << "ms\n");
+		//VS_DB_OUT_A("Clear: " << t.DeltaTime() * 1000 << "ms\n");
 	}
 	
 
 	t.Tick();
 	UpdateRigidBodies(gt);
 	t.Tick();
-	VS_DB_OUT_A("UpdateRigidBodies: " << t.DeltaTime() * 1000 << "ms\n");
+	//VS_DB_OUT_A("UpdateRigidBodies: " << t.DeltaTime() * 1000 << "ms\n");
 }
 
 inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform& transform, SphereCollider& collider)
@@ -103,6 +103,7 @@ void PhysicsSystem::SortColliders(std::unordered_map<const GameObject*, SphereCo
 
 void PhysicsSystem::DetectCollisions(Cell& cell)
 {
+	using namespace DirectX;
 	size_t length = cell.Colliders.size(); // Number of gameObjects
 	m_NumberOfCollisions = 0;
 
@@ -126,7 +127,7 @@ void PhysicsSystem::DetectCollisions(Cell& cell)
 			// Add the radii and compare them to the distance between the two positions
 			float radius = collA->Radius + collB->Radius;
 			float sqrDistance = SqrDistanceBetween(posA, posB);
-			float diff = radius * radius - sqrDistance;
+			float diff = radius - std::sqrtf(sqrDistance);
 			if (diff >= 0)
 			{
 				// There is a collision, add it to the vector
@@ -136,8 +137,9 @@ void PhysicsSystem::DetectCollisions(Cell& cell)
 				m_Collisions[m_NumberOfCollisions].First = collA;
 				m_Collisions[m_NumberOfCollisions].Second = collB;
 				m_Collisions[m_NumberOfCollisions].Normal = CalculateCollisionNormal(posA, posB);
-				m_Collisions[m_NumberOfCollisions].sqrDiff = diff;
+				m_Collisions[m_NumberOfCollisions].Diff = diff;
 				m_NumberOfCollisions++;
+
 			}
 		}
 	}
@@ -149,13 +151,27 @@ void PhysicsSystem::ApplyCollisions(float deltaTime)
 
 	for (int i = 0; i < m_NumberOfCollisions; i++)
 	{
-		if(m_Collisions[i].sqrDiff == 0) continue; //They're exaclty on top of each other, no need to apply impulse
+		if(m_Collisions[i].Diff <= 0) continue; //They're exaclty on top of each other, no need to apply impulse
 
 		SphereCollider* firstSphere = m_Collisions[i].First;
 		SphereCollider* secondSphere = m_Collisions[i].Second;
 
-		firstSphere->pGameObject->Get<RigidBody>().Velocity.Store(firstSphere->pGameObject->Get<RigidBody>().Velocity.Load() + XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].sqrDiff * -1));
-		secondSphere->pGameObject->Get<RigidBody>().Velocity.Store(secondSphere->pGameObject->Get<RigidBody>().Velocity.Load() + XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].sqrDiff));
+		XMVECTOR firstVelocity = XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].Diff /(-2));
+		XMVECTOR secondVelocity= XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].Diff /2);
+
+		
+
+		firstSphere->pGameObject->Get<RigidBody>().Velocity.Store(firstSphere->pGameObject->Get<RigidBody>().Velocity.Load() + firstVelocity);
+		secondSphere->pGameObject->Get<RigidBody>().Velocity.Store(secondSphere->pGameObject->Get<RigidBody>().Velocity.Load() + secondVelocity);
+		
+
+		XMFLOAT3 velocity = XMFLOAT3();
+		XMStoreFloat3( &velocity, firstSphere->pGameObject->Get<RigidBody>().Velocity.Load());
+		XMFLOAT3 velocity2 = XMFLOAT3();
+		XMStoreFloat3(&velocity2, secondSphere->pGameObject->Get<RigidBody>().Velocity.Load());
+
+		VS_DB_OUT_A("Velocity: " << velocity.x << ", " << velocity.y << ", " << velocity.z << "\n");
+		VS_DB_OUT_A("Velocity2: " << velocity2.x << ", " << velocity2.y << ", " << velocity2.z << "\n");
 
 	}
 }

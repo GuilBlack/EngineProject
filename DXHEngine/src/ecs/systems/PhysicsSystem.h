@@ -17,7 +17,7 @@ struct Collision
 	SphereCollider* First;
 	SphereCollider* Second;
 	Vector3 Normal = Vector3::Zero; // Normal of the collision, pointing from first to second
-	float sqrDiff = 0.f; //Difference between the radii of the two colliders and the distance between them
+	float Diff = 0.f; //Difference between the radii of the two colliders and the distance between them
 };
 
 struct Cell
