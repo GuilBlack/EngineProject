@@ -16,13 +16,13 @@ void Game::StartEngine()
 void Game::Init(const DXH::Timer& gt)
 {
     using namespace DXH;
-    //GameObject* pObject = new GameObject();
+    GameObject* pObject = new GameObject();
     GameObject* pObject2 = new GameObject();
     pObject2->Get<Transform>().Position = { 0.0f, 2.0f, 0.0f };
-    //pObject->Add<Rotator>(); // Scripting test
-    //pObject->Add<Mesh>().SetGeoAndMatByName("Cube", "SimpleMaterial");
+    pObject->Add<Rotator>(); // Scripting test
+    pObject->Add<Mesh>().SetGeoAndMatByName("Cube", "SimpleMaterial");
     pObject2->Add<Mesh>().SetGeoAndMatByName("Sphere", "SimpleMaterial");
-    //m_GameObjects.emplace_back(pObject);
+    m_GameObjects.emplace_back(pObject);
     m_GameObjects.emplace_back(pObject2);
 
     // Create Camera
@@ -36,14 +36,9 @@ void Game::Init(const DXH::Timer& gt)
 
 void Game::Update(const DXH::Timer& gt)
 {
-    DXH::GameObject* pCamera = m_GameObjects[1];
+    DXH::GameObject* pCamera = m_GameObjects[2];
     DXH::Transform& camTransform = pCamera->Get<DXH::Transform>();
-    //camTransform.Rotation.SetRotationFromAngles(0.f, gt.TotalTime() * 20.0f, 0.0f);
-    DXH::Transform& transform = m_GameObjects[0]->Get<DXH::Transform>();
-    transform.Scale.x = sinf(gt.TotalTime() * 2.0f) * 2.5f + 2.5;
-    transform.Scale.y = sinf(gt.TotalTime() * 2.0f) * 2.5f + 2.5;
-    transform.Scale.z = sinf(gt.TotalTime() * 2.0f) * 2.5f + 2.5;
-
+    camTransform.Rotation.SetRotationFromAngles(0.f, gt.TotalTime() * 30.0f, 0.0f);
 }
 
 void Game::Destroy(const DXH::Timer& gt)
