@@ -23,28 +23,28 @@ void Game::Init(const DXH::Timer& gt)
 	}*/
 
 		GameObject* pObject = new GameObject();
-		Transform* transform = pObject->Add<Transform>();
-		pObject->Get<Transform>()->Position = { -3.f, 0.0f, 0.0f};
-		RigidBody* rigidBody = pObject->Add<RigidBody>();
-		auto col1 = pObject->Add<SphereCollider>();
-		col1->Radius = 1.f;
-		Mesh* mesh = pObject->Add<Mesh>();
-		rigidBody->Velocity = { 500.0f, 0.0f, 0.0f };
-		mesh->Geo = RendererResource::GetGeometry("Sphere");
-		mesh->Mat = RendererResource::GetMaterial("SimpleMaterial");
+		auto& transform = pObject->Get<Transform>();
+		pObject->Get<Transform>().Position = { -3.f, 0.0f, 0.0f};
+		auto& rigidBody = pObject->Add<RigidBody>();
+		auto& col1 = pObject->Add<SphereCollider>();
+		col1.Radius = 1.f;
+		auto& mesh = pObject->Add<Mesh>();
+		rigidBody.Velocity = { 500.0f, 0.0f, 0.0f };
+		mesh.Geo = RendererResource::GetGeometry("Sphere");
+		mesh.Mat = RendererResource::GetMaterial("SimpleMaterial");
 		m_GameObjects.emplace_back(pObject);
 
 
 		pObject = new GameObject();
-		transform = pObject->Add<Transform>();
-		pObject->Get<Transform>()->Position = { 3.f, 0.0f, 0.0f };
-		rigidBody = pObject->Add<RigidBody>();
-		col1 = pObject->Add<SphereCollider>();
-		col1->Radius = 1.f;
-		mesh = pObject->Add<Mesh>();
-		rigidBody->Velocity = { -500.0f, 0.0f, 0.0f };
-		mesh->Geo = RendererResource::GetGeometry("Sphere");
-		mesh->Mat = RendererResource::GetMaterial("SimpleMaterial");
+		auto& transform2 = pObject->Get<Transform>();
+		pObject->Get<Transform>().Position = { 3.f, 0.0f, 0.0f };
+		auto & rigidbody2 = pObject->Add<RigidBody>();
+		auto& col2 = pObject->Add<SphereCollider>();
+		col2.Radius = 1.f;
+		auto& mesh2 = pObject->Add<Mesh>();
+		rigidbody2.Velocity = { -500.0f, 0.0f, 0.0f };
+		mesh2.Geo = RendererResource::GetGeometry("Sphere");
+		mesh2.Mat = RendererResource::GetMaterial("SimpleMaterial");
 		m_GameObjects.emplace_back(pObject);
 }
 
