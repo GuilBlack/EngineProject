@@ -50,17 +50,17 @@ void PhysicsSystem::Update(const Timer& gt)
 	VS_DB_OUT_A("UpdateRigidBodies: " << t.DeltaTime() * 1000 << "ms\n");
 }
 
-inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform* transform, SphereCollider* collider)
+inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform& transform, SphereCollider& collider)
 {
 	return DirectX::XMVectorAdd(transform->Position.Load(), collider->Center.Load());
 }
 
-inline float PhysicsSystem::SqrDistanceBetween(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB)
+inline float PhysicsSystem::SqrDistanceBetween(DirectX::FXMVECTOR& posA, DirectX::FXMVECTOR& posB)
 {
 	return DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(posA, posB)));
 }
 
-inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::FXMVECTOR posA, DirectX::FXMVECTOR posB)
+inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::FXMVECTOR& posA, DirectX::FXMVECTOR& posB)
 {
 	return Vector3(DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(posB, posA)));
 }

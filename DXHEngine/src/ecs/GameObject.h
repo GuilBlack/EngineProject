@@ -8,13 +8,13 @@ class GameObject
     // GameObjects are not copyable, as they are managed by ComponentManagers
     GameObject(const GameObject&) = delete;
 public:
-    GameObject() = default;
+    GameObject();
     ~GameObject();
 
     /// <summary>
     /// Adds a component to the game object.
     /// </summary>
-    template <ComponentConcept T> T* Add()
+    template <ComponentConcept T> T& Add()
     {
         m_ReleaseCallbacks.push_back([](GameObject* pObject)
             {
@@ -23,9 +23,9 @@ public:
         return ComponentManager<T>::GetInstance().Assign(this);
     }
     /// <summary>
-    /// Gets a component from the game object, or nullptr if it doesn't have it.
+    /// Gets a component from the game object.
     /// </summary>
-    template <ComponentConcept T> inline T* Get() const
+    template <ComponentConcept T> inline T& Get() const
     {
         return ComponentManager<T>::GetInstance().GetComponent(this);
     }

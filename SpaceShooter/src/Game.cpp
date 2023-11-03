@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Scripts/Rotator.h"
 
 void Game::StartEngine()
 {
