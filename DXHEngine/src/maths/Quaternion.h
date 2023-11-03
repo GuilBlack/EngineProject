@@ -26,12 +26,19 @@ struct Quaternion : public Vector4
 
     inline void SetEulerAngles(float x, float y, float z)
     {
-        Store(DirectX::XMQuaternionRotationRollPitchYaw(x, y, z));
+        Store(DirectX::XMQuaternionRotationRollPitchYaw(
+            DirectX::XMConvertToRadians(x),
+            DirectX::XMConvertToRadians(y),
+            DirectX::XMConvertToRadians(z)));
     }
 
     inline void SetEulerAngles(Vector3 v)
     {
-        Store(DirectX::XMQuaternionRotationRollPitchYawFromVector(v.Load()));
+        Store(DirectX::XMQuaternionRotationRollPitchYaw(
+        DirectX::XMConvertToRadians(v.x),
+        DirectX::XMConvertToRadians(v.y),
+        DirectX::XMConvertToRadians(v.z)
+        ));
     }
 
     inline DirectX::XMMATRIX GetRotationMatrix() const
