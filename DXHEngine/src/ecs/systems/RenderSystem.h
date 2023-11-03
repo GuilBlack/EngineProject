@@ -1,6 +1,5 @@
 #pragma once
-#include "../System.h"
-#include "src/DXHMaths.h" // For the Vector3 struct
+#include "src/ecs/System.h" // For the System base class
 
 namespace DXH
 {

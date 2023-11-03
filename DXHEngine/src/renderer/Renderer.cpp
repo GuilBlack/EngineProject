@@ -190,6 +190,19 @@ void Renderer::FlushCommandQueue()
     }
 }
 
+inline void Renderer::Clear()
+{
+    m_pCommandList->ClearRenderTargetView(
+        m_pSwapChain->GetCurrentBackBufferDescriptorHeap(),
+        DirectX::Colors::Gray,
+        0, nullptr);
+    m_pCommandList->ClearDepthStencilView(
+        m_pSwapChain->GetDepthStencilDescriptorHeap(),
+        D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,
+        1.0f, 0, 0, nullptr
+    );
+}
+
 ID3D12Resource* Renderer::CreateDefaultBuffer(void* data, int64_t byteSize)
 {
     FlushCommandQueue();
