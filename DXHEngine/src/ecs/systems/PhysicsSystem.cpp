@@ -52,7 +52,7 @@ void PhysicsSystem::Update(const Timer& gt)
 
 inline DirectX::XMVECTOR PhysicsSystem::ColliderPosition(Transform& transform, SphereCollider& collider)
 {
-	return DirectX::XMVectorAdd(transform->Position.Load(), collider->Center.Load());
+	return DirectX::XMVectorAdd(transform.Position.Load(), collider.Center.Load());
 }
 
 inline float PhysicsSystem::SqrDistanceBetween(DirectX::FXMVECTOR& posA, DirectX::FXMVECTOR& posB)
@@ -66,7 +66,7 @@ inline Vector3 PhysicsSystem::CalculateCollisionNormal(DirectX::FXMVECTOR& posA,
 }
 
 
-void PhysicsSystem::SortColliders(std::unordered_map<const GameObject*, SphereCollider*>& gameObjects, float cellSize)
+void PhysicsSystem::SortColliders(std::unordered_map<const GameObject*, SphereCollider&>& gameObjects, float cellSize)
 {
 	
 	for (auto& [gameObject, collider] : gameObjects)
@@ -79,7 +79,7 @@ void PhysicsSystem::SortColliders(std::unordered_map<const GameObject*, SphereCo
 				center.y >= cell.Min.y && center.y <= cell.Max.y &&
 				center.z >= cell.Min.z && center.z <= cell.Max.z)
 			{
-				cell.Colliders.push_back(collider); 
+				cell.Colliders.push_back(&collider);
 				Found = true;
 				m_NumberOfCollisions++;
 				break;
@@ -93,7 +93,7 @@ void PhysicsSystem::SortColliders(std::unordered_map<const GameObject*, SphereCo
 
 			m_Cells[m_NumberOfCells].Min = Vector3(floorf(center.x / cellSize) * cellSize, floorf(center.y / cellSize) * cellSize, floorf(center.z / cellSize) * cellSize);
 			m_Cells[m_NumberOfCells].Max = Vector3(m_Cells[m_NumberOfCells].Min.x + cellSize, m_Cells[m_NumberOfCells].Min.y + cellSize, m_Cells[m_NumberOfCells].Min.z + cellSize);
-			m_Cells[m_NumberOfCells].Colliders.push_back(collider);
+			m_Cells[m_NumberOfCells].Colliders.push_back(&collider);
 			m_NumberOfCells++;
 			
 		}
@@ -114,14 +114,14 @@ void PhysicsSystem::DetectCollisions(Cell& cell)
 	{
 		// Get its collider position
 		SphereCollider* collA = cell.Colliders[i];
-		DirectX::XMVECTOR posA = ColliderPosition(collA->pGameObject->Get<Transform>(), collA);
+		DirectX::XMVECTOR posA = ColliderPosition(collA->pGameObject->Get<Transform>(), *collA);
 
 		// For each pair after the current one
 		for (size_t j = i + 1; j < length; j++)
 		{
 			// Get its collider position
 			SphereCollider* collB = cell.Colliders[j];
-			DirectX::XMVECTOR posB = ColliderPosition(collB->pGameObject->Get<Transform>(), collB);
+			DirectX::XMVECTOR posB = ColliderPosition(collB->pGameObject->Get<Transform>(), *collB);
 
 			// Add the radii and compare them to the distance between the two positions
 			float radius = collA->Radius + collB->Radius;
@@ -154,8 +154,8 @@ void PhysicsSystem::ApplyCollisions(float deltaTime)
 		SphereCollider* firstSphere = m_Collisions[i].First;
 		SphereCollider* secondSphere = m_Collisions[i].Second;
 
-		firstSphere->pGameObject->Get<RigidBody>()->Velocity.Store(firstSphere->pGameObject->Get<RigidBody>()->Velocity.Load() + XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].sqrDiff * -1));
-		secondSphere->pGameObject->Get<RigidBody>()->Velocity.Store(secondSphere->pGameObject->Get<RigidBody>()->Velocity.Load() + XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].sqrDiff));
+		firstSphere->pGameObject->Get<RigidBody>().Velocity.Store(firstSphere->pGameObject->Get<RigidBody>().Velocity.Load() + XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].sqrDiff * -1));
+		secondSphere->pGameObject->Get<RigidBody>().Velocity.Store(secondSphere->pGameObject->Get<RigidBody>().Velocity.Load() + XMVectorScale(m_Collisions[i].Normal.Load(), m_Collisions[i].sqrDiff));
 
 	}
 }
@@ -165,9 +165,9 @@ void PhysicsSystem::UpdateRigidBodies(const Timer& gt)
 	auto& rigidBodies = ComponentManager<RigidBody>::GetInstance().GetUsedComponentsMap();
 	for (auto& [gameObject, rigidBody] : rigidBodies)
 	{
-		XMVECTOR velocity = XMVectorScale(rigidBody->Force.Load(), 1.f/rigidBody->Mass);
-		rigidBody->Velocity = XMVectorAdd(rigidBody->Velocity.Load(), XMVectorScale(velocity, gt.DeltaTime()));
-		gameObject->Get<Transform>()->Position = XMVectorAdd(gameObject->Get<Transform>()->Position.Load(), XMVectorScale(rigidBody->Velocity.Load(), gt.DeltaTime()));
+		XMVECTOR velocity = XMVectorScale(rigidBody.Force.Load(), 1.f/rigidBody.Mass);
+		rigidBody.Velocity = XMVectorAdd(rigidBody.Velocity.Load(), XMVectorScale(velocity, gt.DeltaTime()));
+		gameObject->Get<Transform>().Position = XMVectorAdd(gameObject->Get<Transform>().Position.Load(), XMVectorScale(rigidBody.Velocity.Load(), gt.DeltaTime()));
 	}
 }
 }
