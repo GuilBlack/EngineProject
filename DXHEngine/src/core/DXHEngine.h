@@ -57,7 +57,7 @@ protected:
 
 private:
     AppProperties m_Props;
-    Timer* m_GameTimer;
+    Timer* m_GameTimer = nullptr;
     GameTimerFunc m_GameInit = nullptr;
     GameTimerFunc m_GameDestroy = nullptr;
     bool m_IsRunning = false;

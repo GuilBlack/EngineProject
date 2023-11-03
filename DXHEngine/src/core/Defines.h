@@ -3,33 +3,42 @@
 #if defined(_DEBUG) || defined(DEBUG)
 
 #include <crtdbg.h>
+#include <sstream>
 
 // Debug output for std::string.
-#define VS_DB_OUT_A( s )                                \
-{                                                        \
-    std::stringstream ss;                                \
-    ss << s;                                            \
-    OutputDebugStringA( ss.str().c_str() );                \
+#define VS_DB_OUT_A( s )                                    \
+{                                                           \
+    std::stringstream ss;                                   \
+    ss << s;                                                \
+    OutputDebugStringA( ss.str().c_str() );                 \
 }
 
 // Debug output for std::wstring.
-#define VS_DB_OUT_W( s )                                \
-{                                                        \
-    std::wstringstream ss;                                \
-    ss << s;                                            \
-    OutputDebugStringW( ss.str().c_str() );                \
+#define VS_DB_OUT_W( s )                                    \
+{                                                           \
+    std::wstringstream ss;                                  \
+    ss << s;                                                \
+    OutputDebugStringW( ss.str().c_str() );                 \
 }
 
 // Asserts if the HRESULT is not S_OK.
-#define ASSERT_HRESULT(x)                                \
-{                                                        \
-    HRESULT dhr = (x);                                    \
-    if (FAILED(dhr))                                    \
-    {                                                    \
-        _com_error err(dhr);                            \
-        VS_DB_OUT_W(err.ErrorMessage() << L'\n');        \
-        assert(false);                                    \
-    }                                                    \
+#define ASSERT_HRESULT(x)                                   \
+{                                                           \
+    HRESULT dhr = (x);                                      \
+    if (FAILED(dhr))                                        \
+    {                                                       \
+        if (FACILITY_WINDOWS == HRESULT_FACILITY(dhr))      \
+            dhr = HRESULT_CODE(dhr);                        \
+                                                            \
+        TCHAR* szErrMsg;                                    \
+        if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dhr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&szErrMsg, 0, NULL) != 0) \
+        {                                                   \
+            VS_DB_OUT_W(TEXT("%s") << szErrMsg);            \
+            LocalFree(szErrMsg);                            \
+        }                                                   \
+        else VS_DB_OUT_W(L"Could not find a description for error " << dhr << L'\n'); \
+        assert(false);                                      \
+    }                                                       \
 }
 
 // Replace new to check for memory leaks

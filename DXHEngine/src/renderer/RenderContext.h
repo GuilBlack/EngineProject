@@ -38,7 +38,7 @@ public:
     /// Creates a fence.
     /// </summary>
     /// <param name="fence">Pointer to the fence</param>
-    inline void CreateFence(ID3D12Fence** fence);
+    void CreateFence(ID3D12Fence** fence);
 
     /// <summary>
     /// Creates a swap chain.
@@ -60,14 +60,14 @@ public:
     /// </summary>
     /// <param name="numDescriptors">Number of descriptors in the heap</param>
     /// <param name="dsvHeap">Pointer to the heap</param>
-    inline void CreateDSVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** dsvHeap);
+    void CreateDSVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** dsvHeap);
 
     /// <summary>
     /// Creates a constant buffer view, shader resource view and unordered access view heap.
     /// </summary>
     /// <param name="numDescriptors">Number of descriptors in the heap</param>
     /// <param name="cbvSrvUavHeap">Pointer to the heap</param>
-    inline void CreateCBVSRVUAVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** cbvSrvUavHeap);
+    void CreateCBVSRVUAVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** cbvSrvUavHeap);
 
     /// <summary>
     /// Creates the render target descriptor
@@ -112,21 +112,21 @@ public:
     /// <param name="heapProps">Heap properties</param>
     /// <param name="bufferDesc">Description of the resource</param>
     /// <param name="state">State of the resource</param>
-    inline void CreateResource(ID3D12Resource** res, const D3D12_HEAP_PROPERTIES& heapProps, const D3D12_RESOURCE_DESC& bufferDesc, D3D12_RESOURCE_STATES state);
+    void CreateResource(ID3D12Resource** res, const D3D12_HEAP_PROPERTIES& heapProps, const D3D12_RESOURCE_DESC& bufferDesc, D3D12_RESOURCE_STATES state);
 
     /// <summary>
     /// Creates a root signature.
     /// </summary>
     /// <param name="serializedRootSignature">Pointer to the serialized root signature</param>
     /// <param name="rs">Pointer to the root signature</param>
-    inline void CreateRootSignature(ID3DBlob* serializedRootSignature, ID3D12RootSignature** rs);
+    void CreateRootSignature(ID3DBlob* serializedRootSignature, ID3D12RootSignature** rs);
 
     /// <summary>
     /// Creates a graphics pipeline state object.
     /// </summary>
     /// <param name="psoDesc">Description of the PSO</param>
     /// <param name="pso">Pointer to the PSO</param>
-    inline void CreatePSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc, ID3D12PipelineState** pso);
+    void CreatePSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc, ID3D12PipelineState** pso);
 
     /// <summary>
     /// Creates a constant buffer view.

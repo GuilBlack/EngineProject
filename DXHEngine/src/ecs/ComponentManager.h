@@ -33,7 +33,8 @@ public:
     /// </summary>
     T& Assign(GameObject* target)
     {
-        assert(!HasComponent(target) && "The target already has this component.");
+        if (HasComponent(target))
+            throw std::exception("The target already has this component.");
 
         // Find a component that is not in use
         static size_t index = 0;

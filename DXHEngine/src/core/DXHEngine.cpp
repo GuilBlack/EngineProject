@@ -8,7 +8,7 @@
 namespace DXH
 {
 DXHEngine::DXHEngine()
-    : m_GameTimer()
+    : m_GameTimer(new Timer())
 {
 }
 

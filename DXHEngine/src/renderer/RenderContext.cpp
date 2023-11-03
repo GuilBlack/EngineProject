@@ -51,7 +51,7 @@ void RenderContext::CreateCommandObjects(ID3D12CommandQueue** commandQueue, ID3D
     (*commandList)->Close();
 }
 
-inline void RenderContext::CreateFence(ID3D12Fence** fence)
+void RenderContext::CreateFence(ID3D12Fence** fence)
 {
     ASSERT_HRESULT(m_pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence)));
 }
@@ -72,7 +72,7 @@ void RenderContext::CreateRTVHeapDescriptor(uint32_t numDescriptors, ID3D12Descr
     ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(rtvHeap)));
 }
 
-inline void RenderContext::CreateDSVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** dsvHeap)
+void RenderContext::CreateDSVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** dsvHeap)
 {
     D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc =
     {
@@ -83,7 +83,7 @@ inline void RenderContext::CreateDSVHeapDescriptor(uint32_t numDescriptors, ID3D
     ASSERT_HRESULT(m_pDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(dsvHeap)));
 }
 
-inline void RenderContext::CreateCBVSRVUAVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** cbvSrvUavHeap)
+void RenderContext::CreateCBVSRVUAVHeapDescriptor(uint32_t numDescriptors, ID3D12DescriptorHeap** cbvSrvUavHeap)
 {
     D3D12_DESCRIPTOR_HEAP_DESC cbvSrvUavHeapDesc =
     {
@@ -114,7 +114,7 @@ void RenderContext::CreateDSV(
     m_pDevice->CreateDepthStencilView(*dsv, &dsvDesc, dsvHeapHandle);
 }
 
-inline void RenderContext::CreateResource(ID3D12Resource** res, const D3D12_HEAP_PROPERTIES& heapProps, const D3D12_RESOURCE_DESC& bufferDesc, D3D12_RESOURCE_STATES state)
+void RenderContext::CreateResource(ID3D12Resource** res, const D3D12_HEAP_PROPERTIES& heapProps, const D3D12_RESOURCE_DESC& bufferDesc, D3D12_RESOURCE_STATES state)
 {
     ASSERT_HRESULT(m_pDevice->CreateCommittedResource(
         &heapProps,
@@ -126,7 +126,7 @@ inline void RenderContext::CreateResource(ID3D12Resource** res, const D3D12_HEAP
     ));
 }
 
-inline void RenderContext::CreateRootSignature(ID3DBlob* serializedRootSignature, ID3D12RootSignature** rs)
+void RenderContext::CreateRootSignature(ID3DBlob* serializedRootSignature, ID3D12RootSignature** rs)
 {
     ASSERT_HRESULT(m_pDevice->CreateRootSignature(
         0,
@@ -136,7 +136,7 @@ inline void RenderContext::CreateRootSignature(ID3DBlob* serializedRootSignature
     ));
 }
 
-inline void RenderContext::CreatePSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc, ID3D12PipelineState** pso)
+void RenderContext::CreatePSO(D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc, ID3D12PipelineState** pso)
 {
     ASSERT_HRESULT(m_pDevice->CreateGraphicsPipelineState(
         &psoDesc,
