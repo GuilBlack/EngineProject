@@ -35,9 +35,6 @@ void Game::Init(const DXH::Timer& gt)
         pObject->Add<Mesh>().SetGeoAndMatByName("Cube", "SimpleMaterial");
         m_GameObjects.emplace_back(pObject);
     }
-    //GameObject* pObject2 = new GameObject();
-    //pObject->Add<Rotator>(); // Scripting test
-    //m_GameObjects.emplace_back(pObject2);
 }
 
 void Game::Destroy(const DXH::Timer& gt)
