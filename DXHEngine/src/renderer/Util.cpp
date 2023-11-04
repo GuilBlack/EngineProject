@@ -4,10 +4,6 @@
 
 namespace DXH
 {
-bool SphereBoundingVolume::IsOnOrForwardPlane(const Plane& plane) const
-{
-    return plane.GetSignedDistanceToPlane(Center) > -Radius;
-}
 
 bool SphereBoundingVolume::IsOnFrustum(const Frustum& camFrustum, const Transform& transform) const
 {

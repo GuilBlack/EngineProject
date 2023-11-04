@@ -54,7 +54,7 @@ struct SphereBoundingVolume
         : Center(center), Radius(radius)
     {}
 
-    bool IsOnOrForwardPlane(const Plane& plane) const;
+    bool IsOnOrForwardPlane(const Plane& plane) const { return plane.GetSignedDistanceToPlane(Center) > -Radius; }
 
     bool IsOnFrustum(const Frustum& camFrustum, const Transform& transform) const;
 };
