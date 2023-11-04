@@ -113,12 +113,9 @@ public:
     /// Updates the pass constant buffer with the given pass constants.
     /// </summary>
     /// <param name="passCB">The pass constants to update the pass constant buffer with.</param>
-    void UpdatePassCB(PassConstants& passCB) { m_PassCB.CopyData(0, passCB); }
+    void UpdatePassCB(PassConstants& passCB);
 
-    virtual uint32_t AddMaterialCB() 
-    {
-        return -1;
-    }
+    virtual uint32_t AddMaterialCB();
 
     virtual void UpdateMaterialCB(Material* material) {}
 
@@ -127,7 +124,7 @@ public:
     /// </summary>
     /// <param name="objectCB">The object constants to update the object constant buffer with.</param>
     /// <param name="index">The index of the object constant buffer to update.</param>
-    static void UpdateObjectCB(ObjectConstants& objectCB, uint32_t index) { s_ObjectCB[index].CopyData(0, objectCB); }
+    static void UpdateObjectCB(ObjectConstants& objectCB, uint32_t index);
 
 protected:
     ID3DBlob* m_pVS = nullptr;

@@ -28,7 +28,7 @@ void DXH::RenderSystem::Update(const Timer& gt)
                 transformMap.at(pair.first), 
                 (float)Window::GetInstance().GetWidth() / Window::GetInstance().GetHeight()
             );
-            Renderer::GetInstance().BeginFrame(pair.second);
+            Renderer::GetInstance().BeginFrame(pair.second, transformMap.at(pair.first), gt);
             camInMap = true;
             break;
         }
@@ -51,21 +51,24 @@ void DXH::RenderSystem::Update(const Timer& gt)
             1000.f
         );
         defaultCam.Proj = proj;
-        Renderer::GetInstance().BeginFrame(defaultCam);
+        Renderer::GetInstance().BeginFrame(defaultCam, Transform(), gt);
     }
 
+    uint32_t objCount = 0;
+    uint32_t drawCount = 0;
     for (auto& pair : map)
     {
-        //++objCount;
+        ++objCount;
         auto go = pair.first;
         auto& mesh = pair.second;
         auto& transform = transformMap.at(go);
         if (mesh.Geo->BoundingSphere.IsOnFrustum(camFrustum, transform))
         {
+            ++drawCount;
             Renderer::GetInstance().Draw(mesh, transform);
         }
     }
-
+    VS_DB_OUT_A(objCount << "; " << drawCount << '\n');
     Renderer::GetInstance().EndFrame();
 }
 

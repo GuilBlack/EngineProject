@@ -19,9 +19,8 @@ RendererResource::~RendererResource()
 void RendererResource::Init()
 {
     CreateShader("SimpleShader", "../DXHEngine/res/shaders/color-vs.cso", "../DXHEngine/res/shaders/color-ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
+
     CreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
-    CreateCube();
-    CreateSquare();
     CreateSphere();
 }
 
@@ -68,7 +67,7 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
         pMaterial->Shader = pShader;
         pMaterial->Type = MaterialType::Lighting;
         pMaterial->MaterialCBIndex = pShader->AddMaterialCB();
-
+        m_Materials[materialName] = pMaterial;
         break;
     }
     default:
@@ -133,6 +132,7 @@ void RendererResource::CreateCube()
     m_Geometries["Cube"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
     m_Geometries["Cube"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);
 }
+
 void RendererResource::CreateSquare()
 {
     using namespace DirectX;
@@ -162,6 +162,7 @@ void RendererResource::CreateSquare()
     m_Geometries["Square"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
     m_Geometries["Square"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);
 }
+
 void RendererResource::CreateSphere()
 {
     using namespace DirectX;
@@ -172,7 +173,7 @@ void RendererResource::CreateSphere()
     uint32_t numVertices = (latitude + 1) * (longitude * 2);
     uint32_t numIndices = 2 * 3 * longitude + 2 * 3 * (latitude - 1) * longitude;
 
-    std::vector<BasicVertex> vertices;
+    std::vector<PosNormVertex> vertices;
     vertices.resize(numVertices);
     std::vector<std::uint16_t> indices;
     indices.resize(numIndices);
@@ -185,8 +186,8 @@ void RendererResource::CreateSphere()
     // top vertex
     for (uint32_t i = 1; i <= longitude; ++i)
     {
-        vertices[count].Position = XMFLOAT3(0.f, radius, 0.f);
-        vertices[count].Color = XMFLOAT4(Colors::White);
+        vertices[count].Position = { 0.f, radius, 0.f };
+        vertices[count].Normal = { 0.f, 1.f, 0.f };
         ++count;
     }
 
@@ -197,11 +198,21 @@ void RendererResource::CreateSphere()
         for (uint32_t j = 0; j < longitude + 1; ++j)
         {
             float pLong = (float)j * longitudeStep;
+
+            XMFLOAT3 point =
+            {
+                sinf(pLat) * cosf(pLong),
+                cosf(pLat),
+                sinf(pLat) * sinf(pLong)
+            };
+
             vertices[count].Position = XMFLOAT3(
-                radius * sinf(pLat) * cosf(pLong),
-                radius * cosf(pLat),
-                radius * sinf(pLat) * sinf(pLong));
-            vertices[count].Color = XMFLOAT4(Colors::White);
+                radius * point.x,
+                radius * point.y,
+                radius * point.z
+            );
+
+            vertices[count].Normal = point;
             ++count;
         }
     }
@@ -209,8 +220,8 @@ void RendererResource::CreateSphere()
     // bottom vertex
     for (uint32_t i = 1; i <= longitude; ++i)
     {
-        vertices[count].Position = XMFLOAT3(0.f, -radius, 0.f);
-        vertices[count].Color = XMFLOAT4(Colors::White);
+        vertices[count].Position = { 0.f, -radius, 0.f };
+        vertices[count].Normal = { 0.f, -1.f, 0.f };
         ++count;
     }
 
@@ -252,8 +263,8 @@ void RendererResource::CreateSphere()
         indices[count++] = southPoleIndex - (longitude + 1) + i + 1;
     }
 
-    uint32_t vbByteSize = (uint32_t)vertices.size() * sizeof(BasicVertex);
-    uint32_t vertexByteStride = sizeof(BasicVertex);
+    uint32_t vbByteSize = (uint32_t)vertices.size() * sizeof(PosNormVertex);
+    uint32_t vertexByteStride = sizeof(PosNormVertex);
 
     m_Geometries["Sphere"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
     m_Geometries["Sphere"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);

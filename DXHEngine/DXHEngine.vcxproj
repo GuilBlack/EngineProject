@@ -104,6 +104,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DXHRendering.h" />
     <ClInclude Include="res\shaders\include\DXHRendering.h" />
     <ClInclude Include="src\ecs\Event.h" />
     <ClInclude Include="src\ecs\systems\ScriptingSystem.h" />

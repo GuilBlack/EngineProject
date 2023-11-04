@@ -9,6 +9,7 @@ struct Mesh;
 struct Material;
 struct Transform;
 struct Camera;
+class Timer;
 
 class Renderer
 {
@@ -46,7 +47,7 @@ public:
     /// <summary>
     /// Initialize the resources needed to draw to the back buffer
     /// </summary>
-    void BeginFrame(const Camera& camera);
+    void BeginFrame(const Camera& camera, const Transform& camTransform, const Timer& timer);
 
     /// <summary>
     /// Draw a mesh

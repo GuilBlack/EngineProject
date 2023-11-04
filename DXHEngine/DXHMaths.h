@@ -1,6 +1,7 @@
 #pragma once
 
 // All files needed for mathematic operations
+#include <cmath>
 #include <DirectXMath.h>
 #include "src/maths/Vector2.h"
 #include "src/maths/Vector3.h"

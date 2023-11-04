@@ -16,6 +16,9 @@ void Game::StartEngine()
 void Game::Init(const DXH::Timer& gt)
 {
     using namespace DXH;
+
+    LoadAssets();
+
     // Create Camera
     GameObject* pCamera = new GameObject();
     Transform& camTransform = pCamera->Get<Transform>();
@@ -25,6 +28,7 @@ void Game::Init(const DXH::Timer& gt)
     pCamera->Add<Camera>().IsPrimary = true;
     m_GameObjects.emplace_back(pCamera);
 
+    // Create objects
     for (int i = 0; i < 500; ++i)
     {
         GameObject* pObject = new GameObject();
@@ -32,12 +36,9 @@ void Game::Init(const DXH::Timer& gt)
         float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         pObject->Get<Transform>().Position = { randX, randY, randZ };
-        pObject->Add<Mesh>().SetGeoAndMatByName("Sphere", "SimpleMaterial");
+        pObject->Add<Mesh>().SetGeoAndMatByName("Sphere", "RedLightingMaterial");
         m_GameObjects.emplace_back(pObject);
     }
-    //GameObject* pObject2 = new GameObject();
-    //pObject->Add<Rotator>(); // Scripting test
-    //m_GameObjects.emplace_back(pObject2);
 }
 
 void Game::Destroy(const DXH::Timer& gt)
@@ -46,4 +47,29 @@ void Game::Destroy(const DXH::Timer& gt)
     {
         delete go;
     }
+}
+
+void Game::LoadAssets()
+{
+    using namespace DXH;
+    // Create shaders
+    RendererResource::GetInstance().CreateShader(
+        "BasicPhongShader", 
+        "res/shaders/compiled/simple-lighting-vs.cso", 
+        "res/shaders/compiled/simple-lighting-ps.cso", 
+        ShaderProgramType::BasicPhongShader, 
+        InputLayoutType::PositionNormal
+    );
+
+    // Create materials
+    RendererResource::GetInstance().CreateMaterial(
+        "RedLightingMaterial", 
+        MaterialType::Lighting, "BasicPhongShader"
+    );
+    SimplePhongMaterial* pRedLightingMaterial = 
+        dynamic_cast<SimplePhongMaterial*>(RendererResource::GetInstance().GetMaterial("RedLightingMaterial"));
+
+    pRedLightingMaterial->DiffuseAlbedo = { 1.0f, 0.0f, 0.0f, 1.0f };
+    pRedLightingMaterial->FresnelR0 = { 0.01f, 0.01f, 0.01f };
+    pRedLightingMaterial->Roughness = 0.25f;
 }

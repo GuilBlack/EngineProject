@@ -38,6 +38,11 @@ BaseShader* BaseShader::Create(const std::string& vsFilePath, const std::string&
         shader = new SimpleShader();
         break;
     }
+    case ShaderProgramType::BasicPhongShader:
+    {
+        shader = new BasicPhongShader();
+        break;
+    }
     }
     assert(shader && "Wrong shader program type given!");
 
@@ -82,6 +87,21 @@ uint32_t BaseShader::AddObjectCB()
     return (uint32_t)s_ObjectCB.size() - 1;
 }
 
+void BaseShader::UpdatePassCB(PassConstants& passCB)
+{
+    m_PassCB.CopyData(0, passCB);
+}
+
+uint32_t BaseShader::AddMaterialCB()
+{
+    return -1;
+}
+
+void BaseShader::UpdateObjectCB(ObjectConstants& objectCB, uint32_t index)
+{
+    s_ObjectCB[index].CopyData(0, objectCB);
+}
+
 ID3DBlob* BaseShader::LoadCompiledShader(const std::string& filepath)
 {
     std::ifstream fin(filepath, std::ios::binary);
@@ -121,10 +141,10 @@ std::vector<D3D12_INPUT_ELEMENT_DESC> BaseShader::CreateInputLayout(InputLayoutT
     case InputLayoutType::PositionNormal:
         inputLayout =
         {
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-		};
-		break;
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+        };
+        break;
     case InputLayoutType::PositionNormalColor:
         inputLayout =
         {
@@ -226,6 +246,7 @@ void SimpleShader::Bind(ID3D12GraphicsCommandList* cl)
 BasicPhongShader::BasicPhongShader()
 {
     m_Type = ShaderProgramType::BasicPhongShader;
+    m_MaterialCB.reserve(64);
 
     CD3DX12_ROOT_PARAMETER rootParameters[3];
 
@@ -245,27 +266,29 @@ void BasicPhongShader::Bind(ID3D12GraphicsCommandList* cl)
 void BasicPhongShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl)
 {
     using namespace DirectX;
-	ObjectConstants objectCB;
-	XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(transform.GetModelMatrix()));
-	UpdateObjectCB(objectCB, objectCBIndex);
-	cl->SetGraphicsRootConstantBufferView(0, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // objCB
+    ObjectConstants objectCB;
+    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(transform.GetModelMatrix()));
+    UpdateObjectCB(objectCB, objectCBIndex);
+    cl->SetGraphicsRootConstantBufferView(0, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // objCB
 
     SimplePhongMaterial* spMat = dynamic_cast<SimplePhongMaterial*>(material);
 
     PhongMaterialConstants materialCB;
-	materialCB.DiffuseAlbedo = spMat->DiffuseAlbedo;
-	materialCB.FresnelR0 = spMat->FresnelR0;
-	materialCB.Roughness = spMat->Roughness;
+    materialCB.DiffuseAlbedo = spMat->DiffuseAlbedo;
+    materialCB.FresnelR0 = spMat->FresnelR0;
+    materialCB.Roughness = spMat->Roughness;
 
-	UpdateMaterialCB(material);
-	cl->SetGraphicsRootConstantBufferView(1, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // matCB
+    UpdateMaterialCB(material);
+    cl->SetGraphicsRootConstantBufferView(1, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // matCB
 }
 
 uint32_t BasicPhongShader::AddMaterialCB()
 {
     UploadBuffer<PhongMaterialConstants> materialCB;
     m_MaterialCB.emplace_back(materialCB);
-    return 0;
+    m_MaterialCB.back().Init(1, true);
+    m_MaterialCB.back().CopyData(0, PhongMaterialConstants());
+    return (uint32_t)m_MaterialCB.size() - 1;
 }
 
 }

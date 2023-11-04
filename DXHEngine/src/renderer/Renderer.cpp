@@ -8,6 +8,7 @@
 #include "src/ecs/components/Render.h"
 #include "src/ecs/components/Camera.h"
 #include "src/core/Window.h"
+#include "src/time/Timer.h"
 
 namespace DXH
 {
@@ -54,7 +55,7 @@ void Renderer::Destroy()
     delete m_pRenderContext;
 }
 
-void Renderer::BeginFrame(const Camera& camera)
+void Renderer::BeginFrame(const Camera& camera, const Transform& camTransform, const Timer& timer)
 {
     using namespace DirectX;
     ASSERT_HRESULT(m_pCommandAllocator->Reset());
@@ -91,16 +92,21 @@ void Renderer::BeginFrame(const Camera& camera)
         .View = view,
         .Proj = proj,
         .ViewProj = viewProj,
-        .EyePosW = {0.f, 0.f, -5.f},
+        .EyePosW = camTransform.Position,
         .NearZ = camera.NearPlan,
         .FarZ = camera.FarPlan,
-        .TotalTime = 0.f,
+        .TotalTime = timer.TotalTime(),
         .RenderTargetSize = 
         {
             (float)Window::GetInstance().GetWidth(), 
             (float)Window::GetInstance().GetHeight()
         },
         .DeltaTime = 0.f,
+        .SunDirection = {0.f, -1.f, -0.25f},
+        .SunColor = {1.f, 1.f, 1.f},
+        .AmbientColor = {1.f, 1.f, 1.f},
+        .AmbientIntensity = 0.1f,
+        .SunIntensity = .9f,
     };
 
     for (auto [_, shader] : RendererResource::GetInstance().m_Shaders)
@@ -115,6 +121,11 @@ void Renderer::Draw(Mesh& mesh, Transform& transform)
     switch (mesh.Mat->Shader->GetType())
     {
     case ShaderProgramType::SimpleShader:
+    {
+        mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, transform, m_pCommandList);
+        break;
+    }
+    case ShaderProgramType::BasicPhongShader:
     {
         mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, transform, m_pCommandList);
         break;
