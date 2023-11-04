@@ -27,5 +27,15 @@ struct Transform : Component
             Rotation.Load(),
             Position.Load());
     }
+
+    inline DirectX::XMMATRIX GetScaleMatrix() const
+    {
+        return DirectX::XMMatrixScalingFromVector(Scale.Load());
+    }
+
+    inline DirectX::XMMATRIX GetRotationMatrix() const
+    {
+        return DirectX::XMMatrixRotationQuaternion(Rotation.Load());
+    }
 };
 }

@@ -173,6 +173,7 @@
     <ClCompile Include="src\renderer\SwapChain.cpp" />
     <ClCompile Include="src\maths\Vector3.cpp" />
     <ClCompile Include="src\maths\Vector2.cpp" />
+    <ClCompile Include="src\renderer\Util.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

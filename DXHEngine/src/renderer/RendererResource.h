@@ -54,13 +54,6 @@ public:
     void CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName);
 
     /// <summary>
-    /// Create a Mesh
-    /// </summary>
-    /// <param name="shaderName">Name of the shader that will be used.</param>
-    /// <param name="geometryName">Name of the geometry that will be used.</param>
-    Mesh CreateMesh(const std::string& shaderName, const std::string& geometryName);
-
-    /// <summary>
     /// Get a material
     /// </summary>
     /// <param name="materialName">Name of the material</param>
