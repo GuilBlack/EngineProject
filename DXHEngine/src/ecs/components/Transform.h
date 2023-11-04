@@ -34,8 +34,8 @@ struct Transform : Component
     }
 
     inline DirectX::XMMATRIX GetRotationMatrix() const
-	{
-		return DirectX::XMMatrixRotationQuaternion(Rotation.Load());
-	}
+    {
+        return DirectX::XMMatrixRotationQuaternion(Rotation.Load());
+    }
 };
 }
