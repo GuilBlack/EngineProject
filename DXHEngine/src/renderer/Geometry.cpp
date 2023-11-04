@@ -31,8 +31,8 @@ Geometry::~Geometry()
 SphereBoundingVolume Geometry::ComputeBoundingSphere(std::vector<BasicVertex> vertices)
 {
     using namespace DirectX;
-    constexpr float min = std::numeric_limits<float>::max();
-    constexpr float max = std::numeric_limits<float>::lowest();
+    static constexpr float min = std::numeric_limits<float>::max();
+    static constexpr float max = std::numeric_limits<float>::lowest();
 
     Vector3 minAABB = Vector3(min, min, min);
     Vector3 maxAABB = Vector3(max, max, max);
