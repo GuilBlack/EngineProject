@@ -14,9 +14,9 @@ struct RigidBody : Component
         Force = Vector3::Zero;
         Mass = 1.0f;
     }
-    Vector3 Velocity;
-    Vector3 Force;
-    float Mass;
+    Vector3 Velocity = Vector3::Zero; // In meters per second
+    Vector3 Force = Vector3::Zero; // In Newtons
+    float Mass = 1.0f; // In kilograms
 };
 /// <summary>
 /// A sphere collider.
@@ -28,7 +28,7 @@ struct SphereCollider : Component
         Center = Vector3::Zero;
         Radius = 0.f;
     }
-    Vector3 Center; // Relative to game object
-    float Radius;
+    Vector3 Center = Vector3::Zero; // Relative to game object
+    float Radius = 0.f;
 };
 }

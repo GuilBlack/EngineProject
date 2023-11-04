@@ -12,7 +12,7 @@ struct Transform : Component
         Rotation = Quaternion::Identity;
         Scale = Vector3::One;
     }
-    Vector3 Position = Vector3::Zero;
+    Vector3 Position = Vector3::Zero; // Position in world space, in meters
     Quaternion Rotation = Quaternion::Identity;
     Vector3 Scale = Vector3::One;
 

@@ -89,7 +89,6 @@ void DXHEngine::UpdateFpsCounter()
 {
     static int frameCnt = 0;
     static float timeElapsed = 0.0f;
-    m_GameTimer.Tick();
     frameCnt++;
 
     if ((m_GameTimer.TotalTime() - timeElapsed) >= 1.0f)
