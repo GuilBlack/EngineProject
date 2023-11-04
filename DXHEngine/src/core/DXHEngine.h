@@ -1,12 +1,13 @@
 #pragma once
-#include "Timer.h"
-#include "InputManager.h"
-#include "src/renderer/Renderer.h"
+#include <string>
 
 namespace DXH
 {
+class Timer;
+class RenderContext;
+
 // Delegate for update functions
-typedef void(*UpdateFunc)(const Timer&);
+typedef void(*GameTimerFunc)(const Timer&);
 
 // Application properties that are set on startup
 struct AppProperties
@@ -18,6 +19,10 @@ struct AppProperties
 
 class DXHEngine
 {
+    // Private constructor, only the static instance is allowed
+    DXHEngine();
+    ~DXHEngine();
+
 public:
     // Gets the singleton application
     inline static DXHEngine& GetInstance() noexcept
@@ -25,10 +30,10 @@ public:
         static DXHEngine instance;
         return instance;
     }
-    Timer& GetTimer() noexcept { return m_GameTimer; }
+    Timer& GetTimer() noexcept { return *m_GameTimer; }
 
     // Initializes the application
-    bool Init(AppProperties props, UpdateFunc gameInit, UpdateFunc gameUpdate, UpdateFunc gameDestroy);
+    bool Init(AppProperties props, GameTimerFunc gameInit, GameTimerFunc gameDestroy);
     // Starts the main loop
     void Run();
 
@@ -52,11 +57,9 @@ protected:
 
 private:
     AppProperties m_Props;
-    Timer m_GameTimer = Timer();
-    InputManager m_InputManager = InputManager();
-    UpdateFunc m_GameInit = nullptr;
-    UpdateFunc m_GameUpdate = nullptr;
-    UpdateFunc m_GameDestroy = nullptr;
+    Timer* m_GameTimer = nullptr;
+    GameTimerFunc m_GameInit = nullptr;
+    GameTimerFunc m_GameDestroy = nullptr;
     bool m_IsRunning = false;
 
     RenderContext* m_pContext = nullptr;
@@ -70,10 +73,6 @@ private:
 #pragma endregion
 
 private:
-    // Private constructor, only the static instance is allowed
-    DXHEngine() = default;
-    ~DXHEngine() = default;
-
     // Initializes the window
     bool InitWindow();
     // Initializes DirectX 12

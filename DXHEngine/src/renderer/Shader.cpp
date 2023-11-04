@@ -225,4 +225,3 @@ void BasicPhongShader::Bind(ID3D12GraphicsCommandList* cl)
 }
 
 }
-

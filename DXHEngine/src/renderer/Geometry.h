@@ -48,5 +48,4 @@ struct Geometry
         return ibv;
     }
 };
-
 }

@@ -1,7 +1,13 @@
 #pragma once
-#include <DXHInclude.h>
+#include <DXHCore.h>
+#include <vector>
 
-namespace DXH { class Timer; } // Forward declaration
+namespace DXH // Forward declaration
+{
+class GameObject;
+class Timer;
+}
+
 class Game
 {
 public:
@@ -29,12 +35,6 @@ private:
     /// Initializes the game. Called once before the first engine update.
     /// </summary>
     void Init(const DXH::Timer& gt);
-
-    /// <summary>
-    /// Called every frame from the engine.
-    /// </summary>
-    /// <param name="gt">Game timer, contains variables such as DeltaTime or TotalTime.</param>
-    void Update(const DXH::Timer& gt);
 
     /// <summary>
     /// Destroys the game. Called once before the engine shuts down.

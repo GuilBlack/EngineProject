@@ -1,56 +1,38 @@
 #include "Game.h"
-#include "Scripts/Rotator.h"
+#include "scripts/Rotator.h"
+#include "scripts/Controller.h"
 
 void Game::StartEngine()
 {
-	using namespace DXH;
-	DXHEngine::GetInstance().Init(AppProperties{
-			.WindowTitle = L"Space Shooter",
-		},
-		[](const Timer& gt) { GetInstance().Init(gt); },
-		[](const Timer& gt) { GetInstance().Update(gt); },
-		[](const Timer& gt) { GetInstance().Destroy(gt); });
-	DXHEngine::GetInstance().Run();
+    using namespace DXH;
+    DXHEngine::GetInstance().Init(AppProperties{
+            .WindowTitle = L"Space Shooter",
+        },
+        [](const Timer& gt) { GetInstance().Init(gt); },
+        [](const Timer& gt) { GetInstance().Destroy(gt); });
+    DXHEngine::GetInstance().Run();
 }
 
 void Game::Init(const DXH::Timer& gt)
 {
-	using namespace DXH;
+    using namespace DXH;
+    GameObject* pObject = new GameObject();
+    GameObject* pObject2 = new GameObject();
+    pObject2->Get<Transform>().Position = { 0.0f, 2.0f, 0.0f };
+    //pObject->Add<Rotator>(); // Scripting test
+    pObject->Add<Mesh>().SetGeoAndMatByName("Cube", "SimpleMaterial");
+    pObject2->Add<Mesh>().SetGeoAndMatByName("Sphere", "SimpleMaterial");
+    m_GameObjects.emplace_back(pObject);
+    m_GameObjects.emplace_back(pObject2);
 
-	/*for (int i = 0; i < 2; i++)
-	{
-
-	}*/
-
-		GameObject* pObject = new GameObject();
-		auto& transform = pObject->Get<Transform>();
-		pObject->Get<Transform>().Position = { -3.f, 0.0f, 0.0f};
-		auto& rigidBody = pObject->Add<RigidBody>();
-		auto& col1 = pObject->Add<SphereCollider>();
-		col1.Radius = 1.f;
-		auto& mesh = pObject->Add<Mesh>();
-		rigidBody.Velocity = { 1.0f, 0.0f, 0.0f };
-		mesh.Geo = RendererResource::GetGeometry("Sphere");
-		mesh.Mat = RendererResource::GetMaterial("SimpleMaterial");
-		m_GameObjects.emplace_back(pObject);
-
-
-		pObject = new GameObject();
-		auto& transform2 = pObject->Get<Transform>();
-		pObject->Get<Transform>().Position = { 3.f, 0.0f, 0.0f };
-		auto & rigidbody2 = pObject->Add<RigidBody>();
-		auto& col2 = pObject->Add<SphereCollider>();
-		col2.Radius = 1.f;
-		auto& mesh2 = pObject->Add<Mesh>();
-		rigidbody2.Velocity = { -1.0f, 0.0f, 0.0f };
-		mesh2.Geo = RendererResource::GetGeometry("Sphere");
-		mesh2.Mat = RendererResource::GetMaterial("SimpleMaterial");
-		m_GameObjects.emplace_back(pObject);
-}
-
-void Game::Update(const DXH::Timer& gt)
-{
-	gt.DeltaTime();
+    // Create Camera
+    GameObject* pCamera = new GameObject();
+    Transform& camTransform = pCamera->Get<Transform>();
+    camTransform.Position = { 0.0f, 0.0f, -5.0f };
+    camTransform.Rotation.SetEulerAngles(0.0f, 0.0f, 0.0f);
+    pCamera->Add<Controller>();
+    pCamera->Add<Camera>().IsPrimary = true;
+    m_GameObjects.emplace_back(pCamera);
 }
 
 void Game::Destroy(const DXH::Timer& gt)

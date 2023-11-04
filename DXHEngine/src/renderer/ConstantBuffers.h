@@ -1,6 +1,6 @@
 #pragma once
 #include "Util.h"
-#include "../DXHMaths.h"
+#include "DXHMaths.h"
 
 namespace DXH
 {
