@@ -2,7 +2,7 @@
 #include "src/ecs/components/Transform.h"
 #include "src/ecs/components/Physics.h"
 #include "src/ecs/GameObject.h"
-#include "src/core/Timer.h"
+#include "src/time/Timer.h"
 using namespace DirectX;
 
 namespace DXH
@@ -19,7 +19,6 @@ inline XMVECTOR ColliderPosition(Transform& transform, SphereCollider& collider)
 inline float SqDistanceBetween(FXMVECTOR& posA, FXMVECTOR& posB) { return XMVectorGetX(XMVector3LengthSq(posB - posA)); }
 // Calculate the collision normal between two positions, from A to B
 inline XMVECTOR CalculateCollisionNormal(FXMVECTOR& posA, FXMVECTOR& posB) { return XMVector3Normalize(posB - posA); }
-
 
 void PhysicsSystem::ResolveCollisions(const Timer& gt)
 {

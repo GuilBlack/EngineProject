@@ -22,6 +22,10 @@ void Game::Init(const DXH::Timer& gt)
     //pObject->Add<Rotator>(); // Scripting test
     pObject->Add<Mesh>().SetGeoAndMatByName("Cube", "SimpleMaterial");
     pObject2->Add<Mesh>().SetGeoAndMatByName("Sphere", "SimpleMaterial");
+    pObject->Add<RigidBody>().Velocity.y = .5f;
+    pObject2->Add<RigidBody>().Mass = 2;
+    pObject->Add<SphereCollider>().Radius = 1;
+    pObject2->Add<SphereCollider>().Radius = 1;
     m_GameObjects.emplace_back(pObject);
     m_GameObjects.emplace_back(pObject2);
 
@@ -37,8 +41,8 @@ void Game::Init(const DXH::Timer& gt)
 
 void Game::Destroy(const DXH::Timer& gt)
 {
-	for (auto go : m_GameObjects)
-	{
-		delete go;
-	}
+    for (auto go : m_GameObjects)
+    {
+        delete go;
+    }
 }
