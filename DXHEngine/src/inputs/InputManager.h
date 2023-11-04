@@ -38,26 +38,27 @@ public:
     /// <summary>
     /// Sets the followed keys (keys that will be updated every frame).
     /// </summary>
-    void SetFollowedKeys(const std::vector<int>& keys);
+    static void SetFollowedKeys(const std::vector<int>& keys);
     /// <summary>
     /// Gets the key's current state.
     /// </summary>
     inline static KeyState GetKeyState(int key) { return GetInstance().m_KeyStates.at(key); }
-    ///<summary>
-    /// Checks if a key if is pressed.
-    ///</summary> 
-    inline static bool IsKeyPressed(int key) { return GetKeyState(key) == KeyState::Held || GetInstance().m_KeyStates.at(key) == KeyState::Pressed; }
-
-    // TODO: Add a function to check if a key is released
-
     /// <summary>
-    /// Toggles the cursor lock and visibility.
+    /// Checks if a key if is pressed.
+    /// </summary> 
+    inline static bool IsKeyPressed(int key) { return GetInstance().m_KeyStates.at(key) >= KeyState::Pressed; } // pressed = 2 & held = 3
+    /// <summary>
+    /// Checks if a key if is released.
     /// </summary>
-    void ToggleCursorLock(bool locked);
-    inline static void ToggleCursorLock()
-    {
-        GetInstance().ToggleCursorLock(!GetInstance().m_CursorLocked);
-    }
+    inline static bool IsKeyReleased(int key) { return GetInstance().m_KeyStates.at(key) == KeyState::Released; }
+    /// <summary>
+    /// Sets the cursor lock and visibility.
+    /// </summary>
+    static void ToggleCursorLock(bool locked);
+    /// <summary>
+    /// Toggle the cursor lock and visibility.
+    /// </summary>
+    inline static void ToggleCursorLock() { ToggleCursorLock(!GetInstance().m_CursorLocked); }
 
 private:
     Vector2 m_MouseDelta = Vector2::Zero;

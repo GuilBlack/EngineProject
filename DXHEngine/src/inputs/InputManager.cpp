@@ -12,7 +12,11 @@ InputManager::InputManager()
         VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
         VK_XBUTTON1, VK_XBUTTON2, VK_ESCAPE
     };
-    SetFollowedKeys(keys);
+
+    for (auto key : keys)
+    {
+        m_KeyStates[key] = KeyState::NotUpdatedOnce;
+    }
 }
 
 InputManager::~InputManager()
@@ -57,12 +61,13 @@ void InputManager::Update()
 
 void InputManager::SetFollowedKeys(const std::vector<int>& newKeys)
 {
+    auto& im = GetInstance();
     // Remove keys that are not in the new vector
-    for (auto it = m_KeyStates.begin(); it != m_KeyStates.end();)
+    for (auto it = im.m_KeyStates.begin(); it != im.m_KeyStates.end();)
     {
         if (std::find(newKeys.begin(), newKeys.end(), it->first) == newKeys.end())
         {
-            it = m_KeyStates.erase(it);
+            it = im.m_KeyStates.erase(it);
         }
         else ++it; // Only increment if not erased
     }
@@ -70,17 +75,18 @@ void InputManager::SetFollowedKeys(const std::vector<int>& newKeys)
     // Add new keys
     for (auto key : newKeys)
     {
-        if (m_KeyStates.contains(key)) continue;
-        m_KeyStates[key] = KeyState::NotUpdatedOnce;
+        if (im.m_KeyStates.contains(key)) continue;
+        im.m_KeyStates[key] = KeyState::NotUpdatedOnce;
     }
 }
 
 void InputManager::ToggleCursorLock(bool locked)
 {
-    m_CursorLocked = locked;
-    Update(); // Update for catching first mouseDelta
-    m_MouseDelta = Vector2::Zero;
-    m_MousePosition = Vector2::Zero;
+    auto& im = GetInstance();
+    im.m_CursorLocked = locked;
+    im.Update(); // Update for catching first mouseDelta
+    im.m_MouseDelta = Vector2::Zero;
+    im.m_MousePosition = Vector2::Zero;
     ShowCursor(!locked);
 }
 }
