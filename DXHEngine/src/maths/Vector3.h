@@ -35,9 +35,9 @@ struct Vector3 : public DirectX::XMFLOAT3
     //////////////////////////////////////////////////////////////////////////
 
     inline static float Dot(Vector3 v1, Vector3 v2)
-	{
-		return DirectX::XMVectorGetX(DirectX::XMVector3Dot(v1.Load(), v2.Load()));
-	}
+    {
+        return DirectX::XMVectorGetX(DirectX::XMVector3Dot(v1.Load(), v2.Load()));
+    }
 
     static const Vector3 Zero; // Shorthand for writing Vector3(0, 0, 0).
     static const Vector3 One; // Shorthand for writing Vector3(1, 1, 1).
