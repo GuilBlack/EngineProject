@@ -116,7 +116,7 @@ void Renderer::Draw(Mesh& mesh, Transform& transform)
     {
     case ShaderProgramType::SimpleShader:
     {
-        mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), transform, m_pCommandList);
+        mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, transform, m_pCommandList);
         break;
     }
     default:

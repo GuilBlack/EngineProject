@@ -18,7 +18,7 @@ RendererResource::~RendererResource()
 
 void RendererResource::Init()
 {
-    CreateShader("SimpleShader", "../DXHEngine/res/shaders/color_vs.cso", "../DXHEngine/res/shaders/color_ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
+    CreateShader("SimpleShader", "../DXHEngine/res/shaders/color-vs.cso", "../DXHEngine/res/shaders/color-ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
     CreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
     CreateCube();
     CreateSquare();
@@ -36,11 +36,11 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
 {
     if (m_Materials.contains(materialName))
         return;
+
     if (!m_Shaders.contains(shaderName))
-    {
         // TODO: Add error handling
         assert(false && "Shader not found");
-    }
+
     switch (materialType)
     {
     case MaterialType::Simple:
@@ -50,10 +50,25 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
             assert(false && "Shader type mismatch");
             return;
         }
-        Material* material = new Material();
-        material->Shader = m_Shaders[shaderName];
-        material->Type = MaterialType::Simple;
-        m_Materials[materialName] = material;
+        Material* pMaterial = new Material();
+        pMaterial->Shader = m_Shaders[shaderName];
+        pMaterial->Type = MaterialType::Simple;
+        m_Materials[materialName] = pMaterial;
+        break;
+    }
+    case MaterialType::Lighting:
+    {
+        BaseShader* pShader = m_Shaders[shaderName];
+        if (pShader->GetType() != ShaderProgramType::BasicPhongShader)
+        { // TODO: Add error handling
+            assert(false && "Shader type mismatch");
+            return;
+        }
+        Material* pMaterial = new SimplePhongMaterial();
+        pMaterial->Shader = pShader;
+        pMaterial->Type = MaterialType::Lighting;
+        pMaterial->MaterialCBIndex = pShader->AddMaterialCB();
+
         break;
     }
     default:

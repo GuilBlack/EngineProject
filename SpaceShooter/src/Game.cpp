@@ -32,7 +32,7 @@ void Game::Init(const DXH::Timer& gt)
         float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         pObject->Get<Transform>().Position = { randX, randY, randZ };
-        pObject->Add<Mesh>().SetGeoAndMatByName("Cube", "SimpleMaterial");
+        pObject->Add<Mesh>().SetGeoAndMatByName("Sphere", "SimpleMaterial");
         m_GameObjects.emplace_back(pObject);
     }
     //GameObject* pObject2 = new GameObject();

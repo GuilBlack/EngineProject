@@ -76,7 +76,6 @@ public:
     {
         cl->SetPipelineState(m_pPSO);
         cl->SetGraphicsRootSignature(m_pRootSignature);
-        cl->SetGraphicsRootConstantBufferView(1, m_PassCB.GetResource()->GetGPUVirtualAddress());
     }
     
     /// <summary>
@@ -86,7 +85,7 @@ public:
     /// <param name="objectCBIndex">The index of the object constant buffer to use.</param>
     /// <param name="transform">The transform to use.</param>
     /// <param name="cl">The graphics command list to use.</param>
-    virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Transform& transform, ID3D12GraphicsCommandList* cl);
+    virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl);
 
     /// <summary>
     /// Unbinds the shader from the given graphics command list.
@@ -95,6 +94,8 @@ public:
     {
         cl->SetGraphicsRootSignature(nullptr);
     }
+
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl);
 
     /// <summary>
     /// Gets the type of the shader program.
@@ -113,6 +114,13 @@ public:
     /// </summary>
     /// <param name="passCB">The pass constants to update the pass constant buffer with.</param>
     void UpdatePassCB(PassConstants& passCB) { m_PassCB.CopyData(0, passCB); }
+
+    virtual uint32_t AddMaterialCB() 
+    {
+        return -1;
+    }
+
+    virtual void UpdateMaterialCB(Material* material) {}
 
     /// <summary>
     /// Updates the object constant buffer at the given index with the given object constants.
@@ -154,6 +162,10 @@ protected:
     void BuildPSO();
 };
 
+//////////////////////////////////////////////////////////////////////////
+// SimpleShader //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
 class SimpleShader : public BaseShader
 {
 public:
@@ -166,6 +178,10 @@ public:
 private:
 };
 
+//////////////////////////////////////////////////////////////////////////
+// BasicPhongShader //////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
 class BasicPhongShader : public BaseShader
 {
 public:
@@ -173,7 +189,11 @@ public:
 
     virtual void Bind(ID3D12GraphicsCommandList* cl) override;
 
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl) override;
+
+    virtual uint32_t AddMaterialCB() override;
+
 private:
-    PhongMaterialConstants m_MaterialCB;
+    std::vector<UploadBuffer<PhongMaterialConstants>> m_MaterialCB;
 };
 }

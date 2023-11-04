@@ -69,5 +69,6 @@
     <ClInclude Include="src\ecs\components\scripts\StateMachine.h" />
     <ClInclude Include="src\ecs\components\scripts\BaseState.h" />
     <ClInclude Include="src\maths\Color.h" />
+    <ClInclude Include="res\shaders\include\DXHRendering.h" />
   </ItemGroup>
 </Project>
