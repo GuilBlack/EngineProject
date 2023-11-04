@@ -80,4 +80,3 @@ private:
     ID3D12DescriptorHeap* m_pDsvHeap = nullptr;
 };
 }
-

@@ -1,6 +1,7 @@
 #pragma once
 #include "UploadBuffer.h"
 #include "ConstantBuffers.h"
+#include <string>
 
 namespace DXH
 {
@@ -176,4 +177,3 @@ private:
     PhongMaterialConstants m_MaterialCB;
 };
 }
-

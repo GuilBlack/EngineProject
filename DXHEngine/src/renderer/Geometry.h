@@ -57,5 +57,4 @@ struct Geometry
 
     static SphereBoundingVolume ComputeBoundingSphere(std::vector<BasicVertex> vertices);
 };
-
 }
