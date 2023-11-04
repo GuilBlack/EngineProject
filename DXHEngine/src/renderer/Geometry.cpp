@@ -52,7 +52,6 @@ SphereBoundingVolume Geometry::ComputeBoundingSphere(std::vector<BasicVertex> ve
     XMVECTOR center = XMVectorScale(maxAABB.Load() + minAABB.Load(), 0.5f);
     float distCenterToMax = XMVectorGetX(XMVector3Length(maxAABB.Load() - center));
     float distCenterToMin = XMVectorGetX(XMVector3Length(minAABB.Load() - center));
-    //XMVectorGetX(XMVector3Length(maxAABB.Load() - minAABB.Load())
     float radius = MAX(distCenterToMax, distCenterToMin);
     return SphereBoundingVolume(center, radius);
 }

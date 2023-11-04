@@ -56,7 +56,6 @@ void DXH::RenderSystem::Update(const Timer& gt)
 
     for (auto& pair : map)
     {
-        //++objCount;
         auto go = pair.first;
         auto& mesh = pair.second;
         auto& transform = transformMap.at(go);
