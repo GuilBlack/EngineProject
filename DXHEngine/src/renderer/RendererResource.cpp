@@ -63,23 +63,6 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
     }
 }
 
-//Mesh RendererResource::CreateMesh(const std::string& materialName, const std::string& geometryName)
-//{
-//    if (m_Materials.contains(materialName) && m_Geometries.contains(geometryName))
-//    {
-//        Mesh mesh;
-//
-//        mesh.CBVIndex = m_Materials[materialName]->Shader->AddObjectCB();
-//        mesh.Geo = m_Geometries[geometryName];
-//        mesh.Mat = m_Materials[materialName];
-//
-//        return mesh;
-//    }
-//    // TODO: Add error handling
-//    assert(false && "Material or Geometry not found");
-//    return Mesh();
-//}
-
 void RendererResource::CreateCube()
 {
     using namespace DirectX;
@@ -133,6 +116,7 @@ void RendererResource::CreateCube()
     uint32_t vertexByteStride = sizeof(BasicVertex);
 
     m_Geometries["Cube"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
+    m_Geometries["Cube"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);
 }
 void RendererResource::CreateSquare()
 {
@@ -161,6 +145,7 @@ void RendererResource::CreateSquare()
     uint32_t vertexByteStride = sizeof(BasicVertex);
 
     m_Geometries["Square"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
+    m_Geometries["Square"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);
 }
 void RendererResource::CreateSphere()
 {
@@ -256,5 +241,6 @@ void RendererResource::CreateSphere()
     uint32_t vertexByteStride = sizeof(BasicVertex);
 
     m_Geometries["Sphere"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
+    m_Geometries["Sphere"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);
 }
 }

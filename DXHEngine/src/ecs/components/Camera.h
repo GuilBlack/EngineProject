@@ -18,6 +18,7 @@ struct Camera : public Component
 
     Matrix View = Matrix::Identity;
     Matrix Proj = Matrix::Identity;
+    Vector3 Forward;
     Vector3 Target;
 };
 }

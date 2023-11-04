@@ -1,11 +1,12 @@
 #pragma once
-
+#define NOMINMAX
 // Windows kit
 #include <Windows.h>
 #include <wrl.h>
 #include <comdef.h>
 
 #include <cassert>
+#include <limits>
 
 #include <vector>
 #include <unordered_map>
