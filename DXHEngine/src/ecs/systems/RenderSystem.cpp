@@ -53,21 +53,19 @@ void DXH::RenderSystem::Update(const Timer& gt)
         defaultCam.Proj = proj;
         Renderer::GetInstance().BeginFrame(defaultCam);
     }
-    int objCount = 0;
-    int drawCount = 0;
+
     for (auto& pair : map)
     {
-        ++objCount;
+        //++objCount;
         auto go = pair.first;
         auto& mesh = pair.second;
         auto& transform = transformMap.at(go);
         if (mesh.Geo->BoundingSphere.IsOnFrustum(camFrustum, transform))
         {
-            ++drawCount;
             Renderer::GetInstance().Draw(mesh, transform);
         }
     }
-    VS_DB_OUT_A(objCount << "; " << drawCount << std::endl);
+
     Renderer::GetInstance().EndFrame();
 }
 
