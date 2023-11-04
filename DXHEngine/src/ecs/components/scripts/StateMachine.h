@@ -1,9 +1,11 @@
 #pragma once
-#include "src/ecs/components/Script.h"
+#include "src/ecs/components/Script.h" // Base class
 #include "BaseState.h"
 
 namespace DXH
 {
+class BaseState;
+
 /// <summary>
 /// A state machine is a script that can change behaviour at runtime.
 /// </summary>
@@ -15,11 +17,15 @@ public:
     {
         currentState->EnterState();
     }
+    ~StateMachine() = default;
 
     /// <summary>
     /// Updates the current state.
     /// </summary>
-    inline void Update(const Timer& gt) { m_currentState->Update(gt); }
+    inline void Update(const Timer& gt)
+    {
+        m_currentState->Update(gt);
+    }
 
     /// <summary>
     /// Switches the current state to a new one.

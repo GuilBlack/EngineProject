@@ -1,9 +1,9 @@
 #pragma once
-#include "../../maths/Vector3.h"
-#include "../../maths/Matrix.h"
-#include "../../ecs/Component.h"
-namespace DXH {
+#include "src/ecs/Component.h"
+#include "DXHMaths.h"
 
+namespace DXH
+{
 struct Camera : public Component
 {
     Camera() {}
@@ -20,5 +20,4 @@ struct Camera : public Component
     Matrix Proj = Matrix::Identity;
     Vector3 Target;
 };
-
 }
