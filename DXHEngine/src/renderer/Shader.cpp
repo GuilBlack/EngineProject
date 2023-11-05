@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Material.h"
 #include "Util.h"
+#include "Texture.h"
 
 namespace DXH
 {
@@ -13,13 +14,13 @@ std::vector<UploadBuffer<ObjectConstants>> BaseShader::s_ObjectCB;
 // BaseShader ////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-    BaseShader::BaseShader()
-        : m_PassCB(1, true)
-    {
-        m_PassCB.CopyData(0, PassConstants());
-    }
+BaseShader::BaseShader()
+    : m_PassCB(1, true)
+{
+    m_PassCB.CopyData(0, PassConstants());
+}
 
-    BaseShader::~BaseShader()
+BaseShader::~BaseShader()
 {
     RELEASE_PTR(m_pVS);
     RELEASE_PTR(m_pPS);
@@ -38,9 +39,14 @@ BaseShader* BaseShader::Create(const std::string& vsFilePath, const std::string&
         shader = new SimpleShader();
         break;
     }
-    case ShaderProgramType::BasicPhongShader:
+    case ShaderProgramType::BasicLightingShader:
     {
-        shader = new BasicPhongShader();
+        shader = new BasicLightingShader();
+        break;
+    }
+    case ShaderProgramType::TextureLightingShader:
+    {
+        shader = new TextureLightingShader();
         break;
     }
     }
@@ -167,19 +173,12 @@ std::vector<D3D12_INPUT_ELEMENT_DESC> BaseShader::CreateInputLayout(InputLayoutT
     return inputLayout;
 }
 
-void BaseShader::BuildRootSignature(CD3DX12_ROOT_PARAMETER* rootParameters, uint32_t numParameters)
+void BaseShader::BuildRootSignature(CD3DX12_ROOT_SIGNATURE_DESC& rootSignatureDesc)
 {
     ID3DBlob* serializedRootSignature = nullptr;
     ID3DBlob* error = nullptr;
 
     HRESULT hr = S_OK;
-
-    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-    rootSignatureDesc.Init(
-        numParameters, rootParameters,
-        0, nullptr,
-        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
-    );
 
     hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &error);
 
@@ -238,7 +237,14 @@ SimpleShader::SimpleShader()
     rootParameters[0].InitAsConstantBufferView(0); // b0
     rootParameters[1].InitAsConstantBufferView(1); // b1
 
-    BuildRootSignature(rootParameters, 2);
+    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+    rootSignatureDesc.Init(
+        2, rootParameters,
+        0, nullptr,
+        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+    );
+
+    BuildRootSignature(rootSignatureDesc);
 }
 
 void SimpleShader::Bind(ID3D12GraphicsCommandList* cl)
@@ -248,12 +254,12 @@ void SimpleShader::Bind(ID3D12GraphicsCommandList* cl)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// BasicPhongShader //////////////////////////////////////////////////////
+// BasicLightingShader //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-BasicPhongShader::BasicPhongShader()
+BasicLightingShader::BasicLightingShader()
 {
-    m_Type = ShaderProgramType::BasicPhongShader;
+    m_Type = ShaderProgramType::BasicLightingShader;
     m_MaterialCB.reserve(64);
 
     CD3DX12_ROOT_PARAMETER rootParameters[3];
@@ -262,22 +268,29 @@ BasicPhongShader::BasicPhongShader()
     rootParameters[1].InitAsConstantBufferView(1); // b1 matCB
     rootParameters[2].InitAsConstantBufferView(2); // b2 passCB
 
-    BuildRootSignature(rootParameters, 3);
+    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+    rootSignatureDesc.Init(
+        3, rootParameters,
+        0, nullptr,
+        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+    );
+
+    BuildRootSignature(rootSignatureDesc);
 }
 
-BasicPhongShader::~BasicPhongShader()
+BasicLightingShader::~BasicLightingShader()
 {
     for (auto& matCB : m_MaterialCB)
         matCB.Destroy();
 }
 
-void BasicPhongShader::Bind(ID3D12GraphicsCommandList* cl)
+void BasicLightingShader::Bind(ID3D12GraphicsCommandList* cl)
 {
     BaseShader::Bind(cl);
     cl->SetGraphicsRootConstantBufferView(2, m_PassCB.GetResource()->GetGPUVirtualAddress()); // passCB
 }
 
-void BasicPhongShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl)
+void BasicLightingShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl)
 {
     using namespace DirectX;
     ObjectConstants objectCB;
@@ -285,9 +298,9 @@ void BasicPhongShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, Tra
     UpdateObjectCB(objectCB, objectCBIndex);
     cl->SetGraphicsRootConstantBufferView(0, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // objCB
 
-    SimplePhongMaterial* spMat = dynamic_cast<SimplePhongMaterial*>(material);
+    SimpleLightingMaterial* spMat = dynamic_cast<SimpleLightingMaterial*>(material);
 
-    PhongMaterialConstants materialCB;
+    LightingMaterialConstants materialCB;
     materialCB.DiffuseAlbedo = spMat->DiffuseAlbedo;
     materialCB.FresnelR0 = spMat->FresnelR0;
     materialCB.Roughness = spMat->Roughness;
@@ -296,12 +309,90 @@ void BasicPhongShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, Tra
     cl->SetGraphicsRootConstantBufferView(1, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // matCB
 }
 
-uint32_t BasicPhongShader::AddMaterialCB()
+uint32_t BasicLightingShader::AddMaterialCB()
 {
-    UploadBuffer<PhongMaterialConstants> materialCB;
+    UploadBuffer<LightingMaterialConstants> materialCB;
     m_MaterialCB.emplace_back(materialCB);
     m_MaterialCB.back().Init(1, true);
-    m_MaterialCB.back().CopyData(0, PhongMaterialConstants());
+    m_MaterialCB.back().CopyData(0, LightingMaterialConstants());
+    return (uint32_t)m_MaterialCB.size() - 1;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// TextureLightingShader /////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+TextureLightingShader::TextureLightingShader()
+{
+    m_Type = ShaderProgramType::TextureLightingShader;
+    m_MaterialCB.reserve(64);
+
+    CD3DX12_ROOT_PARAMETER rootParameters[4];
+
+    CD3DX12_DESCRIPTOR_RANGE texTable;
+    texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+    // Diffuse texture t0
+    rootParameters[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL); // t0
+    rootParameters[1].InitAsConstantBufferView(0); // b0 objCB
+    rootParameters[2].InitAsConstantBufferView(1); // b1 matCB
+    rootParameters[3].InitAsConstantBufferView(2); // b2 passCB
+
+    auto staticSamplers = Renderer::GetInstance().GetStaticSamplers();
+
+    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+    rootSignatureDesc.Init(
+        4, rootParameters,
+        (uint32_t)staticSamplers.size(), staticSamplers.data(),
+        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+    );
+
+    BuildRootSignature(rootSignatureDesc);
+}
+
+TextureLightingShader::~TextureLightingShader()
+{
+    for (auto& matCB : m_MaterialCB)
+        matCB.Destroy();
+}
+
+void TextureLightingShader::Bind(ID3D12GraphicsCommandList * cl)
+{
+    BaseShader::Bind(cl);
+    cl->SetGraphicsRootConstantBufferView(3, m_PassCB.GetResource()->GetGPUVirtualAddress()); // passCB
+}
+
+void TextureLightingShader::SetCbvSrv(uint32_t objectCBIndex, Material * material, Transform & transform, ID3D12GraphicsCommandList * cl)
+{
+    using namespace DirectX;
+
+    ObjectConstants objectCB;
+    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(transform.GetModelMatrix()));
+    UpdateObjectCB(objectCB, objectCBIndex);
+    cl->SetGraphicsRootConstantBufferView(1, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // objCB
+
+    TextureLightingMaterial* pMat = dynamic_cast<TextureLightingMaterial*>(material);
+
+    CD3DX12_GPU_DESCRIPTOR_HANDLE tex(Renderer::GetInstance().GetSrvHeap()->GetGPUDescriptorHandleForHeapStart());
+    tex.Offset(pMat->DiffuseTexture->heapIndex, Renderer::GetRenderContext()->GetDescriptorIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+
+    cl->SetGraphicsRootDescriptorTable(0, tex); // t0
+
+    LightingMaterialConstants materialCB;
+    materialCB.DiffuseAlbedo = pMat->DiffuseAlbedo;
+    materialCB.FresnelR0 = pMat->FresnelR0;
+    materialCB.Roughness = pMat->Roughness;
+
+    UpdateMaterialCB(material);
+    cl->SetGraphicsRootConstantBufferView(2, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // matCB
+}
+
+uint32_t TextureLightingShader::AddMaterialCB()
+{
+    UploadBuffer<LightingMaterialConstants> materialCB;
+    m_MaterialCB.emplace_back(materialCB);
+    m_MaterialCB.back().Init(1, true);
+    m_MaterialCB.back().CopyData(0, LightingMaterialConstants());
     return (uint32_t)m_MaterialCB.size() - 1;
 }
 

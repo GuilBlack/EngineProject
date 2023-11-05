@@ -12,7 +12,8 @@ enum class ShaderProgramType
 {
     None,
     SimpleShader,
-    BasicPhongShader
+    BasicLightingShader,
+    TextureLightingShader
 };
 
 
@@ -158,7 +159,7 @@ protected:
     /// Builds the root signature for the shader.
     /// </summary>
     /// <param name="rootParameters">The root parameters to use.</param>
-    void BuildRootSignature(CD3DX12_ROOT_PARAMETER* rootParameters, uint32_t numParameters);
+    void BuildRootSignature(CD3DX12_ROOT_SIGNATURE_DESC& rootSignatureDesc);
 
     /// <summary>
     /// Builds the pipeline state object for the shader.
@@ -183,14 +184,14 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////////
-// BasicPhongShader //////////////////////////////////////////////////////
+// BasicLightingShader //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-class BasicPhongShader : public BaseShader
+class BasicLightingShader : public BaseShader
 {
 public:
-    BasicPhongShader();
-    ~BasicPhongShader();
+    BasicLightingShader();
+    ~BasicLightingShader();
 
     virtual void Bind(ID3D12GraphicsCommandList* cl) override;
 
@@ -199,6 +200,26 @@ public:
     virtual uint32_t AddMaterialCB() override;
 
 private:
-    std::vector<UploadBuffer<PhongMaterialConstants>> m_MaterialCB;
+    std::vector<UploadBuffer<LightingMaterialConstants>> m_MaterialCB;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// TextureLightingShader ///////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+class TextureLightingShader : public BaseShader
+{
+public:
+    TextureLightingShader();
+    ~TextureLightingShader();
+
+    virtual void Bind(ID3D12GraphicsCommandList* cl) override;
+
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl) override;
+
+    virtual uint32_t AddMaterialCB() override;
+
+private:
+    std::vector<UploadBuffer<LightingMaterialConstants>> m_MaterialCB;
 };
 }

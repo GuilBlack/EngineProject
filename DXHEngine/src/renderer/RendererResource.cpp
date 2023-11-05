@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "../ecs/components/Render.h"
 #include "Material.h"
+#include "Texture.h"
 
 namespace DXH
 {
@@ -14,6 +15,8 @@ RendererResource::~RendererResource()
         DELETE_PTR(geometry);
     for (auto[_, material] : m_Materials)
         DELETE_PTR(material);
+    for (auto [_, texture] : m_Textures)
+        DELETE_PTR(texture);
 }
 
 void RendererResource::Init()
@@ -58,14 +61,29 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
     case MaterialType::Lighting:
     {
         BaseShader* pShader = m_Shaders[shaderName];
-        if (pShader->GetType() != ShaderProgramType::BasicPhongShader)
+        if (pShader->GetType() != ShaderProgramType::BasicLightingShader)
         { // TODO: Add error handling
             assert(false && "Shader type mismatch");
             return;
         }
-        Material* pMaterial = new SimplePhongMaterial();
+        Material* pMaterial = new SimpleLightingMaterial();
         pMaterial->Shader = pShader;
         pMaterial->Type = MaterialType::Lighting;
+        pMaterial->MaterialCBIndex = pShader->AddMaterialCB();
+        m_Materials[materialName] = pMaterial;
+        break;
+    }
+    case MaterialType::TextureLighting:
+    {
+        BaseShader* pShader = m_Shaders[shaderName];
+        if (pShader->GetType() != ShaderProgramType::TextureLightingShader)
+        { // TODO: Add error handling
+            assert(false && "Shader type mismatch");
+            return;
+        }
+        Material* pMaterial = new TextureLightingMaterial();
+        pMaterial->Shader = pShader;
+        pMaterial->Type = MaterialType::TextureLighting;
         pMaterial->MaterialCBIndex = pShader->AddMaterialCB();
         m_Materials[materialName] = pMaterial;
         break;
@@ -75,6 +93,16 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
         assert(false && "Material type not supported");
         break;
     }
+}
+
+void RendererResource::CreateTexture(const std::string& textureName, const std::wstring& texturePath)
+{
+    if (m_Textures.contains(textureName))
+        return;
+
+    Texture* pTexture = Renderer::GetInstance().CreateTexture2D(texturePath);
+
+    m_Textures[textureName] = pTexture;
 }
 
 void RendererResource::CreateCube()

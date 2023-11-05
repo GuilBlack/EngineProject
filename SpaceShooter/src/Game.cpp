@@ -36,7 +36,7 @@ void Game::Init(const DXH::Timer& gt)
         float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         pObject->Get<Transform>().Position = { randX, randY, randZ };
-        pObject->Add<Mesh>().SetGeoAndMatByName("Sphere", "RedLightingMaterial");
+        pObject->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
         m_GameObjects.emplace_back(pObject);
     }
 }
@@ -52,24 +52,45 @@ void Game::Destroy(const DXH::Timer& gt)
 void Game::LoadAssets()
 {
     using namespace DXH;
+    // Create textures
+    RendererResource::GetInstance().CreateTexture("AsteroidTexture", L"res/textures/asteroid.dds");
+
     // Create shaders
     RendererResource::GetInstance().CreateShader(
-        "BasicPhongShader", 
+        "BasicLightingShader", 
         "res/shaders/compiled/simple-lighting-vs.cso", 
         "res/shaders/compiled/simple-lighting-ps.cso", 
-        ShaderProgramType::BasicPhongShader, 
+        ShaderProgramType::BasicLightingShader, 
+        InputLayoutType::PositionNormalTexcoord
+    );
+    RendererResource::GetInstance().CreateShader(
+        "TextureLightingShader",
+        "res/shaders/compiled/texture-lighting-vs.cso",
+        "res/shaders/compiled/texture-lighting-ps.cso",
+        ShaderProgramType::TextureLightingShader,
         InputLayoutType::PositionNormalTexcoord
     );
 
     // Create materials
     RendererResource::GetInstance().CreateMaterial(
         "RedLightingMaterial", 
-        MaterialType::Lighting, "BasicPhongShader"
+        MaterialType::Lighting, "BasicLightingShader"
     );
-    SimplePhongMaterial* pRedLightingMaterial = 
-        dynamic_cast<SimplePhongMaterial*>(RendererResource::GetInstance().GetMaterial("RedLightingMaterial"));
-
+    SimpleLightingMaterial* pRedLightingMaterial = 
+        dynamic_cast<SimpleLightingMaterial*>(RendererResource::GetInstance().GetMaterial("RedLightingMaterial"));
     pRedLightingMaterial->DiffuseAlbedo = { 1.0f, 0.0f, 0.0f, 1.0f };
     pRedLightingMaterial->FresnelR0 = { 1.01f, 1.01f, 0.01f };
     pRedLightingMaterial->Roughness = 0.5f;
+
+    RendererResource::GetInstance().CreateMaterial(
+        "AsteroidMaterial", MaterialType::TextureLighting,
+        "TextureLightingShader"
+    );
+
+    TextureLightingMaterial* pAsteroidMaterial =
+        dynamic_cast<TextureLightingMaterial*>(RendererResource::GetInstance().GetMaterial("AsteroidMaterial"));
+    pAsteroidMaterial->DiffuseAlbedo = { 1.0f, 0.0f, 0.0f, 1.0f };
+    pAsteroidMaterial->FresnelR0 = { 1.01f, 1.01f, 0.01f };
+    pAsteroidMaterial->Roughness = 0.5f;
+    pAsteroidMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("AsteroidTexture");
 }

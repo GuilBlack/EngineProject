@@ -44,9 +44,9 @@ struct ObjectConstants
 };
 
 /// <summary>
-/// Constant buffer for the phong lighting material.
+/// Constant buffer for the simple lighting material.
 /// </summary>
-struct PhongMaterialConstants
+struct LightingMaterialConstants
 {
     DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
     DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };

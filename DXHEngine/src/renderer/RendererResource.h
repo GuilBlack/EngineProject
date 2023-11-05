@@ -10,6 +10,7 @@ struct Geometry;
 struct Mesh;
 struct Material;
 enum class MaterialType;
+struct Texture;
 
 struct Environment
 {
@@ -53,6 +54,8 @@ public:
 
     void CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName);
 
+    void CreateTexture(const std::string& textureName, const std::wstring& texturePath);
+
     /// <summary>
     /// Get a material
     /// </summary>
@@ -62,10 +65,13 @@ public:
 
     static Geometry* GetGeometry(const std::string& geometryName) { return RendererResource::GetInstance().m_Geometries[geometryName]; }
 
+    static Texture* GetTexture(const std::string& textureName) { return RendererResource::GetInstance().m_Textures[textureName]; }
+
 private:
     std::unordered_map<std::string, BaseShader*> m_Shaders;
     std::unordered_map<std::string, Geometry*> m_Geometries;
     std::unordered_map<std::string, Material*> m_Materials;
+    std::unordered_map<std::string, Texture*> m_Textures;
 
 private:
     /// <summary>

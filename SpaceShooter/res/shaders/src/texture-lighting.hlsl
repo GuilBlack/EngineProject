@@ -1,18 +1,19 @@
-#include "../../../../DXHEngine/res/shaders/include/simple-phong.hlsli"
+#include "../../../../DXHEngine/res/shaders/include/texture-lighting.hlsli"
 #include "../../../../DXHEngine/res/shaders/include/helpers.hlsli"
 
 struct VertexInput 
 {
-    float3 PosL : POSITION;
+    float3 PosL    : POSITION;
     float3 NormalL : NORMAL;
     float2 TexC    : TEXCOORD;
 };
 
 struct VertexOutput 
 {
-    float4 PosH : SV_POSITION;
-    float3 PosW : POSITION;
+    float4 PosH    : SV_POSITION;
+    float3 PosW    : POSITION;
     float3 NormalW : NORMAL;
+	float2 TexC    : TEXCOORD;
 };
 
 VertexOutput VS(VertexInput vIn)
@@ -23,12 +24,14 @@ VertexOutput VS(VertexInput vIn)
 
     vOut.PosH = mul(posW, gViewProj);
     vOut.NormalW = mul(vIn.NormalL, (float3x3)gWorld);
+    vOut.TexC = vIn.TexC;
 
     return vOut;
 }
 
 float4 PS(VertexOutput pIn) : SV_Target
 {
+    float4 diffuseAlbedo = gDiffuseTexture.Sample(gsamLinear, pIn.TexC); //* gDiffuseAlbedo;
     float3 normal = normalize(pIn.NormalW);
     float3 viewDir = normalize(gEyePosW - pIn.PosW);
     float shininess = round((1.0f - gRoughness) * 256.0f) + ((1.0f - gRoughness) * 256.0f) % 2.0f;
@@ -52,7 +55,7 @@ float4 PS(VertexOutput pIn) : SV_Target
 
     float3 lighting = float3(gAmbientIntensity, gAmbientIntensity, gAmbientIntensity) + diffuse;
 
-    float3 color = toSRGB(lighting * gDiffuseAlbedo.rgb) + specularLight;
+    float3 color = toSRGB(lighting * diffuseAlbedo.rgb) + specularLight;
 
-    return float4(color, gDiffuseAlbedo.a);
+    return float4(color, diffuseAlbedo.a);
 }
