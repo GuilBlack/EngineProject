@@ -44,6 +44,13 @@ struct PosNormVertex
     DirectX::XMFLOAT3 Normal;
 };
 
+struct PosNormTexcoordVertex
+{
+    DirectX::XMFLOAT3 Position;
+    DirectX::XMFLOAT3 Normal;
+    DirectX::XMFLOAT2 Texcoord;
+};
+
 struct Geometry;
 struct Transform;
 struct PassConstants;
@@ -183,6 +190,7 @@ class BasicPhongShader : public BaseShader
 {
 public:
     BasicPhongShader();
+    ~BasicPhongShader();
 
     virtual void Bind(ID3D12GraphicsCommandList* cl) override;
 

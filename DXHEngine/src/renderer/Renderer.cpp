@@ -101,12 +101,11 @@ void Renderer::BeginFrame(const Camera& camera, const Transform& camTransform, c
             (float)Window::GetInstance().GetWidth(), 
             (float)Window::GetInstance().GetHeight()
         },
-        .DeltaTime = 0.f,
-        .SunDirection = {0.f, -1.f, -0.25f},
-        .SunColor = {1.f, 1.f, 1.f},
-        .AmbientColor = {1.f, 1.f, 1.f},
-        .AmbientIntensity = 0.1f,
+        .DeltaTime = timer.DeltaTime(),
+        .AmbientIntensity = 0.01f,
         .SunIntensity = .9f,
+        .SunDirection = { .0f, -1.f, 1.f },
+        .SunColor = { 1.f, 1.f, 1.f }
     };
 
     for (auto [_, shader] : RendererResource::GetInstance().m_Shaders)
@@ -118,21 +117,7 @@ void Renderer::BeginFrame(const Camera& camera, const Transform& camTransform, c
 void Renderer::Draw(Mesh& mesh, Transform& transform)
 {
     mesh.Mat->Shader->Bind(m_pCommandList);
-    switch (mesh.Mat->Shader->GetType())
-    {
-    case ShaderProgramType::SimpleShader:
-    {
-        mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, transform, m_pCommandList);
-        break;
-    }
-    case ShaderProgramType::BasicPhongShader:
-    {
-        mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, transform, m_pCommandList);
-        break;
-    }
-    default:
-        break;
-    }
+    mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, transform, m_pCommandList);
     mesh.Mat->Shader->Unbind(m_pCommandList);
 }
 

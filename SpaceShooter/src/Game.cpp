@@ -58,7 +58,7 @@ void Game::LoadAssets()
         "res/shaders/compiled/simple-lighting-vs.cso", 
         "res/shaders/compiled/simple-lighting-ps.cso", 
         ShaderProgramType::BasicPhongShader, 
-        InputLayoutType::PositionNormal
+        InputLayoutType::PositionNormalTexcoord
     );
 
     // Create materials
@@ -70,6 +70,6 @@ void Game::LoadAssets()
         dynamic_cast<SimplePhongMaterial*>(RendererResource::GetInstance().GetMaterial("RedLightingMaterial"));
 
     pRedLightingMaterial->DiffuseAlbedo = { 1.0f, 0.0f, 0.0f, 1.0f };
-    pRedLightingMaterial->FresnelR0 = { 0.01f, 0.01f, 0.01f };
-    pRedLightingMaterial->Roughness = 0.25f;
+    pRedLightingMaterial->FresnelR0 = { 1.01f, 1.01f, 0.01f };
+    pRedLightingMaterial->Roughness = 0.5f;
 }

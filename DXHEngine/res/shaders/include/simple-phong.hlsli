@@ -8,7 +8,7 @@ cbuffer cbMaterial : register(b1)
     float4 gDiffuseAlbedo;
     float3 gFresnelR0;
     float gRoughness;
-}
+};
 
 cbuffer cbPass : register(b2)
 {
@@ -21,9 +21,8 @@ cbuffer cbPass : register(b2)
     float gTotalTime;
     float2 gRenderTargetSize;
     float gDeltaTime;
+    float gAmbientIntensity;
+    float gSunIntensity;
     float3 gSunDirection;
     float3 gSunColor;
-    float3 gAmbientColor;
-    float AmbientIndensity;
-    float SunIntensity;
-}
+};

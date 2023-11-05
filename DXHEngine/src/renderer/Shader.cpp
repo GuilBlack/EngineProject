@@ -145,6 +145,14 @@ std::vector<D3D12_INPUT_ELEMENT_DESC> BaseShader::CreateInputLayout(InputLayoutT
             { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
         };
         break;
+    case InputLayoutType::PositionNormalTexcoord:
+        inputLayout =
+        {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+        };
+        break;
     case InputLayoutType::PositionNormalColor:
         inputLayout =
         {
@@ -255,6 +263,12 @@ BasicPhongShader::BasicPhongShader()
     rootParameters[2].InitAsConstantBufferView(2); // b2 passCB
 
     BuildRootSignature(rootParameters, 3);
+}
+
+BasicPhongShader::~BasicPhongShader()
+{
+    for (auto& matCB : m_MaterialCB)
+        matCB.Destroy();
 }
 
 void BasicPhongShader::Bind(ID3D12GraphicsCommandList* cl)

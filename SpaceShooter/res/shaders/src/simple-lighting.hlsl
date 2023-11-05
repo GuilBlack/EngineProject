@@ -29,6 +29,29 @@ VertexOutput VS(VertexInput vIn)
 float4 PS(VertexOutput pIn) : SV_Target
 {
     float3 normal = normalize(pIn.NormalW);
-    float4 normalColor = float4(normal / 2 + 0.5f, 1.0f);
-    return normalColor;
+    float3 viewDir = normalize(gEyePosW - pIn.PosW);
+    float shininess = round((1.0f - gRoughness) * 256.0f) + ((1.0f - gRoughness) * 256.0f) % 2.0f;
+
+    // Directional Light
+    float3 dirLightPos = -normalize(gSunDirection);
+    float3 dirLightAngle = max(0.0, dot(dirLightPos, normal));
+
+    float3 diffuse = dirLightAngle * gSunColor * gSunIntensity;
+
+    // Specular Light
+    float3 halfway = normalize(viewDir + normalize(dirLightPos));
+    float specularCoef = pow(max(dot(normal, halfway), 0.0), 8.0f);
+
+    float3 specularLight = gSunColor * specularCoef;
+    
+    // Fresnel
+    float fresnelCoef = pow(1.0 - max(0.0, dot(viewDir, normal)), 1.0);
+
+    specularLight *= fresnelCoef;
+
+    float3 lighting = float3(gAmbientIntensity, gAmbientIntensity, gAmbientIntensity) + diffuse;
+
+    float3 color = toSRGB(lighting * gDiffuseAlbedo.rgb) + specularLight;
+
+    return float4(color, gDiffuseAlbedo.a);
 }

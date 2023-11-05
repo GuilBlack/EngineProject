@@ -173,7 +173,7 @@ void RendererResource::CreateSphere()
     uint32_t numVertices = (latitude + 1) * (longitude * 2);
     uint32_t numIndices = 2 * 3 * longitude + 2 * 3 * (latitude - 1) * longitude;
 
-    std::vector<PosNormVertex> vertices;
+    std::vector<PosNormTexcoordVertex> vertices;
     vertices.resize(numVertices);
     std::vector<std::uint16_t> indices;
     indices.resize(numIndices);
@@ -188,6 +188,7 @@ void RendererResource::CreateSphere()
     {
         vertices[count].Position = { 0.f, radius, 0.f };
         vertices[count].Normal = { 0.f, 1.f, 0.f };
+        vertices[count].Texcoord = { (float)i / ((float)longitude + 1.0f), 0.f };
         ++count;
     }
 
@@ -213,6 +214,13 @@ void RendererResource::CreateSphere()
             );
 
             vertices[count].Normal = point;
+
+            vertices[count].Texcoord =
+            {
+                (float)j / (float)longitude,
+                (float)i / ((float)latitude + 1.0f)
+            };
+
             ++count;
         }
     }
@@ -222,6 +230,7 @@ void RendererResource::CreateSphere()
     {
         vertices[count].Position = { 0.f, -radius, 0.f };
         vertices[count].Normal = { 0.f, -1.f, 0.f };
+        vertices[count].Texcoord = { (float)i / ((float)longitude + 1.0f), 1.f };
         ++count;
     }
 
@@ -263,8 +272,8 @@ void RendererResource::CreateSphere()
         indices[count++] = southPoleIndex - (longitude + 1) + i + 1;
     }
 
-    uint32_t vbByteSize = (uint32_t)vertices.size() * sizeof(PosNormVertex);
-    uint32_t vertexByteStride = sizeof(PosNormVertex);
+    uint32_t vbByteSize = (uint32_t)vertices.size() * sizeof(PosNormTexcoordVertex);
+    uint32_t vertexByteStride = sizeof(PosNormTexcoordVertex);
 
     m_Geometries["Sphere"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
     m_Geometries["Sphere"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);

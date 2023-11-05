@@ -18,11 +18,17 @@ struct PassConstants
     float TotalTime;
     DirectX::XMFLOAT2 RenderTargetSize;
     float DeltaTime;
-    DirectX::XMFLOAT3 SunDirection;
-    DirectX::XMFLOAT3 SunColor;
-    DirectX::XMFLOAT3 AmbientColor;
     float AmbientIntensity;
     float SunIntensity;
+    float Padding;
+    DirectX::XMFLOAT3 SunDirection;
+    float Padding3;
+    DirectX::XMFLOAT3 SunColor;
+};
+
+struct LightsConstants
+{
+
 };
 
 /// <summary>
