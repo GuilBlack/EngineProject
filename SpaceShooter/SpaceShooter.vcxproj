@@ -101,7 +101,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\scripts\CameraController.cpp" />
-    <ClCompile Include="src\scripts\Rotator.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\scripts\SpaceShip.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
@@ -110,7 +109,6 @@
     <ClInclude Include="src\scripts\CameraController.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\scripts\Controller.h" />
-    <ClInclude Include="src\scripts\Rotator.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scripts\SpaceShip.h" />
   </ItemGroup>

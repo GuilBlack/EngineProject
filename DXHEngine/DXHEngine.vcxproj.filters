@@ -41,7 +41,6 @@
     <ClInclude Include="src\renderer\SwapChain.h" />
     <ClInclude Include="src\ecs\ComponentManager.h" />
     <ClInclude Include="src\ecs\components\Physics.h" />
-    <ClInclude Include="src\ecs\components\Transform.h" />
     <ClInclude Include="src\ecs\GameObject.h" />
     <ClInclude Include="src\ecs\Component.h" />
     <ClInclude Include="src\ecs\System.h" />

@@ -9,4 +9,5 @@ public:
 private:
     DXH::RigidBody* m_SpaceshipRigibody;
     float m_DefaultSpeed = 1.f;
+    float m_SqMaxVelocity = 10.f;
 };

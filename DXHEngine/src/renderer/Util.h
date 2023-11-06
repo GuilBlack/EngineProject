@@ -6,7 +6,7 @@
 
 namespace DXH
 {
-struct Transform;
+class GameObject;
 struct Camera;
 
 inline uint32_t GetCBByteSize(uint32_t byteSize)
@@ -41,7 +41,7 @@ struct Frustum
     Plane NearFace{};
     Plane FarFace{};
 
-    static Frustum CreateFromCamera(const Camera& cam, const Transform& camTransform, float aspect);
+    static Frustum CreateFromCamera(const Camera& cam, float aspect);
 };
 
 struct SphereBoundingVolume
@@ -56,7 +56,7 @@ struct SphereBoundingVolume
 
     bool IsOnOrForwardPlane(const Plane& plane) const { return plane.GetSignedDistanceToPlane(Center) > -Radius; }
 
-    bool IsOnFrustum(const Frustum& camFrustum, const Transform& transform) const;
+    bool IsOnFrustum(const Frustum& camFrustum, const GameObject& transform) const;
 };
 
 }

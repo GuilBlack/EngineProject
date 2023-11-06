@@ -1,6 +1,6 @@
 #include "Geometry.h"
 #include "Renderer.h"
-#include "../ecs/components/Transform.h"
+#include "src/ecs/GameObject.h"
 
 #include "Shader.h"
 #include "Material.h"
@@ -62,9 +62,9 @@ BaseShader* BaseShader::Create(const std::string& vsFilePath, const std::string&
     return shader;
 }
 
-void BaseShader::Draw(Geometry* geometry, uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl)
+void BaseShader::Draw(Geometry* geometry, uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl)
 {
-    SetCbvSrv(objectCBIndex, material, transform, cl);
+    SetCbvSrv(objectCBIndex, material, gameObject, cl);
     D3D12_VERTEX_BUFFER_VIEW vbv = geometry->VertexBufferView();
     D3D12_INDEX_BUFFER_VIEW ibv = geometry->IndexBufferView();
 
@@ -75,11 +75,11 @@ void BaseShader::Draw(Geometry* geometry, uint32_t objectCBIndex, Material* mate
     cl->DrawIndexedInstanced(geometry->IndexBufferByteSize / sizeof(uint16_t), 1, 0, 0, 0);
 }
 
-void BaseShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl)
+void BaseShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl)
 {
     using namespace DirectX;
     ObjectConstants objectCB;
-    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(transform.GetModelMatrix()));
+    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(gameObject.GetModelMatrix()));
     UpdateObjectCB(objectCB, objectCBIndex);
     cl->SetGraphicsRootConstantBufferView(0, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress());
 }
@@ -290,11 +290,11 @@ void BasicLightingShader::Bind(ID3D12GraphicsCommandList* cl)
     cl->SetGraphicsRootConstantBufferView(2, m_PassCB.GetResource()->GetGPUVirtualAddress()); // passCB
 }
 
-void BasicLightingShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl)
+void BasicLightingShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl)
 {
     using namespace DirectX;
     ObjectConstants objectCB;
-    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(transform.GetModelMatrix()));
+    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(gameObject.GetModelMatrix()));
     UpdateObjectCB(objectCB, objectCBIndex);
     cl->SetGraphicsRootConstantBufferView(0, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // objCB
 
@@ -363,12 +363,12 @@ void TextureLightingShader::Bind(ID3D12GraphicsCommandList * cl)
     cl->SetGraphicsRootConstantBufferView(3, m_PassCB.GetResource()->GetGPUVirtualAddress()); // passCB
 }
 
-void TextureLightingShader::SetCbvSrv(uint32_t objectCBIndex, Material * material, Transform & transform, ID3D12GraphicsCommandList * cl)
+void TextureLightingShader::SetCbvSrv(uint32_t objectCBIndex, Material * material, GameObject& gameObject, ID3D12GraphicsCommandList * cl)
 {
     using namespace DirectX;
 
     ObjectConstants objectCB;
-    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(transform.GetModelMatrix()));
+    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(gameObject.GetModelMatrix()));
     UpdateObjectCB(objectCB, objectCBIndex);
     cl->SetGraphicsRootConstantBufferView(1, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // objCB
 

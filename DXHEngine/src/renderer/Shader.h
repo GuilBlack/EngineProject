@@ -53,7 +53,7 @@ struct PosNormTexcoordVertex
 };
 
 struct Geometry;
-struct Transform;
+class GameObject;
 struct PassConstants;
 struct ObjectConstants;
 
@@ -87,13 +87,13 @@ public:
     }
     
     /// <summary>
-    /// Draws the given geometry with the given object constant buffer index, transform, and graphics command list.
+    /// Draws the given geometry with the given object constant buffer index, gameObject, and graphics command list.
     /// </summary>
     /// <param name="geometry">The geometry to draw.</param>
     /// <param name="objectCBIndex">The index of the object constant buffer to use.</param>
-    /// <param name="transform">The transform to use.</param>
+    /// <param name="gameObject">The transform to use.</param>
     /// <param name="cl">The graphics command list to use.</param>
-    virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl);
+    virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl);
 
     /// <summary>
     /// Unbinds the shader from the given graphics command list.
@@ -103,7 +103,7 @@ public:
         cl->SetGraphicsRootSignature(nullptr);
     }
 
-    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl);
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl);
 
     /// <summary>
     /// Gets the type of the shader program.
@@ -195,7 +195,7 @@ public:
 
     virtual void Bind(ID3D12GraphicsCommandList* cl) override;
 
-    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl) override;
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl) override;
 
     virtual uint32_t AddMaterialCB() override;
 
@@ -215,7 +215,7 @@ public:
 
     virtual void Bind(ID3D12GraphicsCommandList* cl) override;
 
-    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl) override;
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl) override;
 
     virtual uint32_t AddMaterialCB() override;
 

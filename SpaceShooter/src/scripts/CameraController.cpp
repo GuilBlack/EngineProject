@@ -4,7 +4,6 @@ using namespace DXH;
 
 void CameraController::Start()
 {
-    m_camTransform = &pGameObject->Get<Transform>();
     m_SpaceshipRigibody = &pGameObject->Get<RigidBody>();
     InputManager::GetInstance().ToggleCursorLock(true);
 }
@@ -26,5 +25,5 @@ void CameraController::UpdateCameraPosition()
     // Limit the rotation of the camera so it doesn't do a backflip
     if (m_rotation.x > 89.0f) m_rotation.x = 89.0f;
     if (m_rotation.x < -89.0f) m_rotation.x = -89.0f;
-    m_camTransform->SetEulerAngles(m_rotation);
+    pGameObject->SetEulerAngles(m_rotation);
 }

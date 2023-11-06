@@ -37,7 +37,7 @@ void Game::Init(const DXH::Timer& gt)
         float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-        pAsteroid->Get<Transform>().Position = {randX, randY, randZ};
+        pAsteroid->SetPosition(randX, randY, randZ);
         randX = ((float)rand() / (float)RAND_MAX - 0.5f);
         randY = ((float)rand() / (float)RAND_MAX - 0.5f);
         randZ = ((float)rand() / (float)RAND_MAX - 0.5f);

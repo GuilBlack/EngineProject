@@ -7,7 +7,7 @@ namespace DXH
 class Shader;
 struct Mesh;
 struct Material;
-struct Transform;
+class GameObject;
 struct Camera;
 struct Texture;
 class Timer;
@@ -50,12 +50,12 @@ public:
     /// <summary>
     /// Initialize the resources needed to draw to the back buffer
     /// </summary>
-    void BeginFrame(const Camera& camera, const Transform& camTransform, const Timer& timer);
+    void BeginFrame(const Camera& camera, const Timer& timer);
 
     /// <summary>
     /// Draw a mesh
     /// </summary>
-    void Draw(Mesh& mesh, Transform& transform);
+    void Draw(Mesh& mesh, GameObject& transform);
 
     /// <summary>
     /// End the frame and present the back buffer

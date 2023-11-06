@@ -4,7 +4,7 @@
 #include "UploadBuffer.h"
 #include "Shader.h"
 #include "Material.h"
-#include "src/ecs/components/Transform.h"
+#include "src/ecs/GameObject.h"
 #include "src/ecs/components/Render.h"
 #include "src/ecs/components/Camera.h"
 #include "src/core/Window.h"
@@ -57,7 +57,7 @@ void Renderer::Destroy()
     delete m_pRenderContext;
 }
 
-void Renderer::BeginFrame(const Camera& camera, const Transform& camTransform, const Timer& timer)
+void Renderer::BeginFrame(const Camera& camera, const Timer& timer)
 {
     using namespace DirectX;
     ASSERT_HRESULT(m_pCommandAllocator->Reset());
@@ -94,7 +94,7 @@ void Renderer::BeginFrame(const Camera& camera, const Transform& camTransform, c
         .View = view,
         .Proj = proj,
         .ViewProj = viewProj,
-        .EyePosW = camTransform.Position,
+        .EyePosW = camera.pGameObject->Position(),
         .NearZ = camera.NearPlan,
         .FarZ = camera.FarPlan,
         .TotalTime = timer.TotalTime(),
@@ -116,10 +116,10 @@ void Renderer::BeginFrame(const Camera& camera, const Transform& camTransform, c
     }
 }
 
-void Renderer::Draw(Mesh& mesh, Transform& transform)
+void Renderer::Draw(Mesh& mesh, GameObject& gameObject)
 {
     mesh.Mat->Shader->Bind(m_pCommandList);
-    mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, transform, m_pCommandList);
+    mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, gameObject, m_pCommandList);
     mesh.Mat->Shader->Unbind(m_pCommandList);
 }
 
