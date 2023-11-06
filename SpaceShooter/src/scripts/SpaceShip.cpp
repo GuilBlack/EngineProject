@@ -1,10 +1,11 @@
 #include "SpaceShip.h"
-
+#include "../Game.h"
 using namespace DXH;
 
 void SpaceShip::Start()
 {
     m_SpaceshipRigibody = &pGameObject->Get<RigidBody>();
+    m_RuntimeBullet = std::vector<GameObject*>();
 }
 
 void SpaceShip::Update(const DXH::Timer& gt)
@@ -20,6 +21,10 @@ void SpaceShip::Update(const DXH::Timer& gt)
     if (InputManager::IsKeyPressed('D'))
         m_SpaceshipRigibody->Velocity += right * m_DefaultSpeed;
 
+    if (InputManager::IsKeyPressed(VK_LBUTTON))
+        CreateBulletGO();
+    VS_DB_OUT_A("In scene Game Object : " << m_RuntimeBullet.size() << std::endl);
+
     auto loadedVelocity = m_SpaceshipRigibody->Velocity.Load();
     if (DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(loadedVelocity)) > m_SqMaxVelocity)
     {
@@ -28,3 +33,18 @@ void SpaceShip::Update(const DXH::Timer& gt)
     }
 }
 
+void SpaceShip::OnDestroy()
+{
+    for (auto go : m_RuntimeBullet)
+    {
+        delete go;
+    }
+}
+
+void SpaceShip::CreateBulletGO()
+{
+	GameObject* bullet = new GameObject();
+	bullet->Add<RigidBody>().Mass = 0.5f;
+	bullet->Add<SphereCollider>().Radius = 1.f;
+    m_RuntimeBullet.emplace_back(bullet);
+}

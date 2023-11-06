@@ -21,7 +21,6 @@ public:
     /// Make sure to call it after initializing all the systems.
     /// </summary>
     void StartEngine();
-
 private:
     std::vector<DXH::GameObject*> m_GameObjects;
     DXH::GameObject* m_Camera = nullptr;
