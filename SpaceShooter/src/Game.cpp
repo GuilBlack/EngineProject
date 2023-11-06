@@ -19,7 +19,7 @@ void Game::Init(const DXH::Timer& gt)
 {
     using namespace DXH;
 
-    //DXHEngine::GetInstance().ChangeTimeScale(0.1f);
+    //DXHEngine::GetInstance().ChangeTimeScale(0.2f);
 
     LoadAssets();
 
@@ -41,7 +41,7 @@ void Game::Init(const DXH::Timer& gt)
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         pObject->Get<Transform>().Position = { randX, randY, randZ };
         pObject->Add<RigidBody>().Velocity = { -randX, -randY, -randZ };
-        pObject->Add<SphereCollider>().Radius = 1.0f;
+        pObject->Add<SphereCollider>().Radius = 1.f;
         pObject->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
         m_GameObjects.emplace_back(pObject);
     }
