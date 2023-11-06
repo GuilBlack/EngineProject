@@ -9,6 +9,8 @@ struct Mesh;
 struct Material;
 struct Transform;
 struct Camera;
+struct Texture;
+class Timer;
 
 class Renderer
 {
@@ -37,16 +39,18 @@ public:
     /// <returns>Pointer to the render context</returns>
     static RenderContext* GetRenderContext() { return GetInstance().m_pRenderContext; }
 
+    static ID3D12GraphicsCommandList* GetCommandList() { return GetInstance().m_pCommandList; }
+
     /// <summary>
     /// Get the CBV_SRV descriptor heap
     /// </summary>
     /// <returns>Pointer to the CBV_SRV descriptor heap</returns>
-    static ID3D12DescriptorHeap* GetCbvSrvHeap() { return GetInstance().m_pCbvSrvHeap; }
+    static ID3D12DescriptorHeap* GetSrvHeap() { return GetInstance().m_pSrvHeap; }
 
     /// <summary>
     /// Initialize the resources needed to draw to the back buffer
     /// </summary>
-    void BeginFrame(const Camera& camera);
+    void BeginFrame(const Camera& camera, const Transform& camTransform, const Timer& timer);
 
     /// <summary>
     /// Draw a mesh
@@ -78,6 +82,10 @@ public:
     /// </summary>
     ID3D12Resource* CreateDefaultBuffer(void* data, int64_t byteSize);
 
+    Texture* CreateTexture2D(const std::wstring& texturePath);
+
+    std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
+
 private:
     RenderContext* m_pRenderContext = nullptr;
     SwapChain* m_pSwapChain = nullptr;
@@ -85,8 +93,8 @@ private:
     ID3D12CommandAllocator* m_pCommandAllocator = nullptr;
     ID3D12GraphicsCommandList* m_pCommandList = nullptr;
     ID3D12Fence* m_pFence = nullptr;
-    ID3D12DescriptorHeap* m_pCbvSrvHeap = nullptr;
-    uint32_t m_CbvSrvIndex = 0;
+    ID3D12DescriptorHeap* m_pSrvHeap = nullptr;
+    uint32_t m_SrvIndex = 0;
     uint32_t m_FenceValue = 0;
 
 private:
