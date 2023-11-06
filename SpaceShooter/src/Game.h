@@ -1,8 +1,4 @@
 #pragma once
-#include <DXHCore.h>
-#include <DXHMaths.h>
-#include <DXHRendering.h>
-#include <vector>
 
 namespace DXH // Forward declaration
 {

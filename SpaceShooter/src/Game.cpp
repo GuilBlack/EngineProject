@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "scripts/Rotator.h"
 #include "scripts/Controller.h"
+#include <DXHCore.h>
+#include <DXHRendering.h>
 
 void Game::StartEngine()
 {
