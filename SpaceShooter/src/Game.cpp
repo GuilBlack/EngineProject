@@ -26,7 +26,8 @@ void Game::Init(const DXH::Timer& gt)
     pCamera->Add<Camera>().IsPrimary = true;
     m_GameObjects.emplace_back(pCamera);
 
-    for (int i = 0; i < 500; ++i)
+
+    for (int i = 0; i < 100; ++i)
     {
         GameObject* pObject = new GameObject();
         float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
@@ -38,6 +39,7 @@ void Game::Init(const DXH::Timer& gt)
         pObject->Add<Mesh>().SetGeoAndMatByName("Sphere", "SimpleMaterial");
         m_GameObjects.emplace_back(pObject);
     }
+
 }
 
 void Game::Destroy(const DXH::Timer& gt)

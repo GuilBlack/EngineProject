@@ -9,8 +9,15 @@ namespace DXH
 {
 void PhysicsSystem::Update(const Timer& gt)
 {
+    Timer t; 
+    t.Tick();; 
     ResolveCollisions(gt);
+    t.Tick();
+    VS_DB_OUT_A("Resolve Collision: " << t.DeltaTime() * 1000 << "ms\n");
+    t.Tick();
     UpdateRigidBodies(gt);
+    t.Tick();
+    VS_DB_OUT_A("Update Rigidbodies: " << t.DeltaTime() * 1000 << "ms\n");
 }
 
 // Calculate the position of the collider in world space
@@ -22,6 +29,7 @@ inline XMVECTOR CalculateCollisionNormal(FXMVECTOR& posA, FXMVECTOR& posB) { ret
 
 void PhysicsSystem::ResolveCollisions(const Timer& gt)
 {
+    int c = 0;
     auto& map = ComponentManager<SphereCollider>::GetInstance().GetUsedComponentsMap();
     for (auto it = map.begin(); it != map.end(); it++)
     {
@@ -36,7 +44,7 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
             Transform& transformB = gameObjectB->Get<Transform>();
             SphereCollider& colliderB = it2->second;
             XMVECTOR posB = ColliderPosition(transformB, colliderB);
-
+            
             // Check for collision
             float sqDistance = SqDistanceBetween(posA, posB);
             float sumRadii = colliderA.Radius + colliderB.Radius;
@@ -45,20 +53,15 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
             {
                 RigidBody& rigidBodyA = gameObjectA->Get<RigidBody>();
                 RigidBody& rigidBodyB = gameObjectB->Get<RigidBody>();
-
+            
                 XMVECTOR normal = CalculateCollisionNormal(posA, posB);
                 XMVECTOR relativeVelocity = rigidBodyB.Velocity.Load() - rigidBodyA.Velocity.Load();
                 float impulse = (2 * rigidBodyB.Mass * XMVectorGetX(XMVector3Dot(normal, relativeVelocity))) /
                     (rigidBodyA.Mass + rigidBodyB.Mass);
-
+            
                 // Update the velocities
                 rigidBodyA.Velocity.Store(rigidBodyA.Velocity.Load() + (impulse * normal / rigidBodyA.Mass));
                 rigidBodyB.Velocity.Store(rigidBodyB.Velocity.Load() - (impulse * normal / rigidBodyB.Mass));
-
-
-                VS_DB_OUT_A("Collision detected!\n" <<
-                    "Force applied to A: " << rigidBodyA.Force.x << ", " << rigidBodyA.Force.y << ", " << rigidBodyA.Force.z << "\n" <<
-                    "Force applied to B: " << rigidBodyB.Force.x << ", " << rigidBodyB.Force.y << ", " << rigidBodyB.Force.z << "\n");
             }
         }
     }
@@ -68,14 +71,9 @@ void PhysicsSystem::UpdateRigidBodies(const Timer& gt)
 {
     for (auto& [gameObject, rigidBody] : ComponentManager<RigidBody>::GetInstance().GetUsedComponentsMap())
     {
-        // Apply the force to the velocity
-        rigidBody.Velocity.Store(rigidBody.Force.Load() * gt.DeltaTime() + rigidBody.Velocity.Load());
         // Apply the velocity to the position
         Transform& transform = gameObject->Get<Transform>();
         transform.Position.Store(rigidBody.Velocity.Load() * gt.DeltaTime() + transform.Position.Load());
-
-        // Reset the force
-        rigidBody.Force = Vector3::Zero;
     }
 }
 }
