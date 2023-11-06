@@ -48,9 +48,9 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
             Transform& transformB = transformMap.at(gameObjectB);
 
             // Check for grid position 
-            if (transformA.GridPosition.x > transformB.GridPosition.x + 1 || transformA.GridPosition.x < transformB.GridPosition.x - 1 || 
-                transformA.GridPosition.y > transformB.GridPosition.y + 1 || transformA.GridPosition.y < transformB.GridPosition.y - 1 ||
-                transformA.GridPosition.z > transformB.GridPosition.z + 1 || transformA.GridPosition.z < transformB.GridPosition.z - 1) continue;
+            if (abs(transformA.GridPosition[0] - transformB.GridPosition[0]) >= 2 ||
+                abs(transformA.GridPosition[1] - transformB.GridPosition[1]) >= 2 || 
+                abs(transformA.GridPosition[2] - transformB.GridPosition[2] >= 2)) continue;
 
             SphereCollider& colliderB = it2->second;
             XMVECTOR posB = ColliderPosition(transformB, colliderB);           
@@ -89,7 +89,7 @@ void PhysicsSystem::UpdateRigidBodies(const Timer& gt)
     {
         // Apply the velocity to the position
         Transform& transform = gameObject->Get<Transform>();
-        transform.SetPosition(rigidBody.Velocity.Load() * gt.DeltaTime() + transform.Position.Load());
+        transform.SetPosition(rigidBody.Velocity.Load() * (gt.DeltaTime() * gt.TimeScale()) + transform.Position.Load());
     }
 }
 }
