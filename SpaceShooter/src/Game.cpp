@@ -53,17 +53,17 @@ void Game::LoadAssets()
 {
     using namespace DXH;
     // Create textures
-    RendererResource::GetInstance().CreateTexture("AsteroidTexture", L"res/textures/asteroid.dds");
+    RendererResource::CreateTexture("AsteroidTexture", L"res/textures/asteroid.dds");
 
     // Create shaders
-    RendererResource::GetInstance().CreateShader(
+    RendererResource::CreateShader(
         "BasicLightingShader", 
         "res/shaders/compiled/simple-lighting-vs.cso", 
         "res/shaders/compiled/simple-lighting-ps.cso", 
         ShaderProgramType::BasicLightingShader, 
         InputLayoutType::PositionNormalTexcoord
     );
-    RendererResource::GetInstance().CreateShader(
+    RendererResource::CreateShader(
         "TextureLightingShader",
         "res/shaders/compiled/texture-lighting-vs.cso",
         "res/shaders/compiled/texture-lighting-ps.cso",
@@ -72,17 +72,17 @@ void Game::LoadAssets()
     );
 
     // Create materials
-    RendererResource::GetInstance().CreateMaterial(
+    RendererResource::CreateMaterial(
         "RedLightingMaterial", 
         MaterialType::Lighting, "BasicLightingShader"
     );
-    //SimpleLightingMaterial* pRedLightingMaterial = 
-    //    dynamic_cast<SimpleLightingMaterial*>(RendererResource::GetInstance().GetMaterial("RedLightingMaterial"));
-    //pRedLightingMaterial->DiffuseAlbedo = { 1.0f, 0.0f, 0.0f, 1.0f };
-    //pRedLightingMaterial->FresnelR0 = { 1.01f, 1.01f, 0.01f };
-    //pRedLightingMaterial->Roughness = 0.5f;
+    SimpleLightingMaterial* pRedLightingMaterial = 
+        dynamic_cast<SimpleLightingMaterial*>(RendererResource::GetInstance().GetMaterial("RedLightingMaterial"));
+    pRedLightingMaterial->DiffuseAlbedo = { 1.0f, 0.0f, 0.0f, 1.0f };
+    pRedLightingMaterial->FresnelR0 = { 0.01f, 0.01f, 0.01f };
+    pRedLightingMaterial->Roughness = 0.5f;
 
-    RendererResource::GetInstance().CreateMaterial(
+    RendererResource::CreateMaterial(
         "AsteroidMaterial", MaterialType::TextureLighting,
         "TextureLightingShader"
     );

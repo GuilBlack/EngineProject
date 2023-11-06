@@ -9,21 +9,21 @@ namespace DXH
 /// </summary>
 struct PassConstants
 {
-    DirectX::XMFLOAT4X4 View;
-    DirectX::XMFLOAT4X4 Proj;
-    DirectX::XMFLOAT4X4 ViewProj;
-    DirectX::XMFLOAT3 EyePosW;
+    Matrix View;
+    Matrix Proj;
+    Matrix ViewProj;
+    Vector3 EyePosW;
     float NearZ;
     float FarZ;
     float TotalTime;
-    DirectX::XMFLOAT2 RenderTargetSize;
+    Vector2 RenderTargetSize;
     float DeltaTime;
     float AmbientIntensity;
     float SunIntensity;
     float Padding;
-    DirectX::XMFLOAT3 SunDirection;
-    float Padding3;
-    DirectX::XMFLOAT3 SunColor;
+    Vector3 SunDirection;
+    float Padding1;
+    Vector3 SunColor;
 };
 
 struct LightsConstants
@@ -36,11 +36,7 @@ struct LightsConstants
 /// </summary>
 struct ObjectConstants
 {
-    DirectX::XMFLOAT4X4 World = DirectX::XMFLOAT4X4(
-        1.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f);
+    Matrix World = Matrix::Identity;
 };
 
 /// <summary>
@@ -48,8 +44,8 @@ struct ObjectConstants
 /// </summary>
 struct LightingMaterialConstants
 {
-    DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
-    DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
+    Vector4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+    Vector3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
     float Roughness = 0.25f;
 };
 }

@@ -21,20 +21,20 @@ RendererResource::~RendererResource()
 
 void RendererResource::Init()
 {
-    CreateShader("SimpleShader", "../DXHEngine/res/shaders/color-vs.cso", "../DXHEngine/res/shaders/color-ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
+    PrivateCreateShader("SimpleShader", "../DXHEngine/res/shaders/color-vs.cso", "../DXHEngine/res/shaders/color-ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
 
-    CreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
+    PrivateCreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
     CreateSphere();
 }
 
-void RendererResource::CreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout)
+void RendererResource::PrivateCreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout)
 {
     if (m_Shaders.contains(name))
         return;
     m_Shaders[name] = BaseShader::Create(vsFilePath, psFilePath, type, layout);
 }
 
-void RendererResource::CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName)
+void RendererResource::PrivateCreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName)
 {
     if (m_Materials.contains(materialName))
         return;
@@ -95,7 +95,7 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
     }
 }
 
-void RendererResource::CreateTexture(const std::string& textureName, const std::wstring& texturePath)
+void RendererResource::PrivateCreateTexture(const std::string& textureName, const std::wstring& texturePath)
 {
     if (m_Textures.contains(textureName))
         return;
