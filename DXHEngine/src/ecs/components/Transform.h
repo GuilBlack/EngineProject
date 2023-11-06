@@ -13,9 +13,17 @@ struct Transform : Component
         Scale = Vector3::One;
     }
     Vector3 Position = Vector3::Zero; // Position in world space, in meters
+    Vector3 GridPosition = Vector3::Zero; // Position in grid space, in meters
     Quaternion Rotation = Quaternion::Identity;
     Vector3 Scale = Vector3::One;
 
+    void SetPosition(DirectX::FXMVECTOR& position) 
+    { 
+        using namespace DirectX;
+        Position.Store(position); 
+        GridPosition.Store(position * (1 / GRID_SIZE));
+    }
+    
     /// <summary>
     /// Gets the matrix describing the transformation from world space to model space.
     /// </summary>

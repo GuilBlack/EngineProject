@@ -7,10 +7,12 @@ using namespace DirectX;
 
 namespace DXH
 {
+
+
 void PhysicsSystem::Update(const Timer& gt)
 {
     Timer t; 
-    t.Tick();; 
+    t.Tick();
     ResolveCollisions(gt);
     t.Tick();
     VS_DB_OUT_A("Resolve Collision: " << t.DeltaTime() * 1000 << "ms\n");
@@ -45,6 +47,12 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
             SphereCollider& colliderB = it2->second;
             XMVECTOR posB = ColliderPosition(transformB, colliderB);
             
+            // Check for grid position 
+            if (transformA.GridPosition.x > transformB.GridPosition.x + 1 || transformA.GridPosition.x < transformB.GridPosition.x - 1 || 
+                transformA.GridPosition.y > transformB.GridPosition.y + 1 || transformA.GridPosition.y < transformB.GridPosition.y - 1 ||
+                transformA.GridPosition.z > transformB.GridPosition.z + 1 || transformA.GridPosition.z < transformB.GridPosition.z - 1) continue;
+            
+
             // Check for collision
             float sqDistance = SqDistanceBetween(posA, posB);
             float sumRadii = colliderA.Radius + colliderB.Radius;
@@ -73,7 +81,7 @@ void PhysicsSystem::UpdateRigidBodies(const Timer& gt)
     {
         // Apply the velocity to the position
         Transform& transform = gameObject->Get<Transform>();
-        transform.Position.Store(rigidBody.Velocity.Load() * gt.DeltaTime() + transform.Position.Load());
+        transform.SetPosition(rigidBody.Velocity.Load() * gt.DeltaTime() + transform.Position.Load());
     }
 }
 }
