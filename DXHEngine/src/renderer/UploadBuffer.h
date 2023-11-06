@@ -72,9 +72,10 @@ public:
     /// Copy the data to the constant buffer on the CPU and maps it on the GPU.
     /// </summary>
     /// <param name="elementIndex">Index of the element to copy.</param>
-    void CopyData(int elementIndex, const BufferType& data)
+    template<typename ElementType>
+    void CopyData(int elementIndex, const ElementType& data)
     {
-        memcpy(&m_CPUData[elementIndex * m_ElementByteSize], &data, sizeof(BufferType));
+        memcpy(&m_CPUData[elementIndex * m_ElementByteSize], &data, sizeof(ElementType));
     }
 
 private:

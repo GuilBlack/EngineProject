@@ -28,6 +28,14 @@ void Game::Init(const DXH::Timer& gt)
     pSpaceShip->Add<RigidBody>().Mass = 0.5f;
     pSpaceShip->Add<SphereCollider>().Radius = 1.f;
     m_GameObjects.push_back(pSpaceShip);
+    GameObject* pScore = new GameObject();
+    pScore->SetPosition(-1.f, 1.f, 0.f);
+    pScore->Add<Mesh>();
+    NumberUI& num = pScore->Add<NumberUI>();
+    num.InitGeometry(5);
+    num.Number = "12345";
+    m_GameObjects.push_back(pScore);
+
 
     // Create asteroid field
     const size_t asteroidCount = 100;
@@ -70,6 +78,7 @@ void Game::LoadAssets()
         ShaderProgramType::BasicLightingShader,
         InputLayoutType::PositionNormalTexcoord
     );
+
     RendererResource::CreateShader(
         "TextureLightingShader",
         "res/shaders/compiled/texture-lighting-vs.cso",

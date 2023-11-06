@@ -123,6 +123,31 @@ void Renderer::Draw(Mesh& mesh, GameObject& gameObject)
     mesh.Mat->Shader->Unbind(m_pCommandList);
 }
 
+void Renderer::DrawNumber(Mesh& mesh, NumberUI& numberUI, GameObject& transform)
+{
+    if (numberUI.Number.size() != numberUI.NumCharacters)
+        return;
+    NumberGeometry* geo = numberUI.Geo;
+
+    for (uint32_t i = 0; i < numberUI.NumCharacters; i++)
+    {
+        float uvStride = .1f;
+        float numUV = (numberUI.Number[i] - 48) * uvStride;
+        uint32_t uvByteIndex = i * 4 * sizeof(PosNormTexcoordVertex) + sizeof(PosNormVertex);
+        geo->VertexBuffer.CopyData(uvByteIndex, Vector2(numUV, 0.f));
+        uvByteIndex += sizeof(PosNormTexcoordVertex);
+        geo->VertexBuffer.CopyData(uvByteIndex, Vector2(numUV + uvStride, 0.f));
+        uvByteIndex += sizeof(PosNormTexcoordVertex);
+        geo->VertexBuffer.CopyData(uvByteIndex, Vector2(numUV, 1.f));
+        uvByteIndex += sizeof(PosNormTexcoordVertex);
+        geo->VertexBuffer.CopyData(uvByteIndex, Vector2(numUV + uvStride, 1.f));
+    }
+    Material* pMat = RendererResource::GetMaterial("NumberUI");
+    pMat->Shader->Bind(m_pCommandList);
+    pMat->Shader->Draw(geo, mesh.GetCBIndex(), pMat, transform, m_pCommandList);
+    pMat->Shader->Unbind(m_pCommandList);
+}
+
 void Renderer::EndFrame()
 {
     D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
@@ -285,7 +310,7 @@ Texture* Renderer::CreateTexture2D(const std::wstring& texturePath)
         }
     };
 
-    m_pRenderContext->GetDevice()->CreateShaderResourceView(pTexture->Resource.Get(), &srvDesc, m_pSrvHeap->GetCPUDescriptorHandleForHeapStart());
+    m_pRenderContext->GetDevice()->CreateShaderResourceView(pTexture->Resource.Get(), &srvDesc, hDescriptor);
 
     ASSERT_HRESULT(m_pCommandList->Close());
     ID3D12CommandList* commandLists[] = { m_pCommandList };

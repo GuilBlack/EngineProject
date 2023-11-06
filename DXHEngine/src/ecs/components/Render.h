@@ -6,6 +6,7 @@
 namespace DXH
 {
 struct Geometry;
+struct NumberGeometry;
 struct Material;
 
 struct Mesh : public Component
@@ -43,4 +44,23 @@ private:
     bool isInitialized = false;
     uint32_t CBVIndex = -1;
 };
+
+struct NumberUI : public Component
+{
+    std::string Number = "";
+    uint32_t NumCharacters = 0;
+    NumberGeometry* Geo = nullptr;
+
+    ~NumberUI();
+
+    NumberUI() = default;
+
+    void SetNumber(std::string& number)
+    {
+        Number = number;
+    }
+
+    void InitGeometry(uint32_t numCharacters);
+};
+
 }

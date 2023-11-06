@@ -26,6 +26,7 @@
     <ClCompile Include="src\maths\Vector4.cpp" />
     <ClCompile Include="src\maths\Shorthands.cpp" />
     <ClCompile Include="vendor\DDSTextureLoader.cpp" />
+    <ClCompile Include="src\ecs\components\Render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHCore.h" />
