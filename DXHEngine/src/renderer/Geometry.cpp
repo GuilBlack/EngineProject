@@ -27,5 +27,4 @@ Geometry::~Geometry()
     RELEASE_PTR(VertexBufferGPU);
     RELEASE_PTR(IndexBufferGPU);
 }
-
 }
