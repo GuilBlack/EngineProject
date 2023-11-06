@@ -1,6 +1,4 @@
 #pragma once
-#include <DXHCore.h>
-#include <vector>
 
 namespace DXH // Forward declaration
 {
@@ -40,4 +38,6 @@ private:
     /// Destroys the game. Called once before the engine shuts down.
     ///  </summary>
     void Destroy(const DXH::Timer& gt);
+
+    void LoadAssets();
 };

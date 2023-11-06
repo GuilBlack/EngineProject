@@ -28,7 +28,7 @@ void DXH::RenderSystem::Update(const Timer& gt)
                 transformMap.at(pair.first), 
                 (float)Window::GetInstance().GetWidth() / Window::GetInstance().GetHeight()
             );
-            Renderer::GetInstance().BeginFrame(pair.second);
+            Renderer::GetInstance().BeginFrame(pair.second, transformMap.at(pair.first), gt);
             camInMap = true;
             break;
         }
@@ -51,7 +51,7 @@ void DXH::RenderSystem::Update(const Timer& gt)
             1000.f
         );
         defaultCam.Proj = proj;
-        Renderer::GetInstance().BeginFrame(defaultCam);
+        Renderer::GetInstance().BeginFrame(defaultCam, Transform(), gt);
     }
 
     for (auto& pair : map)
@@ -64,7 +64,6 @@ void DXH::RenderSystem::Update(const Timer& gt)
             Renderer::GetInstance().Draw(mesh, transform);
         }
     }
-
     Renderer::GetInstance().EndFrame();
 }
 

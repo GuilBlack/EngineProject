@@ -104,6 +104,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DXHRendering.h" />
+    <ClInclude Include="res\shaders\include\DXHRendering.h" />
     <ClInclude Include="src\ecs\Event.h" />
     <ClInclude Include="src\ecs\systems\ScriptingSystem.h" />
     <ClInclude Include="src\ecs\components\Script.h" />
@@ -132,6 +134,7 @@
     <ClInclude Include="src\core\DXHEngine.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\core\Window.h" />
+    <ClInclude Include="src\renderer\Texture.h" />
     <ClInclude Include="src\time\Timer.h" />
     <ClInclude Include="src\renderer\SwapChain.h" />
     <ClInclude Include="src\ecs\ComponentManager.h" />
@@ -145,6 +148,7 @@
     <ClInclude Include="DXHScripting.h" />
     <ClInclude Include="src\ecs\components\scripts\BaseState.h" />
     <ClInclude Include="src\ecs\components\scripts\StateMachine.h" />
+    <ClInclude Include="vendor\DDSTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
@@ -174,6 +178,7 @@
     <ClCompile Include="src\maths\Vector3.cpp" />
     <ClCompile Include="src\maths\Vector2.cpp" />
     <ClCompile Include="src\renderer\Util.cpp" />
+    <ClCompile Include="vendor\DDSTextureLoader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

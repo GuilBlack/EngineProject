@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "../ecs/components/Render.h"
 #include "Material.h"
+#include "Texture.h"
 
 namespace DXH
 {
@@ -14,33 +15,34 @@ RendererResource::~RendererResource()
         DELETE_PTR(geometry);
     for (auto[_, material] : m_Materials)
         DELETE_PTR(material);
+    for (auto [_, texture] : m_Textures)
+        DELETE_PTR(texture);
 }
 
 void RendererResource::Init()
 {
-    CreateShader("SimpleShader", "../DXHEngine/res/shaders/color_vs.cso", "../DXHEngine/res/shaders/color_ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
-    CreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
-    CreateCube();
-    CreateSquare();
+    PrivateCreateShader("SimpleShader", "../DXHEngine/res/shaders/color-vs.cso", "../DXHEngine/res/shaders/color-ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
+
+    PrivateCreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
     CreateSphere();
 }
 
-void RendererResource::CreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout)
+void RendererResource::PrivateCreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout)
 {
     if (m_Shaders.contains(name))
         return;
     m_Shaders[name] = BaseShader::Create(vsFilePath, psFilePath, type, layout);
 }
 
-void RendererResource::CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName)
+void RendererResource::PrivateCreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName)
 {
     if (m_Materials.contains(materialName))
         return;
+
     if (!m_Shaders.contains(shaderName))
-    {
         // TODO: Add error handling
         assert(false && "Shader not found");
-    }
+
     switch (materialType)
     {
     case MaterialType::Simple:
@@ -50,10 +52,40 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
             assert(false && "Shader type mismatch");
             return;
         }
-        Material* material = new Material();
-        material->Shader = m_Shaders[shaderName];
-        material->Type = MaterialType::Simple;
-        m_Materials[materialName] = material;
+        Material* pMaterial = new Material();
+        pMaterial->Shader = m_Shaders[shaderName];
+        pMaterial->Type = MaterialType::Simple;
+        m_Materials[materialName] = pMaterial;
+        break;
+    }
+    case MaterialType::Lighting:
+    {
+        BaseShader* pShader = m_Shaders[shaderName];
+        if (pShader->GetType() != ShaderProgramType::BasicLightingShader)
+        { // TODO: Add error handling
+            assert(false && "Shader type mismatch");
+            return;
+        }
+        Material* pMaterial = new SimpleLightingMaterial();
+        pMaterial->Shader = pShader;
+        pMaterial->Type = MaterialType::Lighting;
+        pMaterial->MaterialCBIndex = pShader->AddMaterialCB();
+        m_Materials[materialName] = pMaterial;
+        break;
+    }
+    case MaterialType::TextureLighting:
+    {
+        BaseShader* pShader = m_Shaders[shaderName];
+        if (pShader->GetType() != ShaderProgramType::TextureLightingShader)
+        { // TODO: Add error handling
+            assert(false && "Shader type mismatch");
+            return;
+        }
+        Material* pMaterial = new TextureLightingMaterial();
+        pMaterial->Shader = pShader;
+        pMaterial->Type = MaterialType::TextureLighting;
+        pMaterial->MaterialCBIndex = pShader->AddMaterialCB();
+        m_Materials[materialName] = pMaterial;
         break;
     }
     default:
@@ -61,6 +93,16 @@ void RendererResource::CreateMaterial(const std::string& materialName, MaterialT
         assert(false && "Material type not supported");
         break;
     }
+}
+
+void RendererResource::PrivateCreateTexture(const std::string& textureName, const std::wstring& texturePath)
+{
+    if (m_Textures.contains(textureName))
+        return;
+
+    Texture* pTexture = Renderer::GetInstance().CreateTexture2D(texturePath);
+
+    m_Textures[textureName] = pTexture;
 }
 
 void RendererResource::CreateCube()
@@ -118,6 +160,7 @@ void RendererResource::CreateCube()
     m_Geometries["Cube"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
     m_Geometries["Cube"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);
 }
+
 void RendererResource::CreateSquare()
 {
     using namespace DirectX;
@@ -147,6 +190,7 @@ void RendererResource::CreateSquare()
     m_Geometries["Square"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
     m_Geometries["Square"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);
 }
+
 void RendererResource::CreateSphere()
 {
     using namespace DirectX;
@@ -157,7 +201,7 @@ void RendererResource::CreateSphere()
     uint32_t numVertices = (latitude + 1) * (longitude * 2);
     uint32_t numIndices = 2 * 3 * longitude + 2 * 3 * (latitude - 1) * longitude;
 
-    std::vector<BasicVertex> vertices;
+    std::vector<PosNormTexcoordVertex> vertices;
     vertices.resize(numVertices);
     std::vector<std::uint16_t> indices;
     indices.resize(numIndices);
@@ -170,8 +214,9 @@ void RendererResource::CreateSphere()
     // top vertex
     for (uint32_t i = 1; i <= longitude; ++i)
     {
-        vertices[count].Position = XMFLOAT3(0.f, radius, 0.f);
-        vertices[count].Color = XMFLOAT4(Colors::White);
+        vertices[count].Position = { 0.f, radius, 0.f };
+        vertices[count].Normal = { 0.f, 1.f, 0.f };
+        vertices[count].Texcoord = { (float)i / ((float)longitude + 1.0f), 0.f };
         ++count;
     }
 
@@ -182,11 +227,28 @@ void RendererResource::CreateSphere()
         for (uint32_t j = 0; j < longitude + 1; ++j)
         {
             float pLong = (float)j * longitudeStep;
+
+            XMFLOAT3 point =
+            {
+                sinf(pLat) * cosf(pLong),
+                cosf(pLat),
+                sinf(pLat) * sinf(pLong)
+            };
+
             vertices[count].Position = XMFLOAT3(
-                radius * sinf(pLat) * cosf(pLong),
-                radius * cosf(pLat),
-                radius * sinf(pLat) * sinf(pLong));
-            vertices[count].Color = XMFLOAT4(Colors::White);
+                radius * point.x,
+                radius * point.y,
+                radius * point.z
+            );
+
+            vertices[count].Normal = point;
+
+            vertices[count].Texcoord =
+            {
+                (float)j / (float)longitude,
+                (float)i / ((float)latitude + 1.0f)
+            };
+
             ++count;
         }
     }
@@ -194,8 +256,9 @@ void RendererResource::CreateSphere()
     // bottom vertex
     for (uint32_t i = 1; i <= longitude; ++i)
     {
-        vertices[count].Position = XMFLOAT3(0.f, -radius, 0.f);
-        vertices[count].Color = XMFLOAT4(Colors::White);
+        vertices[count].Position = { 0.f, -radius, 0.f };
+        vertices[count].Normal = { 0.f, -1.f, 0.f };
+        vertices[count].Texcoord = { (float)i / ((float)longitude + 1.0f), 1.f };
         ++count;
     }
 
@@ -237,8 +300,8 @@ void RendererResource::CreateSphere()
         indices[count++] = southPoleIndex - (longitude + 1) + i + 1;
     }
 
-    uint32_t vbByteSize = (uint32_t)vertices.size() * sizeof(BasicVertex);
-    uint32_t vertexByteStride = sizeof(BasicVertex);
+    uint32_t vbByteSize = (uint32_t)vertices.size() * sizeof(PosNormTexcoordVertex);
+    uint32_t vertexByteStride = sizeof(PosNormTexcoordVertex);
 
     m_Geometries["Sphere"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
     m_Geometries["Sphere"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);

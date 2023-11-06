@@ -8,6 +8,9 @@
 #include "src/ecs/components/Render.h"
 #include "src/ecs/components/Camera.h"
 #include "src/core/Window.h"
+#include "src/time/Timer.h"
+#include "Texture.h"
+#include "vendor/DDSTextureLoader.h"
 
 namespace DXH
 {
@@ -28,7 +31,7 @@ void Renderer::Init()
     m_pSwapChain->Init(m_pRenderContext, m_pCommandQueue);
 
     // Create descriptor heap
-    m_pRenderContext->CreateCBVSRVUAVHeapDescriptor(10, &m_pCbvSrvHeap);
+    m_pRenderContext->CreateCBVSRVUAVHeapDescriptor(100, &m_pSrvHeap);
 
     RendererResource::GetInstance().Init();
     BaseShader::s_ObjectCB = std::vector<UploadBuffer<ObjectConstants>>();
@@ -46,7 +49,7 @@ void Renderer::Destroy()
         shader->m_PassCB.Destroy();
     }
     RELEASE_PTR(m_pFence);
-    RELEASE_PTR(m_pCbvSrvHeap);
+    RELEASE_PTR(m_pSrvHeap);
     RELEASE_PTR(m_pCommandQueue);
     RELEASE_PTR(m_pCommandList);
     RELEASE_PTR(m_pCommandAllocator);
@@ -54,7 +57,7 @@ void Renderer::Destroy()
     delete m_pRenderContext;
 }
 
-void Renderer::BeginFrame(const Camera& camera)
+void Renderer::BeginFrame(const Camera& camera, const Transform& camTransform, const Timer& timer)
 {
     using namespace DirectX;
     ASSERT_HRESULT(m_pCommandAllocator->Reset());
@@ -79,8 +82,8 @@ void Renderer::BeginFrame(const Camera& camera)
 
     m_pCommandList->OMSetRenderTargets(1, &rtvHandle, true, &dsvHandle);
 
-    //ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvSrvHeap };
-    //m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+    ID3D12DescriptorHeap* descriptorHeaps[] = { m_pSrvHeap };
+    m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
     Matrix view = camera.View.GetMatrixTranspose();
     Matrix proj = camera.Proj.GetMatrixTranspose();
@@ -91,16 +94,20 @@ void Renderer::BeginFrame(const Camera& camera)
         .View = view,
         .Proj = proj,
         .ViewProj = viewProj,
-        .EyePosW = {0.f, 0.f, -5.f},
+        .EyePosW = camTransform.Position,
         .NearZ = camera.NearPlan,
         .FarZ = camera.FarPlan,
-        .TotalTime = 0.f,
+        .TotalTime = timer.TotalTime(),
         .RenderTargetSize = 
         {
             (float)Window::GetInstance().GetWidth(), 
             (float)Window::GetInstance().GetHeight()
         },
-        .DeltaTime = 0.f,
+        .DeltaTime = timer.DeltaTime(),
+        .AmbientIntensity = 0.01f,
+        .SunIntensity = .9f,
+        .SunDirection = { .0f, -1.f, 1.f },
+        .SunColor = { 1.f, 1.f, 1.f }
     };
 
     for (auto [_, shader] : RendererResource::GetInstance().m_Shaders)
@@ -112,16 +119,7 @@ void Renderer::BeginFrame(const Camera& camera)
 void Renderer::Draw(Mesh& mesh, Transform& transform)
 {
     mesh.Mat->Shader->Bind(m_pCommandList);
-    switch (mesh.Mat->Shader->GetType())
-    {
-    case ShaderProgramType::SimpleShader:
-    {
-        mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), transform, m_pCommandList);
-        break;
-    }
-    default:
-        break;
-    }
+    mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, transform, m_pCommandList);
     mesh.Mat->Shader->Unbind(m_pCommandList);
 }
 
@@ -250,5 +248,110 @@ ID3D12Resource* Renderer::CreateDefaultBuffer(void* data, int64_t byteSize)
     RELEASE_PTR(uploadBuffer);
 
     return defaultBuffer;
+}
+
+Texture* Renderer::CreateTexture2D(const std::wstring& texturePath)
+{
+    using namespace DirectX;
+
+    Microsoft::WRL::ComPtr<ID3D12Resource> uploadHeap = nullptr;
+
+    FlushCommandQueue();
+    ASSERT_HRESULT(m_pCommandList->Reset(m_pCommandAllocator, nullptr));
+
+    Texture* pTexture = new Texture();
+    ASSERT_HRESULT(CreateDDSTextureFromFile12(
+        GetRenderContext()->GetDevice(),
+        m_pCommandList,
+        texturePath.c_str(),
+        pTexture->Resource,
+        uploadHeap
+    ));
+    D3D12_RESOURCE_DESC textureDesc = pTexture->Resource->GetDesc();
+
+    CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(m_pSrvHeap->GetCPUDescriptorHandleForHeapStart());
+    hDescriptor.Offset(m_SrvIndex, m_pRenderContext->GetDescriptorIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = 
+    {
+        .Format = textureDesc.Format,
+        .ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D,
+        .Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING,
+        .Texture2D = 
+        {
+            .MostDetailedMip = 0,
+            .MipLevels = textureDesc.MipLevels,
+            .ResourceMinLODClamp = 0.0f,
+        }
+    };
+
+    m_pRenderContext->GetDevice()->CreateShaderResourceView(pTexture->Resource.Get(), &srvDesc, m_pSrvHeap->GetCPUDescriptorHandleForHeapStart());
+
+    ASSERT_HRESULT(m_pCommandList->Close());
+    ID3D12CommandList* commandLists[] = { m_pCommandList };
+    m_pCommandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
+
+    FlushCommandQueue();
+
+    pTexture->heapIndex = m_SrvIndex++;
+    return pTexture;
+}
+
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
+{
+    static const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
+        0, // shaderRegister
+        D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
+        D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressU
+        D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
+        D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
+
+    static const CD3DX12_STATIC_SAMPLER_DESC pointClamp(
+        1, // shaderRegister
+        D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
+        D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressU
+        D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressV
+        D3D12_TEXTURE_ADDRESS_MODE_CLAMP); // addressW
+
+    static const CD3DX12_STATIC_SAMPLER_DESC linearWrap(
+        2, // shaderRegister
+        D3D12_FILTER_MIN_MAG_MIP_LINEAR, // filter
+        D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressU
+        D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
+        D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
+
+    static const CD3DX12_STATIC_SAMPLER_DESC linearClamp(
+        3, // shaderRegister
+        D3D12_FILTER_MIN_MAG_MIP_LINEAR, // filter
+        D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressU
+        D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressV
+        D3D12_TEXTURE_ADDRESS_MODE_CLAMP); // addressW
+
+    static const CD3DX12_STATIC_SAMPLER_DESC anisotropicWrap(
+        4, // shaderRegister
+        D3D12_FILTER_ANISOTROPIC, // filter
+        D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressU
+        D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
+        D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressW
+        0.0f,                             // mipLODBias
+        8);                               // maxAnisotropy
+
+    static const CD3DX12_STATIC_SAMPLER_DESC anisotropicClamp(
+        5, // shaderRegister
+        D3D12_FILTER_ANISOTROPIC, // filter
+        D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressU
+        D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressV
+        D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressW
+        0.0f,                              // mipLODBias
+        8);                                // maxAnisotropy
+
+    static std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> samplerDescs =
+    {
+        pointWrap, pointClamp,
+        linearWrap, linearClamp,
+        anisotropicWrap, anisotropicClamp
+    };
+
+    return samplerDescs;
 }
 }

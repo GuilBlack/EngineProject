@@ -55,6 +55,33 @@ struct Geometry
         return ibv;
     }
 
-    static SphereBoundingVolume ComputeBoundingSphere(std::vector<BasicVertex> vertices);
+    template<typename VertexType>
+    static SphereBoundingVolume ComputeBoundingSphere(std::vector<VertexType> vertices)
+    {
+        using namespace DirectX;
+        static constexpr float min = std::numeric_limits<float>::max();
+        static constexpr float max = std::numeric_limits<float>::lowest();
+
+        Vector3 minAABB = Vector3(min, min, min);
+        Vector3 maxAABB = Vector3(max, max, max);
+
+        for (uint32_t i = 0; i < vertices.size(); ++i)
+        {
+            XMFLOAT3 p = vertices[i].Position;
+
+            minAABB.x = MIN(minAABB.x, p.x);
+            minAABB.y = MIN(minAABB.y, p.y);
+            minAABB.z = MIN(minAABB.z, p.z);
+
+            maxAABB.x = MAX(maxAABB.x, p.x);
+            maxAABB.y = MAX(maxAABB.y, p.y);
+            maxAABB.z = MAX(maxAABB.z, p.z);
+        }
+        XMVECTOR center = XMVectorScale(XMVectorAdd(maxAABB.Load(), minAABB.Load()), 0.5f);
+        float distCenterToMax = XMVectorGetX(XMVector3Length(maxAABB.Load() - center));
+        float distCenterToMin = XMVectorGetX(XMVector3Length(minAABB.Load() - center));
+        float radius = MAX(distCenterToMax, distCenterToMin);
+        return SphereBoundingVolume(center, radius);
+    }
 };
 }
