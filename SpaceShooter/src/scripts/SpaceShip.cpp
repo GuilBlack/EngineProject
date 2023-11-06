@@ -6,6 +6,7 @@ void SpaceShip::Start()
 {
     m_SpaceshipRigibody = &pGameObject->Get<RigidBody>();
     m_RuntimeBullet = std::vector<GameObject*>();
+    CreateBulletGO();
 }
 
 void SpaceShip::Update(const DXH::Timer& gt)
@@ -22,8 +23,8 @@ void SpaceShip::Update(const DXH::Timer& gt)
         m_SpaceshipRigibody->Velocity += right * m_DefaultSpeed;
 
     if (InputManager::IsKeyPressed(VK_LBUTTON))
-        CreateBulletGO();
-    VS_DB_OUT_A("In scene Game Object : " << m_RuntimeBullet.size() << std::endl);
+        //Shoot();
+    VS_DB_OUT_A("Bullet" << m_RuntimeBullet.size() << "out" << std::endl);
 
     auto loadedVelocity = m_SpaceshipRigibody->Velocity.Load();
     if (DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(loadedVelocity)) > m_SqMaxVelocity)
@@ -43,8 +44,18 @@ void SpaceShip::OnDestroy()
 
 void SpaceShip::CreateBulletGO()
 {
-	GameObject* bullet = new GameObject();
-	bullet->Add<RigidBody>().Mass = 0.5f;
-	bullet->Add<SphereCollider>().Radius = 1.f;
-    m_RuntimeBullet.emplace_back(bullet);
+    m_BulletPrefab = new GameObject();
+    m_BulletPrefab->Add<RigidBody>().Mass = 0.5f;
+    m_BulletPrefab->Add<SphereCollider>().Radius = 1.f;
+    m_BulletPrefab->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
+    m_RuntimeBullet.emplace_back(m_BulletPrefab);
+}
+
+void SpaceShip::Shoot()
+{
+    GameObject* bullet = new GameObject();
+    bullet = m_BulletPrefab;
+    RigidBody* rg = &bullet->Get<RigidBody>();
+    rg->Velocity = m_SpaceshipRigibody->Velocity.Forward;
+    m_RuntimeBullet.push_back(bullet);
 }
