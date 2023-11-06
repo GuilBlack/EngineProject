@@ -71,9 +71,9 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
                     (rigidBodyA.Mass + rigidBodyB.Mass);
                 
                 // Update the positions to does not collides anymore
-                XMVECTOR penetration = (sumRadii - XMVectorGetX(XMVector3Length(posB - posA))) * normal;
-                transformA.SetPosition(transformA.Position.Load() - (penetration * rigidBodyA.Mass / (rigidBodyA.Mass + rigidBodyB.Mass)));
-                transformB.SetPosition(transformB.Position.Load() + (penetration * rigidBodyB.Mass / (rigidBodyA.Mass + rigidBodyB.Mass)));
+                XMVECTOR penetrationOverMasses = (sumRadii - XMVectorGetX(XMVector3Length(posB - posA))) / (rigidBodyA.Mass + rigidBodyB.Mass) * normal;
+                transformA.SetPosition(transformA.Position.Load() - (penetrationOverMasses * rigidBodyA.Mass));
+                transformB.SetPosition(transformB.Position.Load() + (penetrationOverMasses * rigidBodyB.Mass));
 
                 // Update the velocities
                 rigidBodyA.Velocity.Store(rbvA + (impulse * normal / rigidBodyA.Mass));
