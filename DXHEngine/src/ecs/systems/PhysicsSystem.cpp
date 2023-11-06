@@ -31,19 +31,21 @@ inline XMVECTOR CalculateCollisionNormal(FXMVECTOR& posA, FXMVECTOR& posB) { ret
 
 void PhysicsSystem::ResolveCollisions(const Timer& gt)
 {
-    int c = 0;
-    auto& map = ComponentManager<SphereCollider>::GetInstance().GetUsedComponentsMap();
-    for (auto it = map.begin(); it != map.end(); it++)
+    auto& collMap = ComponentManager<SphereCollider>::GetInstance().GetUsedComponentsMap();
+    auto& rigidMap = ComponentManager<RigidBody>::GetInstance().GetUsedComponentsMap();
+    auto& transformMap = ComponentManager<Transform>::GetInstance().GetUsedComponentsMap();
+
+    for (auto it = collMap.begin(); it != collMap.end(); it++)
     {
         const GameObject* gameObjectA = it->first;
-        Transform& transformA = gameObjectA->Get<Transform>();
+        Transform& transformA = transformMap.at(gameObjectA);
         SphereCollider& colliderA = it->second;
         XMVECTOR posA = ColliderPosition(transformA, colliderA);
 
-        for (auto it2 = std::next(it); it2 != map.end(); it2++)
+        for (auto it2 = std::next(it); it2 != collMap.end(); it2++)
         {
             const GameObject* gameObjectB = it2->first;
-            Transform& transformB = gameObjectB->Get<Transform>();
+            Transform& transformB = transformMap.at(gameObjectB);
 
             // Check for grid position 
             if (transformA.GridPosition.x > transformB.GridPosition.x + 1 || transformA.GridPosition.x < transformB.GridPosition.x - 1 || 
@@ -59,12 +61,13 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
 
             if (sqDistance < sumRadii * sumRadii)
             {
-                RigidBody& rigidBodyA = gameObjectA->Get<RigidBody>();
-                RigidBody& rigidBodyB = gameObjectB->Get<RigidBody>();
+                RigidBody& rigidBodyA = rigidMap.at(gameObjectA);
+                RigidBody& rigidBodyB = rigidMap.at(gameObjectB);
             
                 XMVECTOR normal = CalculateCollisionNormal(posA, posB);
-                XMVECTOR relativeVelocity = rigidBodyB.Velocity.Load() - rigidBodyA.Velocity.Load();
-                float impulse = (2 * rigidBodyB.Mass * XMVectorGetX(XMVector3Dot(normal, relativeVelocity))) /
+                XMVECTOR rbvA = rigidBodyA.Velocity.Load();
+                XMVECTOR rbvB = rigidBodyB.Velocity.Load();
+                float impulse = (2 * rigidBodyB.Mass * XMVectorGetX(XMVector3Dot(normal, rbvB - rbvA))) /
                     (rigidBodyA.Mass + rigidBodyB.Mass);
                 
                 // Update the positions to does not collides anymore
@@ -73,8 +76,8 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
                 transformB.SetPosition(transformB.Position.Load() + (penetration * rigidBodyB.Mass / (rigidBodyA.Mass + rigidBodyB.Mass)));
 
                 // Update the velocities
-                rigidBodyA.Velocity.Store(rigidBodyA.Velocity.Load() + (impulse * normal / rigidBodyA.Mass));
-                rigidBodyB.Velocity.Store(rigidBodyB.Velocity.Load() - (impulse * normal / rigidBodyB.Mass));
+                rigidBodyA.Velocity.Store(rbvA + (impulse * normal / rigidBodyA.Mass));
+                rigidBodyB.Velocity.Store(rbvB - (impulse * normal / rigidBodyB.Mass));
             }
         }
     }
