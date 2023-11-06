@@ -44,14 +44,14 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
         {
             const GameObject* gameObjectB = it2->first;
             Transform& transformB = gameObjectB->Get<Transform>();
-            SphereCollider& colliderB = it2->second;
-            XMVECTOR posB = ColliderPosition(transformB, colliderB);
-            
+
             // Check for grid position 
             if (transformA.GridPosition.x > transformB.GridPosition.x + 1 || transformA.GridPosition.x < transformB.GridPosition.x - 1 || 
                 transformA.GridPosition.y > transformB.GridPosition.y + 1 || transformA.GridPosition.y < transformB.GridPosition.y - 1 ||
                 transformA.GridPosition.z > transformB.GridPosition.z + 1 || transformA.GridPosition.z < transformB.GridPosition.z - 1) continue;
-            
+
+            SphereCollider& colliderB = it2->second;
+            XMVECTOR posB = ColliderPosition(transformB, colliderB);           
 
             // Check for collision
             float sqDistance = SqDistanceBetween(posA, posB);
@@ -66,7 +66,12 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
                 XMVECTOR relativeVelocity = rigidBodyB.Velocity.Load() - rigidBodyA.Velocity.Load();
                 float impulse = (2 * rigidBodyB.Mass * XMVectorGetX(XMVector3Dot(normal, relativeVelocity))) /
                     (rigidBodyA.Mass + rigidBodyB.Mass);
-            
+                
+                // Update the positions to does not collides anymore
+                XMVECTOR penetration = (sumRadii - XMVectorGetX(XMVector3Length(posB - posA))) * normal;
+                transformA.SetPosition(transformA.Position.Load() - (penetration * rigidBodyA.Mass / (rigidBodyA.Mass + rigidBodyB.Mass)));
+                transformB.SetPosition(transformB.Position.Load() + (penetration * rigidBodyB.Mass / (rigidBodyA.Mass + rigidBodyB.Mass)));
+
                 // Update the velocities
                 rigidBodyA.Velocity.Store(rigidBodyA.Velocity.Load() + (impulse * normal / rigidBodyA.Mass));
                 rigidBodyB.Velocity.Store(rigidBodyB.Velocity.Load() - (impulse * normal / rigidBodyB.Mass));
