@@ -18,32 +18,33 @@ void Game::StartEngine()
 void Game::Init(const DXH::Timer& gt)
 {
     using namespace DXH;
-
-    //DXHEngine::GetInstance().ChangeTimeScale(0.2f);
-
     LoadAssets();
 
-    // Create Camera
-    GameObject* pCamera = new GameObject();
-    Transform& camTransform = pCamera->Get<Transform>();
-    camTransform.Position = { 0.0f, 0.0f, -5.0f };
-    camTransform.Rotation.SetEulerAngles(0.0f, 0.0f, 0.0f);
-    pCamera->Add<CameraController>();
-    pCamera->Add<Camera>().IsPrimary = true;
-    m_GameObjects.emplace_back(pCamera);
+    // Create SpaceShip
+    GameObject* pSpaceShip = new GameObject();
+    pSpaceShip->Add<SpaceShip>();
+    pSpaceShip->Add<CameraController>();
+    pSpaceShip->Add<Camera>().IsPrimary = true;
+    pSpaceShip->Add<RigidBody>().Mass = 0.5f;
+    pSpaceShip->Add<SphereCollider>().Radius = 1.f;
+    m_GameObjects.push_back(pSpaceShip);
 
-    // Create objects
-    for (int i = 0; i < 250; ++i)
+    // Create asteroid field
+    const size_t asteroidCount = 100;
+    for (size_t i = 0; i < asteroidCount; i++)
     {
-        GameObject* pObject = new GameObject();
+        GameObject* pAsteroid = new GameObject();
         float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-        pObject->Get<Transform>().Position = { randX, randY, randZ };
-        pObject->Add<RigidBody>().Velocity = { -randX / 2, -randY / 2, -randZ / 2};
-        pObject->Add<SphereCollider>().Radius = 1.f;
-        pObject->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
-        m_GameObjects.emplace_back(pObject);
+        pAsteroid->Get<Transform>().Position = {randX, randY, randZ};
+        randX = ((float)rand() / (float)RAND_MAX - 0.5f);
+        randY = ((float)rand() / (float)RAND_MAX - 0.5f);
+        randZ = ((float)rand() / (float)RAND_MAX - 0.5f);
+        pAsteroid->Add<RigidBody>().Velocity = {randX, randY, randZ};
+        pAsteroid->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
+        pAsteroid->Add<SphereCollider>().Radius = 1.f;
+        m_GameObjects.push_back(pAsteroid);
     }
 }
 
@@ -63,10 +64,10 @@ void Game::LoadAssets()
 
     // Create shaders
     RendererResource::CreateShader(
-        "BasicLightingShader", 
-        "res/shaders/compiled/simple-lighting-vs.cso", 
-        "res/shaders/compiled/simple-lighting-ps.cso", 
-        ShaderProgramType::BasicLightingShader, 
+        "BasicLightingShader",
+        "res/shaders/compiled/simple-lighting-vs.cso",
+        "res/shaders/compiled/simple-lighting-ps.cso",
+        ShaderProgramType::BasicLightingShader,
         InputLayoutType::PositionNormalTexcoord
     );
     RendererResource::CreateShader(
@@ -79,13 +80,13 @@ void Game::LoadAssets()
 
     // Create materials
     RendererResource::CreateMaterial(
-        "RedLightingMaterial", 
+        "RedLightingMaterial",
         MaterialType::Lighting, "BasicLightingShader"
     );
-    SimpleLightingMaterial* pRedLightingMaterial = 
+    SimpleLightingMaterial* pRedLightingMaterial =
         dynamic_cast<SimpleLightingMaterial*>(RendererResource::GetInstance().GetMaterial("RedLightingMaterial"));
-    pRedLightingMaterial->DiffuseAlbedo = { 1.0f, 0.0f, 0.0f, 1.0f };
-    pRedLightingMaterial->FresnelR0 = { 0.01f, 0.01f, 0.01f };
+    pRedLightingMaterial->DiffuseAlbedo = {1.0f, 0.0f, 0.0f, 1.0f};
+    pRedLightingMaterial->FresnelR0 = {0.01f, 0.01f, 0.01f};
     pRedLightingMaterial->Roughness = 0.5f;
 
     RendererResource::CreateMaterial(
@@ -95,8 +96,8 @@ void Game::LoadAssets()
 
     TextureLightingMaterial* pAsteroidMaterial =
         dynamic_cast<TextureLightingMaterial*>(RendererResource::GetInstance().GetMaterial("AsteroidMaterial"));
-    pAsteroidMaterial->DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
-    pAsteroidMaterial->FresnelR0 = { 0.01f, 0.01f, 0.01f };
+    pAsteroidMaterial->DiffuseAlbedo = {1.0f, 1.0f, 1.0f, 1.0f};
+    pAsteroidMaterial->FresnelR0 = {0.01f, 0.01f, 0.01f};
     pAsteroidMaterial->Roughness = 0.5f;
     pAsteroidMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("AsteroidTexture");
 }
