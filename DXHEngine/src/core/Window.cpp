@@ -134,7 +134,6 @@ LRESULT Window::OnEvent(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         DXHEngine& engine = DXHEngine::GetInstance();
         engine.SetPaused(true);
         engine.SetResizing(true);
-        engine.GetTimer().Stop();
         return 0;
     }
     // WM_EXITSIZEMOVE is sent when the user releases the resize bars.
@@ -144,7 +143,6 @@ LRESULT Window::OnEvent(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         DXHEngine& engine = DXHEngine::GetInstance();
         engine.SetPaused(false);
         engine.SetResizing(false);
-        engine.GetTimer().Start();
         Renderer::GetInstance().OnResize();
         return 0;
     }

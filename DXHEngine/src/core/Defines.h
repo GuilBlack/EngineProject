@@ -60,3 +60,4 @@
 
 // Maximum number of game objects.
 constexpr const size_t MAX_GO_COUNT = 1000;
+constexpr const float GRID_SIZE = 10.0f;
