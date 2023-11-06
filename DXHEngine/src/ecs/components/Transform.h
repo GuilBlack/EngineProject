@@ -13,7 +13,7 @@ struct Transform : Component
         Scale = Vector3::One;
     }
     Vector3 Position = Vector3::Zero; // Position in world space, in meters
-    int GridPosition[3] = { 0,0,0 }; // Position in grid space, in meters
+    int GridPosition[3] = { 0,0,0 }; // Position in the grid
     Quaternion Rotation = Quaternion::Identity;
     Vector3 Scale = Vector3::One;
 
@@ -21,9 +21,9 @@ struct Transform : Component
     { 
         using namespace DirectX;
         Position.Store(position); 
-        GridPosition[0] = Position.x / GRID_SIZE;
-        GridPosition[1] = Position.y / GRID_SIZE;
-        GridPosition[2] = Position.z / GRID_SIZE;
+        GridPosition[0] = (int)(Position.x / GRID_SIZE);
+        GridPosition[1] = (int)(Position.y / GRID_SIZE);
+        GridPosition[2] = (int)(Position.z / GRID_SIZE);
     }
     
     /// <summary>

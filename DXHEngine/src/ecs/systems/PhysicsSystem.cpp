@@ -11,15 +11,8 @@ namespace DXH
 
 void PhysicsSystem::Update(const Timer& gt)
 {
-    Timer t; 
-    t.Tick();
-    ResolveCollisions(gt);
-    t.Tick();
-    VS_DB_OUT_A("Resolve Collision: " << t.DeltaTime() * 1000 << "ms\n");
-    t.Tick();
+    ResolveCollisions();
     UpdateRigidBodies(gt);
-    t.Tick();
-    VS_DB_OUT_A("Update Rigidbodies: " << t.DeltaTime() * 1000 << "ms\n");
 }
 
 // Calculate the position of the collider in world space
@@ -29,7 +22,7 @@ inline float SqDistanceBetween(FXMVECTOR& posA, FXMVECTOR& posB) { return XMVect
 // Calculate the collision normal between two positions, from A to B
 inline XMVECTOR CalculateCollisionNormal(FXMVECTOR& posA, FXMVECTOR& posB) { return XMVector3Normalize(posB - posA); }
 
-void PhysicsSystem::ResolveCollisions(const Timer& gt)
+void PhysicsSystem::ResolveCollisions()
 {
     auto& collMap = ComponentManager<SphereCollider>::GetInstance().GetUsedComponentsMap();
     auto& rigidMap = ComponentManager<RigidBody>::GetInstance().GetUsedComponentsMap();
