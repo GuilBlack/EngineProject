@@ -14,5 +14,5 @@ private:
 	float m_roll = 0;
 
 	DXH::Transform* m_camTransform = nullptr;
-	DXH::Vector3 m_rotation = DXH::Vector3(180.f, 180.f, 0.f);
+	DXH::Vector3 m_rotation = DXH::Vector3(0.f, 0.f, 0.f);
 };
