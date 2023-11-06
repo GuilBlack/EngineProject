@@ -31,7 +31,7 @@ VertexOutput VS(VertexInput vIn)
 
 float4 PS(VertexOutput pIn) : SV_Target
 {
-    float4 diffuseAlbedo = gDiffuseTexture.Sample(gsamLinear, pIn.TexC); //* gDiffuseAlbedo;
+    float4 diffuseAlbedo = gDiffuseTexture.Sample(gsamLinear, pIn.TexC) * gDiffuseAlbedo;
     float3 normal = normalize(pIn.NormalW);
     float3 viewDir = normalize(gEyePosW - pIn.PosW);
     float shininess = round((1.0f - gRoughness) * 256.0f) + ((1.0f - gRoughness) * 256.0f) % 2.0f;

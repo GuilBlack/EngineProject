@@ -305,8 +305,9 @@ void BasicLightingShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, 
     materialCB.FresnelR0 = spMat->FresnelR0;
     materialCB.Roughness = spMat->Roughness;
 
-    UpdateMaterialCB(material);
-    cl->SetGraphicsRootConstantBufferView(1, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // matCB
+    m_MaterialCB[spMat->MaterialCBIndex].CopyData(0, materialCB);
+
+    cl->SetGraphicsRootConstantBufferView(1, m_MaterialCB[spMat->MaterialCBIndex].GetResource()->GetGPUVirtualAddress()); // matCB
 }
 
 uint32_t BasicLightingShader::AddMaterialCB()
@@ -383,8 +384,9 @@ void TextureLightingShader::SetCbvSrv(uint32_t objectCBIndex, Material * materia
     materialCB.FresnelR0 = pMat->FresnelR0;
     materialCB.Roughness = pMat->Roughness;
 
-    UpdateMaterialCB(material);
-    cl->SetGraphicsRootConstantBufferView(2, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // matCB
+    m_MaterialCB[pMat->MaterialCBIndex].CopyData(0, materialCB);
+
+    cl->SetGraphicsRootConstantBufferView(2, m_MaterialCB[pMat->MaterialCBIndex].GetResource()->GetGPUVirtualAddress()); // matCB
 }
 
 uint32_t TextureLightingShader::AddMaterialCB()
