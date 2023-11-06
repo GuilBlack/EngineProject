@@ -3,7 +3,7 @@
 
 namespace DXH
 {
-class Color : public Vector4
+struct Color : public Vector4
 {
     /// <summary>
     /// Creates a new white color.
