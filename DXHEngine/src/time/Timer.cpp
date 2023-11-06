@@ -48,6 +48,7 @@ void Timer::Reset()
     m_PausedTime = 0;
     m_StopTime = 0;
     m_IsStopped = false;
+    m_timeScale = 1.f;
 }
 
 void Timer::Tick()
@@ -78,10 +79,5 @@ float Timer::TotalTime() const
     {
         return (float)((m_CurrTime - m_PausedTime - m_BaseTime) * m_SecondsPerCount);
     }
-}
-
-float Timer::DeltaTime() const
-{
-    return (float)m_DeltaTime;
 }
 }

@@ -30,7 +30,6 @@ public:
         static DXHEngine instance;
         return instance;
     }
-    Timer& GetTimer() noexcept { return *m_GameTimer; }
 
     // Initializes the application
     bool Init(AppProperties props, GameTimerFunc gameInit, GameTimerFunc gameDestroy);
@@ -44,12 +43,14 @@ public:
     bool IsResizing() const noexcept { return m_Resizing; }
     bool IsFullScreen() const noexcept { return m_IsFullScreen; }
 
-    void SetPaused(bool paused) noexcept { m_AppPaused = paused; }
+    void SetPaused(bool paused);
     void SetMinimized(bool minimized) noexcept { m_Minimized = minimized; }
     void SetMaximized(bool maximized) noexcept { m_Maximized = maximized; }
     void SetResizing(bool resizing) noexcept { m_Resizing = resizing; }
     void SetFullScreen(bool fullscreen) noexcept { m_IsFullScreen = fullscreen; }
 #pragma endregion
+
+    void ChangeTimeScale(float timeScale);
 
 protected:
     // Updates the application

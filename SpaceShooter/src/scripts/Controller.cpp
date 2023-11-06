@@ -1,5 +1,4 @@
 #include "Controller.h"
-
 using namespace DXH;
 
 void Controller::Start()

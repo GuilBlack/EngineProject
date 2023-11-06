@@ -16,10 +16,11 @@ void Game::StartEngine()
 void Game::Init(const DXH::Timer& gt)
 {
     using namespace DXH;
+    DXHEngine::GetInstance().ChangeTimeScale(0);
     // Create Camera
     GameObject* pCamera = new GameObject();
     Transform& camTransform = pCamera->Get<Transform>();
-    camTransform.Position = { 0.0f, 0.0f, -5.0f };
+    camTransform.Position = {0.0f, 0.0f, -5.0f};
     camTransform.Rotation.SetEulerAngles(0.0f, 0.0f, 0.0f);
     pCamera->Add<Controller>();
     pCamera->Add<Camera>().IsPrimary = true;
@@ -31,8 +32,10 @@ void Game::Init(const DXH::Timer& gt)
         float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-        pObject->Get<Transform>().Position = { randX, randY, randZ };
-        pObject->Add<Mesh>().SetGeoAndMatByName("Cube", "SimpleMaterial");
+        pObject->Get<Transform>().Position = {randX, randY, randZ};
+        pObject->Add<RigidBody>().Velocity = {-randX, -randY, -randZ};
+        pObject->Add<SphereCollider>().Radius = 1.0f;
+        pObject->Add<Mesh>().SetGeoAndMatByName("Sphere", "SimpleMaterial");
         m_GameObjects.emplace_back(pObject);
     }
 }
