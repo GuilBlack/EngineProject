@@ -11,11 +11,9 @@ struct RigidBody : Component
     void OnAssign() override
     {
         Velocity = Vector3::Zero;
-        Force = Vector3::Zero;
         Mass = 1.0f;
     }
     Vector3 Velocity = Vector3::Zero; // In meters per second
-    Vector3 Force = Vector3::Zero; // In Newtons
     float Mass = 1.0f; // In kilograms
 };
 /// <summary>
