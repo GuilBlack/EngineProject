@@ -59,6 +59,23 @@ void DXHEngine::Run()
     Cleanup();
 }
 
+void DXHEngine::SetPaused(bool paused)
+{
+    m_AppPaused = paused;
+    if (paused)
+        m_GameTimer->Stop();
+    else
+        m_GameTimer->Start();
+}
+
+void DXHEngine::ChangeTimeScale(float timeScale)
+{
+    if (timeScale <= 0) // Prevent division by zero and negative time scales
+        timeScale = FLT_EPSILON;
+
+    m_GameTimer->SetTimeScale(timeScale);
+}
+
 bool DXHEngine::InitWindow()
 {
     WindowProperties winProps

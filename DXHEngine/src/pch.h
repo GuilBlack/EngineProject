@@ -9,6 +9,7 @@
 #include <limits>
 
 #include <vector>
+#include <array>
 #include <unordered_map>
 
 #include <fstream>

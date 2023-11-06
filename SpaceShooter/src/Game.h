@@ -1,6 +1,4 @@
 #pragma once
-#include <DXHCore.h>
-#include <vector>
 
 namespace DXH // Forward declaration
 {
@@ -41,8 +39,5 @@ private:
     ///  </summary>
     void Destroy(const DXH::Timer& gt);
 
-    /// <summary>
-    /// Create the Camera object 
-    ///  </summary>
-    void CreateViewCamera();
+    void LoadAssets();
 };

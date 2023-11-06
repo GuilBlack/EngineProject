@@ -26,6 +26,8 @@ public:
     /// </summary>
     void Destroy();
 
+    ID3D12Device* GetDevice() { return m_pDevice; }
+
     /// <summary>
     /// Creates the command queue, allocator and list.
     /// </summary>

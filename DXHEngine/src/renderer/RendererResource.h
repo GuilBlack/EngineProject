@@ -10,6 +10,7 @@ struct Geometry;
 struct Mesh;
 struct Material;
 enum class MaterialType;
+struct Texture;
 
 struct Environment
 {
@@ -41,17 +42,20 @@ public:
     /// </summary>
     void Init();
 
-    /// <summary>
-    /// Create a shader
-    /// </summary>
-    /// <param name="name">Name of the shader</param>
-    /// <param name="vsFilePath">Path to the vertex shader</param>
-    /// <param name="psFilePath">Path to the pixel shader</param>
-    /// <param name="type">Type of the shader program</param>
-    /// <param name="layout">Type of the input layout</param>
-    void CreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout);
+    static void CreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout)
+    {
+        GetInstance().PrivateCreateShader(name, vsFilePath, psFilePath, type, layout);
+    }
 
-    void CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName);
+    static void CreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName)
+    {
+        GetInstance().PrivateCreateMaterial(materialName, materialType, shaderName);
+    }
+
+static void CreateTexture(const std::string& textureName, const std::wstring& texturePath)
+    {
+        GetInstance().PrivateCreateTexture(textureName, texturePath);
+    }
 
     /// <summary>
     /// Get a material
@@ -62,12 +66,29 @@ public:
 
     static Geometry* GetGeometry(const std::string& geometryName) { return RendererResource::GetInstance().m_Geometries[geometryName]; }
 
+    static Texture* GetTexture(const std::string& textureName) { return RendererResource::GetInstance().m_Textures[textureName]; }
+
 private:
     std::unordered_map<std::string, BaseShader*> m_Shaders;
     std::unordered_map<std::string, Geometry*> m_Geometries;
     std::unordered_map<std::string, Material*> m_Materials;
+    std::unordered_map<std::string, Texture*> m_Textures;
 
 private:
+    /// <summary>
+/// Create a shader
+/// </summary>
+/// <param name="name">Name of the shader</param>
+/// <param name="vsFilePath">Path to the vertex shader</param>
+/// <param name="psFilePath">Path to the pixel shader</param>
+/// <param name="type">Type of the shader program</param>
+/// <param name="layout">Type of the input layout</param>
+    void PrivateCreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout);
+
+    void PrivateCreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName);
+
+    void PrivateCreateTexture(const std::string& textureName, const std::wstring& texturePath);
+
     /// <summary>
     /// Create a cube geometry
     /// </summary>

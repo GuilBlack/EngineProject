@@ -4,8 +4,8 @@
 class CameraController : public DXH::Script
 {
 public:
-	void Start() override;
-	void Update(const DXH::Timer& gt) override;
+    void Start() override;
+    void Update(const DXH::Timer& gt) override;
 private:
 	const float m_MouseSensitivity = 0.5f;
 

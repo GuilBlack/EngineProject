@@ -12,7 +12,8 @@ enum class ShaderProgramType
 {
     None,
     SimpleShader,
-    BasicPhongShader
+    BasicLightingShader,
+    TextureLightingShader
 };
 
 
@@ -42,6 +43,13 @@ struct PosNormVertex
 {
     DirectX::XMFLOAT3 Position;
     DirectX::XMFLOAT3 Normal;
+};
+
+struct PosNormTexcoordVertex
+{
+    DirectX::XMFLOAT3 Position;
+    DirectX::XMFLOAT3 Normal;
+    DirectX::XMFLOAT2 Texcoord;
 };
 
 struct Geometry;
@@ -76,7 +84,6 @@ public:
     {
         cl->SetPipelineState(m_pPSO);
         cl->SetGraphicsRootSignature(m_pRootSignature);
-        cl->SetGraphicsRootConstantBufferView(1, m_PassCB.GetResource()->GetGPUVirtualAddress());
     }
     
     /// <summary>
@@ -86,7 +93,7 @@ public:
     /// <param name="objectCBIndex">The index of the object constant buffer to use.</param>
     /// <param name="transform">The transform to use.</param>
     /// <param name="cl">The graphics command list to use.</param>
-    virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Transform& transform, ID3D12GraphicsCommandList* cl);
+    virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl);
 
     /// <summary>
     /// Unbinds the shader from the given graphics command list.
@@ -95,6 +102,8 @@ public:
     {
         cl->SetGraphicsRootSignature(nullptr);
     }
+
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl);
 
     /// <summary>
     /// Gets the type of the shader program.
@@ -112,14 +121,18 @@ public:
     /// Updates the pass constant buffer with the given pass constants.
     /// </summary>
     /// <param name="passCB">The pass constants to update the pass constant buffer with.</param>
-    void UpdatePassCB(PassConstants& passCB) { m_PassCB.CopyData(0, passCB); }
+    void UpdatePassCB(PassConstants& passCB);
+
+    virtual uint32_t AddMaterialCB();
+
+    virtual void UpdateMaterialCB(Material* material) {}
 
     /// <summary>
     /// Updates the object constant buffer at the given index with the given object constants.
     /// </summary>
     /// <param name="objectCB">The object constants to update the object constant buffer with.</param>
     /// <param name="index">The index of the object constant buffer to update.</param>
-    static void UpdateObjectCB(ObjectConstants& objectCB, uint32_t index) { s_ObjectCB[index].CopyData(0, objectCB); }
+    static void UpdateObjectCB(ObjectConstants& objectCB, uint32_t index);
 
 protected:
     ID3DBlob* m_pVS = nullptr;
@@ -146,13 +159,17 @@ protected:
     /// Builds the root signature for the shader.
     /// </summary>
     /// <param name="rootParameters">The root parameters to use.</param>
-    void BuildRootSignature(CD3DX12_ROOT_PARAMETER* rootParameters, uint32_t numParameters);
+    void BuildRootSignature(CD3DX12_ROOT_SIGNATURE_DESC& rootSignatureDesc);
 
     /// <summary>
     /// Builds the pipeline state object for the shader.
     /// </summary>
     void BuildPSO();
 };
+
+//////////////////////////////////////////////////////////////////////////
+// SimpleShader //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 class SimpleShader : public BaseShader
 {
@@ -166,14 +183,43 @@ public:
 private:
 };
 
-class BasicPhongShader : public BaseShader
+//////////////////////////////////////////////////////////////////////////
+// BasicLightingShader //////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+class BasicLightingShader : public BaseShader
 {
 public:
-    BasicPhongShader();
+    BasicLightingShader();
+    ~BasicLightingShader();
 
     virtual void Bind(ID3D12GraphicsCommandList* cl) override;
 
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl) override;
+
+    virtual uint32_t AddMaterialCB() override;
+
 private:
-    PhongMaterialConstants m_MaterialCB;
+    std::vector<UploadBuffer<LightingMaterialConstants>> m_MaterialCB;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// TextureLightingShader ///////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+class TextureLightingShader : public BaseShader
+{
+public:
+    TextureLightingShader();
+    ~TextureLightingShader();
+
+    virtual void Bind(ID3D12GraphicsCommandList* cl) override;
+
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, Transform& transform, ID3D12GraphicsCommandList* cl) override;
+
+    virtual uint32_t AddMaterialCB() override;
+
+private:
+    std::vector<UploadBuffer<LightingMaterialConstants>> m_MaterialCB;
 };
 }
