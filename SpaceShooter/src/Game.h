@@ -26,7 +26,7 @@ public:
 
 private:
     std::vector<DXH::GameObject*> m_GameObjects;
-
+    DXH::GameObject* m_Camera = nullptr;
 private:
     Game() = default; // This should not be used
     ~Game() = default; // Use Init / Destroy instead
@@ -40,4 +40,9 @@ private:
     /// Destroys the game. Called once before the engine shuts down.
     ///  </summary>
     void Destroy(const DXH::Timer& gt);
+
+    /// <summary>
+    /// Create the Camera object 
+    ///  </summary>
+    void CreateViewCamera();
 };

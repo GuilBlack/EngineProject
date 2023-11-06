@@ -46,7 +46,7 @@ public:
     /// <summary>
     /// Checks if a key if is pressed.
     /// </summary> 
-    inline static bool IsKeyPressed(int key) { return GetInstance().m_KeyStates.at(key) >= KeyState::Pressed; } // pressed = 2 & held = 3
+    inline static bool IsKeyPressed(int key) { std::toupper(key); return GetInstance().m_KeyStates.at(key) >= KeyState::Pressed; } // pressed = 2 & held = 3
     /// <summary>
     /// Checks if a key if is released.
     /// </summary>

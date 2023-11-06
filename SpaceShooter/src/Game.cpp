@@ -1,10 +1,12 @@
 #include "Game.h"
 #include "scripts/Rotator.h"
-#include "scripts/Controller.h"
+#include "scripts/CameraController.h"
+#include "scripts/SpaceShip.h"
+
+using namespace DXH;
 
 void Game::StartEngine()
 {
-    using namespace DXH;
     DXHEngine::GetInstance().Init(AppProperties{
             .WindowTitle = L"Space Shooter",
         },
@@ -15,16 +17,7 @@ void Game::StartEngine()
 
 void Game::Init(const DXH::Timer& gt)
 {
-    using namespace DXH;
-    // Create Camera
-    GameObject* pCamera = new GameObject();
-    Transform& camTransform = pCamera->Get<Transform>();
-    camTransform.Position = { 0.0f, 0.0f, -5.0f };
-    camTransform.Rotation.SetEulerAngles(0.0f, 0.0f, 0.0f);
-    pCamera->Add<Controller>();
-    pCamera->Add<Camera>().IsPrimary = true;
-    m_GameObjects.emplace_back(pCamera);
-
+    CreateViewCamera();
     for (int i = 0; i < 500; ++i)
     {
         GameObject* pObject = new GameObject();
@@ -43,4 +36,17 @@ void Game::Destroy(const DXH::Timer& gt)
     {
         delete go;
     }
+}
+
+void Game::CreateViewCamera()
+{
+    m_Camera = new GameObject();
+    Transform& camTransform = m_Camera->Get<Transform>();
+    camTransform.Position = { 0.0f, 0.0f, -5.0f };
+    camTransform.Rotation.SetEulerAngles(0.0f, 0.0f, 0.0f);
+    m_Camera->Add<CameraController>();
+    m_Camera->Add<RigidBody>();
+    m_Camera->Add<SpaceShip>();
+    m_Camera->Add<Camera>().IsPrimary = true;
+    m_GameObjects.emplace_back(m_Camera);
 }
