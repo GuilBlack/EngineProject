@@ -25,6 +25,8 @@ public:
     virtual void LateUpdate() {}
     // OnDestroy is called when the script is removed from a game object.
     virtual void OnDestroy() {}
+    // OnCollision is called when the game object collides with another game object.
+    virtual void OnCollision(GameObject* pOther) {}
 
     void OnAssign() override
     {

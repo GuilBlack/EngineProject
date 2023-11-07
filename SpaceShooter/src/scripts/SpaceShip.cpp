@@ -11,11 +11,11 @@ void SpaceShip::Update(const DXH::Timer& gt)
 {
     Vector3 up, right, forward;
     pGameObject->GetLocalAxis(up, right, forward);
-    if (InputManager::GetKeyState('W') == KeyState::Pressed)
+    if (InputManager::GetKeyState('W') == KeyState::Pressed || InputManager::GetKeyState('Z') == KeyState::Pressed)
         m_SpaceshipRigibody->Velocity += forward * m_DefaultSpeed;
     if (InputManager::GetKeyState('S') == KeyState::Pressed)
         m_SpaceshipRigibody->Velocity -= forward * m_DefaultSpeed;
-    if (InputManager::GetKeyState('A') == KeyState::Pressed)
+    if (InputManager::GetKeyState('A') == KeyState::Pressed || InputManager::GetKeyState('Q') == KeyState::Pressed)
         m_SpaceshipRigibody->Velocity -= right * m_DefaultSpeed;
     if (InputManager::GetKeyState('D') == KeyState::Pressed)
         m_SpaceshipRigibody->Velocity += right * m_DefaultSpeed;
