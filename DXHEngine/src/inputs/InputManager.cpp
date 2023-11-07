@@ -10,7 +10,8 @@ InputManager::InputManager()
     {
         'W', 'A', 'S', 'D',
         VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
-        VK_XBUTTON1, VK_XBUTTON2, VK_ESCAPE
+        VK_XBUTTON1, VK_XBUTTON2, VK_ESCAPE,
+        VK_SPACE
     };
 
     for (auto key : keys)

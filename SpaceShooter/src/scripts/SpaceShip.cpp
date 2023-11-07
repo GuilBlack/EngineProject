@@ -27,6 +27,8 @@ void SpaceShip::Update(const DXH::Timer& gt)
         m_SpaceshipRigibody->Velocity *= m_SqMaxVelocity;
     }
 
-    if (InputManager::IsKeyPressed(VK_LBUTTON))
+    if (InputManager::GetKeyState(VK_LBUTTON) == KeyState::Pressed)
         Bullet::CreateNShoot(pGameObject->Position(), forward, 3.f);
+    if (InputManager::GetKeyState(VK_SPACE) == KeyState::Pressed)
+        m_SpaceshipRigibody->Velocity = Vector3::Zero;
 }
