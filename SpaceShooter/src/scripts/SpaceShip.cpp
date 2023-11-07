@@ -26,9 +26,13 @@ void SpaceShip::Update(const DXH::Timer& gt)
         m_SpaceshipRigibody->Velocity.Store(DirectX::XMVector3Normalize(loadedVelocity));
         m_SpaceshipRigibody->Velocity *= m_SqMaxVelocity;
     }
-
-    if (InputManager::GetKeyState(VK_LBUTTON) == KeyState::Pressed)
+    m_FireCooldown -= gt.DeltaTime();
+    if (m_FireCooldown <= 0 && InputManager::GetKeyState(VK_LBUTTON) == KeyState::Pressed)
+    {
         Bullet::CreateNShoot(pGameObject->Position(), forward, 3.f);
+        m_FireCooldown = m_FireRate;
+    }
+
     if (InputManager::GetKeyState(VK_SPACE) == KeyState::Pressed)
         m_SpaceshipRigibody->Velocity = Vector3::Zero;
 }

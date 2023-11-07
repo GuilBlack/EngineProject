@@ -11,4 +11,5 @@ public:
 
 private:
     float m_LifeTime = 1.f;
+    float m_BulletSpeed = 15.f;
 };
