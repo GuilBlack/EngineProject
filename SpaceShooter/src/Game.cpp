@@ -69,6 +69,7 @@ void Game::LoadAssets()
     using namespace DXH;
     // Create textures
     RendererResource::CreateTexture("AsteroidTexture", L"res/textures/asteroid.dds");
+    RendererResource::CreateTexture("UI_Texture", L"res/textures/play.dds");
 
     // Create shaders
     RendererResource::CreateShader(
@@ -122,4 +123,11 @@ void Game::LoadAssets()
     pAsteroidMaterial->FresnelR0 = {0.01f, 0.01f, 0.01f};
     pAsteroidMaterial->Roughness = 0.5f;
     pAsteroidMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("AsteroidTexture");
+
+    TextureLightingMaterial* pUIMaterial =
+        dynamic_cast<TextureLightingMaterial*>(RendererResource::GetInstance().GetMaterial("UI_Material"));
+    pUIMaterial->DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+    pUIMaterial->FresnelR0 = { 0.01f, 0.01f, 0.01f };
+    pUIMaterial->Roughness = 0.5f;
+    pUIMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("UI_Texture");
 }
