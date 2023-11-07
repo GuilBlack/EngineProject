@@ -10,7 +10,7 @@ void CameraController::Start()
 
 void CameraController::Update(const DXH::Timer& gt)
 {
-    if (InputManager::IsKeyPressed(VK_ESCAPE))
+    if (InputManager::GetKeyState(VK_ESCAPE) == KeyState::JustPressed)
         InputManager::ToggleCursorLock();
 
     UpdateCameraPosition();

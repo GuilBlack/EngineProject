@@ -25,10 +25,10 @@ InputManager::~InputManager()
 
 void InputManager::Update()
 {
-     // Get mouse position
-     POINT mousePos;
-     GetCursorPos(&mousePos);
-     ScreenToClient(Window::GetInstance().GetWindowHandle(), &mousePos);
+    // Get mouse position
+    POINT mousePos;
+    GetCursorPos(&mousePos);
+    ScreenToClient(Window::GetInstance().GetWindowHandle(), &mousePos);
 
     if (m_CursorLocked)
     {
@@ -54,8 +54,16 @@ void InputManager::Update()
     // Get buttons
     for (auto& [key, state] : m_KeyStates)
     {
-        state = GetAsyncKeyState(key) ? KeyState::Pressed : KeyState::Released;
-        // TODO: Held state
+        switch (state)
+        {
+        case KeyState::JustPressed:
+        case KeyState::Pressed:
+            state = (GetAsyncKeyState(key)) ? KeyState::Pressed : KeyState::JustReleased;
+            break;
+        default:
+            state = (GetAsyncKeyState(key)) ? KeyState::JustPressed : KeyState::Released;
+            break;
+        }
     }
 }
 
