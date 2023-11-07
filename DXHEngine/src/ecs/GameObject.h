@@ -64,6 +64,7 @@ public:
     void Rotate(float x, float y, float z) { Rotate({x,y,z}); }
     Vector3 Scale() const { return m_Scale; }
     void SetScale(Vector3 scale) { m_Scale = scale; }
+    void SetScale(float x, float y, float z) { SetScale({x,y,z}); }
 
     /// <summary>
     /// Gets the matrix describing the transformation from world space to model space.
