@@ -77,6 +77,14 @@ void Game::LoadAssets()
         InputLayoutType::PositionNormalTexcoord
     );
 
+    RendererResource::CreateShader(
+        "UI_Shader",
+        "res/shaders/compiled/ui-shader-vs.cso",
+        "res/shaders/compiled/ui-shader-ps.cso",
+        ShaderProgramType::TextureLightingShader,
+        InputLayoutType::PositionNormalTexcoord
+    );
+
     // Create materials
     RendererResource::CreateMaterial(
         "RedLightingMaterial", 
@@ -91,6 +99,11 @@ void Game::LoadAssets()
     RendererResource::CreateMaterial(
         "AsteroidMaterial", MaterialType::TextureLighting,
         "TextureLightingShader"
+    );
+
+    RendererResource::CreateMaterial(
+        "UI_Material", MaterialType::TextureLighting,
+        "UI_Shader"
     );
 
     TextureLightingMaterial* pAsteroidMaterial =
