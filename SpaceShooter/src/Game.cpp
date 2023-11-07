@@ -30,7 +30,6 @@ void Game::Init(const DXH::Timer& gt)
     m_GameObjects.push_back(pSpaceShip);
     GameObject* pScore = new GameObject();
     pScore->SetPosition(-1.f, 1.f, 0.f);
-    pScore->Add<Mesh>();
     NumberUI& num = pScore->Add<NumberUI>();
     num.InitGeometry(5);
     num.Number = "12345";

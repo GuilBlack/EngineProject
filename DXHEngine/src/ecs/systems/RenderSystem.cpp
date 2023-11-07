@@ -77,7 +77,7 @@ void DXH::RenderSystem::Update(const Timer& gt)
         if (num.Geo == nullptr)
             continue;
 
-        Renderer::GetInstance().DrawNumber(map.at(go), num, *go);
+        Renderer::GetInstance().DrawNumber(num, *go);
     }
 
     Renderer::GetInstance().EndFrame();

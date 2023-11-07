@@ -51,9 +51,18 @@ struct NumberUI : public Component
     uint32_t NumCharacters = 0;
     NumberGeometry* Geo = nullptr;
 
-    ~NumberUI();
-
     NumberUI() = default;
+
+    virtual void OnDetach() override;
+
+    virtual void OnAssign() override
+    {
+        if (!isInitialized)
+        {
+            isInitialized = true;
+            CBVIndex = BaseShader::AddObjectCB();
+        }
+    }
 
     void SetNumber(std::string& number)
     {
@@ -61,6 +70,15 @@ struct NumberUI : public Component
     }
 
     void InitGeometry(uint32_t numCharacters);
+
+    uint32_t GetCBIndex() const
+    {
+        return CBVIndex;
+    }
+
+private:
+    bool isInitialized = false;
+    uint32_t CBVIndex = -1;
 };
 
 }
