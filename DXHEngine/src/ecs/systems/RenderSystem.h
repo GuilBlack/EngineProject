@@ -13,6 +13,5 @@ public:
     ~RenderSystem() {}
 
     virtual void Update(const Timer& gt) override;
-    void Draw(Mesh* mesh, Transform transform);
 };
 }

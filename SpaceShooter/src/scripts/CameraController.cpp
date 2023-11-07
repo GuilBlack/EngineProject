@@ -1,17 +1,23 @@
-#include "Controller.h"
+#include "CameraController.h"
+
 using namespace DXH;
 
-void Controller::Start()
+void CameraController::Start()
 {
-    m_camTransform = &pGameObject->Get<Transform>();
+    m_SpaceshipRigibody = &pGameObject->Get<RigidBody>();
     InputManager::GetInstance().ToggleCursorLock(true);
 }
 
-void Controller::Update(const DXH::Timer& gt)
+void CameraController::Update(const DXH::Timer& gt)
 {
     if (InputManager::IsKeyPressed(VK_ESCAPE))
         InputManager::ToggleCursorLock();
 
+    UpdateCameraPosition();
+}
+
+void CameraController::UpdateCameraPosition()
+{
     Vector2 tMouseDelta = InputManager::GetInstance().GetMouseDelta();
     // Don't forget to put mouseDelta X in rotation Y, and mouseDelta Y in rotation X!
     m_rotation.x -= tMouseDelta.y * m_MouseSensitivity;
@@ -19,5 +25,5 @@ void Controller::Update(const DXH::Timer& gt)
     // Limit the rotation of the camera so it doesn't do a backflip
     if (m_rotation.x > 89.0f) m_rotation.x = 89.0f;
     if (m_rotation.x < -89.0f) m_rotation.x = -89.0f;
-    m_camTransform->Rotation.SetEulerAngles(m_rotation);
+    pGameObject->SetEulerAngles(m_rotation);
 }

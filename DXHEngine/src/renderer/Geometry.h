@@ -14,7 +14,7 @@ struct Geometry
 {
     Geometry() = default;
     Geometry(void* vertices, std::vector<uint16_t> indices, uint32_t vbByteSize, uint32_t vertexByteStride);
-    ~Geometry();
+    virtual ~Geometry();
 
     ID3DBlob* VertexBufferCPU = nullptr;
     ID3DBlob* IndexBufferCPU = nullptr;
@@ -32,7 +32,7 @@ struct Geometry
     /// <summary>
     /// Returns the vertex buffer view
     /// </summary>
-    D3D12_VERTEX_BUFFER_VIEW VertexBufferView() const
+    virtual D3D12_VERTEX_BUFFER_VIEW VertexBufferView() const
     {
         D3D12_VERTEX_BUFFER_VIEW vbv = {};
         vbv.BufferLocation = VertexBufferGPU->GetGPUVirtualAddress();
@@ -83,5 +83,16 @@ struct Geometry
         float radius = MAX(distCenterToMax, distCenterToMin);
         return SphereBoundingVolume(center, radius);
     }
+};
+
+struct NumberGeometry : public Geometry
+{
+    UploadBuffer<PosNormTexcoordVertex> VertexBuffer;
+
+    NumberGeometry() = default;
+    NumberGeometry(uint32_t numCharacters);
+    ~NumberGeometry();
+
+    virtual D3D12_VERTEX_BUFFER_VIEW VertexBufferView() const override;
 };
 }

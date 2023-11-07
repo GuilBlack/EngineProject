@@ -2,7 +2,7 @@
 #include "../ComponentManager.h"
 #include "src/renderer/Renderer.h"
 #include "../components/Render.h"
-#include "../components/Transform.h"
+#include "src/ecs/GameObject.h"
 #include "../components/Camera.h"
 #include "../GameObject.h"
 #include "src/core/Window.h"
@@ -15,7 +15,6 @@ void DXH::RenderSystem::Update(const Timer& gt)
 {
     using namespace DirectX;
     auto& map = ComponentManager<Mesh>::GetInstance().GetUsedComponentsMap();
-    auto& transformMap = ComponentManager<Transform>::GetInstance().GetUsedComponentsMap();
     auto& cameraMap = ComponentManager<Camera>::GetInstance().GetUsedComponentsMap();
     Frustum camFrustum;
     bool camInMap = false;
@@ -24,11 +23,10 @@ void DXH::RenderSystem::Update(const Timer& gt)
         if (pair.second.IsPrimary)
         {
             camFrustum = Frustum::CreateFromCamera(
-                pair.second, 
-                transformMap.at(pair.first), 
+                pair.second,
                 (float)Window::GetInstance().GetWidth() / Window::GetInstance().GetHeight()
             );
-            Renderer::GetInstance().BeginFrame(pair.second, transformMap.at(pair.first), gt);
+            Renderer::GetInstance().BeginFrame(pair.second, gt);
             camInMap = true;
             break;
         }
@@ -51,23 +49,37 @@ void DXH::RenderSystem::Update(const Timer& gt)
             1000.f
         );
         defaultCam.Proj = proj;
-        Renderer::GetInstance().BeginFrame(defaultCam, Transform(), gt);
+        defaultCam.pGameObject = new GameObject();
+        Renderer::GetInstance().BeginFrame(defaultCam, gt);
+        delete defaultCam.pGameObject;
     }
 
     for (auto& pair : map)
     {
         auto go = pair.first;
         auto& mesh = pair.second;
-        auto& transform = transformMap.at(go);
-        if (mesh.Geo->BoundingSphere.IsOnFrustum(camFrustum, transform))
+
+        if (mesh.Geo == nullptr || mesh.Mat == nullptr)
+            continue;
+
+        if (mesh.Geo->BoundingSphere.IsOnFrustum(camFrustum, *go))
         {
-            Renderer::GetInstance().Draw(mesh, transform);
+            Renderer::GetInstance().Draw(mesh, *go);
         }
     }
-    Renderer::GetInstance().EndFrame();
-}
 
-void DXH::RenderSystem::Draw(Mesh* mesh, Transform transform)
-{
+    auto& numMap = ComponentManager<NumberUI>::GetInstance().GetUsedComponentsMap();
+    for (auto& pair : numMap)
+    {
+        auto go = pair.first;
+        auto& num = pair.second;
+
+        if (num.Geo == nullptr)
+            continue;
+
+        Renderer::GetInstance().DrawNumber(map.at(go), num, *go);
+    }
+
+    Renderer::GetInstance().EndFrame();
 }
 }

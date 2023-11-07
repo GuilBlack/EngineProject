@@ -21,10 +21,10 @@
     <ClCompile Include="src\WinMain.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\scripts\Rotator.cpp">
+    <ClCompile Include="src\scripts\CameraController.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\scripts\Controller.cpp">
+    <ClCompile Include="src\scripts\SpaceShip.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
@@ -35,13 +35,16 @@
     <ClInclude Include="src\Game.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\Rotator.h">
+    <ClInclude Include="src\scripts\CameraController.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\scripts\Controller.h">
+    <ClInclude Include="src\scripts\SpaceShip.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\Controller.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

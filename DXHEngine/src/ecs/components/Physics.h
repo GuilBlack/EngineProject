@@ -1,5 +1,7 @@
 #pragma once
 #include "src/ecs/Component.h" // For the Component base class
+#include "DXHMaths.h" // For the Vector3 and DirectXMath types
+#include "src/ecs/GameObject.h" // For the GameObject position
 
 namespace DXH
 {
@@ -28,5 +30,8 @@ struct SphereCollider : Component
     }
     Vector3 Center = Vector3::Zero; // Relative to game object
     float Radius = 0.f;
+
+    // Calculate the position of the collider in world space
+    inline Vector3 WorldPosition() { return pGameObject->Position() + Center; }
 };
 }

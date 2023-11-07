@@ -67,26 +67,26 @@ public:
     /// <summary>
     /// Returns true if the given game object has a component of type T.
     /// </summary>
-    bool HasComponent(const GameObject* pGameObject) const
+    bool HasComponent(GameObject* pGameObject) const
     {
         return m_UsedComponentsMap.contains(pGameObject);
     }
     /// <summary>
     /// Returns the component of the given game object.
     /// </summary>
-    T& GetComponent(const GameObject* pGameObject) const
+    T& GetComponent(GameObject* pGameObject) const
     {
         return m_UsedComponentsMap.at(pGameObject);
     }
     /// <summary>
     /// Returns the map of all game objects that have a component of type T.
     /// </summary>
-    std::unordered_map<const GameObject*, T&>& GetUsedComponentsMap() { return m_UsedComponentsMap; }
+    std::unordered_map<GameObject*, T&>& GetUsedComponentsMap() { return m_UsedComponentsMap; }
 
 private:
     // List of all components of the given type
     T m_Components[MAX_GO_COUNT];
     // All game objects that have a component of T type
-    std::unordered_map<const GameObject*, T&> m_UsedComponentsMap;
+    std::unordered_map<GameObject*, T&> m_UsedComponentsMap;
 };
 }
