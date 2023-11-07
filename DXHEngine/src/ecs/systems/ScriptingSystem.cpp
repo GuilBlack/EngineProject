@@ -6,10 +6,10 @@ namespace DXH
 {
 void ScriptingSystem::Update(const Timer& gt)
 {
-    for (Script* pScript : s_ScriptsToStart)
+    while (s_ScriptsToStart.size() > 0)
     {
-        pScript->Start();
-        s_ScriptsToStart.erase(std::find(s_ScriptsToStart.begin(), s_ScriptsToStart.end(), pScript));
+        s_ScriptsToStart.back()->Start();
+        s_ScriptsToStart.pop_back();
     }
 
     for (Script* pScript : s_Scripts)

@@ -14,7 +14,11 @@ class ScriptingSystem : public System
 public:
 
     // Register a script component to be updated
-    static inline void Register(Script* pScript) { s_Scripts.push_back(pScript); s_ScriptsToStart.push_back(pScript); }
+    static inline void Register(Script* pScript) 
+    { 
+        s_Scripts.push_back(pScript); 
+        s_ScriptsToStart.push_back(pScript); 
+    }
     // Unregister a script component
     static inline void Unregister(Script* pScript) { s_Scripts.erase(std::find(s_Scripts.begin(), s_Scripts.end(), pScript)); }
 
