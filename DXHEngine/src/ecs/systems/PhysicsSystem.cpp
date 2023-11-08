@@ -65,6 +65,10 @@ void PhysicsSystem::ResolveCollisions()
                 // Update the velocities
                 rigidBodyA.Velocity.Store(rbvA + (impulse * normal / rigidBodyA.Mass));
                 rigidBodyB.Velocity.Store(rbvB - (impulse * normal / rigidBodyB.Mass));
+
+                // Call the OnCollision events
+                gameObjectA->OnCollision(gameObjectB);
+                gameObjectB->OnCollision(gameObjectA);
             }
         }
     }

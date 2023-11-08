@@ -28,15 +28,7 @@ public:
     // OnCollision is called when the game object collides with another game object.
     virtual void OnCollision(GameObject* pOther) {}
 
-    void OnAssign() override
-    {
-        Awake();
-        ScriptingSystem::Register(this); // This will call Start() before the next frame
-    }
-    void OnDetach() override
-    {
-        OnDestroy();
-        ScriptingSystem::Unregister(this);
-    }
+    void OnAssign() override;
+    void OnDetach() override;
 };
 }

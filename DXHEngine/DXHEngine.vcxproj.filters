@@ -28,6 +28,7 @@
     <ClCompile Include="vendor\DDSTextureLoader.cpp" />
     <ClCompile Include="src\ecs\systems\GameObjectCollector.cpp" />
     <ClCompile Include="src\ecs\components\Render.cpp" />
+    <ClCompile Include="src\ecs\components\Script.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHCore.h" />

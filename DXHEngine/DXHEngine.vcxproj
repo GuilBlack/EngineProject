@@ -151,6 +151,7 @@
     <ClInclude Include="vendor\DDSTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ecs\components\Script.cpp" />
     <ClCompile Include="src\ecs\systems\GameObjectCollector.cpp" />
     <ClCompile Include="src\ecs\components\Render.cpp" />
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
