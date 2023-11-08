@@ -21,3 +21,8 @@ GameObject* Bullet::CreateNShoot(Vector3 position, Vector3 direction, float life
     bullet->SetScale(0.1f, 0.1f, 0.1f);
     return bullet;
 }
+
+void Bullet::OnCollision(DXH::GameObject* other)
+{
+    pGameObject->Destroy();
+}

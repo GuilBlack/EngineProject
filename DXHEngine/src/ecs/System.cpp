@@ -13,16 +13,16 @@ void System::UpdateAll(const Timer& gt)
 {
     // Systems creation
     static ScriptingSystem scriptingSystem;
-    static GameObjectCollector& gameObjectCollector = GameObjectCollector::GetInstance();
     static PhysicsSystem physicsSystem;
     static CameraSystem cameraSystem;
     static RenderSystem renderSystem;
+    static GameObjectCollector& gameObjectCollector = GameObjectCollector::GetInstance();
 
     // Systems update
     scriptingSystem.Update(gt);
-    gameObjectCollector.Update(gt);
     physicsSystem.Update(gt);
     cameraSystem.Update(gt);
     renderSystem.Update(gt);
+    gameObjectCollector.Update(gt); 
 }
 }
