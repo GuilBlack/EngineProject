@@ -19,6 +19,22 @@ struct RigidBody : Component
     float Mass = 1.0f; // In kilograms
 };
 /// <summary>
+/// Collision layer constants.
+/// </summary>
+namespace CollisionLayer
+{
+const unsigned char None = 0b00000000;
+const unsigned char Default = 0b00000001;
+const unsigned char One = 0b00000010;
+const unsigned char Two = 0b00000100;
+const unsigned char Three = 0b00001000;
+const unsigned char Four = 0b00010000;
+const unsigned char Five = 0b00100000;
+const unsigned char Six = 0b01000000;
+const unsigned char Seven = 0b10000000;
+const unsigned char All = 0b11111111;
+}
+/// <summary>
 /// A sphere collider.
 /// </summary>
 struct SphereCollider : Component
@@ -27,13 +43,13 @@ struct SphereCollider : Component
     {
         Center = Vector3::Zero;
         Radius = 0.f;
-        CollisionLayer = 1;
-        CollisionMask = 1;
+        CollisionLayer = CollisionLayer::Default;
+        CollisionMask = CollisionLayer::Default;
     }
     Vector3 Center = Vector3::Zero; // Relative to game object
     float Radius = 0.f; // In meters
-    unsigned char CollisionLayer = 1; // The layer this collider is on
-    unsigned char CollisionMask = 1; // The layers this collider collides with
+    unsigned char CollisionLayer = CollisionLayer::Default; // The layer this collider is on
+    unsigned char CollisionMask = CollisionLayer::Default; // The layers this collider can collide with
 
     // Calculate the position of the collider in world space
     inline Vector3 WorldPosition() { return pGameObject->Position() + Center; }

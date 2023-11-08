@@ -27,7 +27,10 @@ void Game::Init(const DXH::Timer& gt)
     pSpaceShip->Add<CameraController>();
     pSpaceShip->Add<Camera>().IsPrimary = true;
     pSpaceShip->Add<RigidBody>().Mass = 0.5f;
-    pSpaceShip->Add<SphereCollider>().Radius = 1.f;
+    auto& c = pSpaceShip->Add<SphereCollider>();
+    c.Radius = 1.f;
+    c.CollisionLayer = DXH::CollisionLayer::One;
+    c.CollisionMask = DXH::CollisionLayer::One;
     m_GameObjects.push_back(pSpaceShip);
     GameObject* pScore = new GameObject();
     pScore->Add<Score>();
