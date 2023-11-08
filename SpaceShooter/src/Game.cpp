@@ -2,6 +2,7 @@
 #include "scripts/CameraController.h"
 #include "scripts/SpaceShip.h"
 #include "scripts/Score.h"
+#include "scripts/Asteroid.h"
 #include <DXHCore.h>
 #include <DXHRendering.h>
 using namespace DXH;
@@ -42,7 +43,8 @@ void Game::Init(const DXH::Timer& gt)
     const size_t asteroidCount = 100;
     for (size_t i = 0; i < asteroidCount; i++)
     {
-        GameObject *pAsteroid = GameObject::Create();
+        Asteroid::CreateAsteroid();
+        /*GameObject *pAsteroid = GameObject::Create();
         float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
@@ -52,10 +54,10 @@ void Game::Init(const DXH::Timer& gt)
         randZ = ((float)rand() / (float)RAND_MAX - 0.5f);
         pAsteroid->Add<RigidBody>().Velocity = {randX, randY, randZ};
         pAsteroid->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
-        pAsteroid->Add<SphereCollider>().Radius = 1.f;
+        pAsteroid->Add<SphereCollider>().Radius = 1.f;*/
     }
 
-    GameObject* pCrossHair = GameObject::Create();
+    GameObject* pCrossHair =  GameObject::Create();
     pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
     pCrossHair->SetScale({ 10.f, 10.f, 1.f });
 }
