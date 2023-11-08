@@ -68,13 +68,19 @@ public:
         return m_UploadBuffer;
     }
 
+    void CopyData(uint32_t elementIndex, const BufferType& data)
+    {
+        memcpy(&m_CPUData[elementIndex * m_ElementByteSize], &data, sizeof(BufferType));
+    }
+
     /// <summary>
     /// Copy the data to the constant buffer on the CPU and maps it on the GPU.
     /// </summary>
     /// <param name="elementIndex">Index of the element to copy.</param>
-    void CopyData(int elementIndex, const BufferType& data)
+    template<typename ElementType>
+    void CopyData(uint32_t elementIndexByte, const ElementType& data)
     {
-        memcpy(&m_CPUData[elementIndex * m_ElementByteSize], &data, sizeof(BufferType));
+        memcpy(&m_CPUData[elementIndexByte], &data, sizeof(ElementType));
     }
 
 private:

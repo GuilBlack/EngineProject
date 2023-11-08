@@ -126,7 +126,6 @@
     <ClInclude Include="DXHCore.h" />
     <ClInclude Include="src\inputs\InputManager.h" />
     <ClInclude Include="src\ecs\GameObject.h" />
-    <ClInclude Include="src\ecs\components\Transform.h" />
     <ClInclude Include="src\ecs\systems\PhysicsSystem.h" />
     <ClInclude Include="src\renderer\RenderContext.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
@@ -151,6 +150,7 @@
     <ClInclude Include="vendor\DDSTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ecs\components\Render.cpp" />
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
     <ClCompile Include="src\ecs\systems\RenderSystem.cpp" />

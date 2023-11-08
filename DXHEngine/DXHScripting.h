@@ -10,7 +10,6 @@
 #include "src/ecs/components/Camera.h"
 #include "src/ecs/components/Physics.h"
 #include "src/ecs/components/Render.h"
-#include "src/ecs/components/Transform.h"
 
 // Pre-made scripts templates
 #include "src/ecs/components/scripts/StateMachine.h"

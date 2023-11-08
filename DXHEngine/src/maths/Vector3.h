@@ -47,5 +47,55 @@ struct Vector3 : public DirectX::XMFLOAT3
     static const Vector3 Left; // Shorthand for writing Vector3(-1, 0, 0).
     static const Vector3 Forward; // Shorthand for writing Vector3(0, 0, 1).
     static const Vector3 Backward; // Shorthand for writing Vector3(0, 0, -1).
+
+#pragma region Operators
+    inline Vector3 operator+(const Vector3& v) const
+    {
+        return Vector3(x + v.x, y + v.y, z + v.z);
+    }
+
+    inline void operator+=(const Vector3& v)
+    {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+    }
+
+    inline Vector3 operator-(const Vector3& v) const
+    {
+        return Vector3(x - v.x, y - v.y, z - v.z);
+    }
+
+    inline void operator-=(const Vector3& v)
+    {
+        x -= v.x;
+        y -= v.y;
+        z -= v.z;
+    }
+
+    inline Vector3 operator*(const float& f) const
+    {
+        return Vector3(x * f, y * f, z * f);
+    }
+
+    inline void operator*=(const float& f)
+    {
+        x *= f;
+        y *= f;
+        z *= f;
+    }
+
+    inline Vector3 operator/(const float& f) const
+    {
+        return Vector3(x / f, y / f, z / f);
+    }
+
+    inline void operator/=(const float& f)
+    {
+        x /= f;
+        y /= f;
+        z /= f;
+    }
+#pragma endregion
 };
 }

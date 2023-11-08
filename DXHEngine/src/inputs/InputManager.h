@@ -7,9 +7,10 @@ namespace DXH
 enum class KeyState
 {
     NotUpdatedOnce, // The key has not been updated once yet
+    JustReleased, // First frame released
     Released,
+    JustPressed, // First frame pressed
     Pressed,
-    Held,
 };
 
 class InputManager
@@ -42,15 +43,7 @@ public:
     /// <summary>
     /// Gets the key's current state.
     /// </summary>
-    inline static KeyState GetKeyState(int key) { return GetInstance().m_KeyStates.at(key); }
-    /// <summary>
-    /// Checks if a key if is pressed.
-    /// </summary> 
-    inline static bool IsKeyPressed(int key) { return GetInstance().m_KeyStates.at(key) >= KeyState::Pressed; } // pressed = 2 & held = 3
-    /// <summary>
-    /// Checks if a key if is released.
-    /// </summary>
-    inline static bool IsKeyReleased(int key) { return GetInstance().m_KeyStates.at(key) == KeyState::Released; }
+    inline static KeyState GetKeyState(int key) { return GetInstance().m_KeyStates.at(std::toupper(key)); }
     /// <summary>
     /// Sets the cursor lock and visibility.
     /// </summary>

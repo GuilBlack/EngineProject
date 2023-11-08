@@ -1,5 +1,4 @@
 #include "PhysicsSystem.h"
-#include "src/ecs/components/Transform.h"
 #include "src/ecs/components/Physics.h"
 #include "src/ecs/GameObject.h"
 #include "src/time/Timer.h"
@@ -11,49 +10,35 @@ namespace DXH
 
 void PhysicsSystem::Update(const Timer& gt)
 {
-    Timer t; 
-    t.Tick();
-    ResolveCollisions(gt);
-    t.Tick();
-    VS_DB_OUT_A("Resolve Collision: " << t.DeltaTime() * 1000 << "ms\n");
-    t.Tick();
+    ResolveCollisions();
     UpdateRigidBodies(gt);
-    t.Tick();
-    VS_DB_OUT_A("Update Rigidbodies: " << t.DeltaTime() * 1000 << "ms\n");
 }
 
-// Calculate the position of the collider in world space
-inline XMVECTOR ColliderPosition(Transform& transform, SphereCollider& collider) { return transform.Position.Load() + collider.Center.Load(); }
-// Calculate the dot product between two vectors
-inline float SqDistanceBetween(FXMVECTOR& posA, FXMVECTOR& posB) { return XMVectorGetX(XMVector3LengthSq(posB - posA)); }
 // Calculate the collision normal between two positions, from A to B
-inline XMVECTOR CalculateCollisionNormal(FXMVECTOR& posA, FXMVECTOR& posB) { return XMVector3Normalize(posB - posA); }
+inline XMVECTOR CalculateCollisionNormal(FXMVECTOR posA, FXMVECTOR posB) { return XMVector3Normalize(posB - posA); }
+// Calculate the squared distance between two positions
+inline float SqDistanceBetween(FXMVECTOR posA, FXMVECTOR posB) { return XMVectorGetX(XMVector3LengthSq(posB - posA)); }
 
-void PhysicsSystem::ResolveCollisions(const Timer& gt)
+void PhysicsSystem::ResolveCollisions()
 {
     auto& collMap = ComponentManager<SphereCollider>::GetInstance().GetUsedComponentsMap();
     auto& rigidMap = ComponentManager<RigidBody>::GetInstance().GetUsedComponentsMap();
-    auto& transformMap = ComponentManager<Transform>::GetInstance().GetUsedComponentsMap();
 
     for (auto it = collMap.begin(); it != collMap.end(); it++)
     {
-        const GameObject* gameObjectA = it->first;
-        Transform& transformA = transformMap.at(gameObjectA);
+        GameObject* gameObjectA = it->first;
         SphereCollider& colliderA = it->second;
-        XMVECTOR posA = ColliderPosition(transformA, colliderA);
+        XMVECTOR posA = colliderA.WorldPosition().Load();
 
         for (auto it2 = std::next(it); it2 != collMap.end(); it2++)
         {
-            const GameObject* gameObjectB = it2->first;
-            Transform& transformB = transformMap.at(gameObjectB);
+            GameObject* gameObjectB = it2->first;
 
             // Check for grid position 
-            if (abs(transformA.GridPosition[0] - transformB.GridPosition[0]) >= 2 ||
-                abs(transformA.GridPosition[1] - transformB.GridPosition[1]) >= 2 || 
-                abs(transformA.GridPosition[2] - transformB.GridPosition[2] >= 2)) continue;
+            if (!gameObjectA->IsNear(*gameObjectB)) continue;
 
             SphereCollider& colliderB = it2->second;
-            XMVECTOR posB = ColliderPosition(transformB, colliderB);           
+            XMVECTOR posB = colliderB.WorldPosition().Load();
 
             // Check for collision
             float sqDistance = SqDistanceBetween(posA, posB);
@@ -72,8 +57,8 @@ void PhysicsSystem::ResolveCollisions(const Timer& gt)
                 
                 // Update the positions to does not collides anymore
                 XMVECTOR penetrationOverMasses = (sumRadii - XMVectorGetX(XMVector3Length(posB - posA))) / (rigidBodyA.Mass + rigidBodyB.Mass) * normal;
-                transformA.SetPosition(transformA.Position.Load() - (penetrationOverMasses * rigidBodyA.Mass));
-                transformB.SetPosition(transformB.Position.Load() + (penetrationOverMasses * rigidBodyB.Mass));
+                gameObjectA->SetPosition(gameObjectA->Position().Load() - (penetrationOverMasses * rigidBodyA.Mass));
+                gameObjectB->SetPosition(gameObjectA->Position().Load() + (penetrationOverMasses * rigidBodyB.Mass));
 
                 // Update the velocities
                 rigidBodyA.Velocity.Store(rbvA + (impulse * normal / rigidBodyA.Mass));
@@ -88,8 +73,7 @@ void PhysicsSystem::UpdateRigidBodies(const Timer& gt)
     for (auto& [gameObject, rigidBody] : ComponentManager<RigidBody>::GetInstance().GetUsedComponentsMap())
     {
         // Apply the velocity to the position
-        Transform& transform = gameObject->Get<Transform>();
-        transform.SetPosition(rigidBody.Velocity.Load() * (gt.DeltaTime() * gt.TimeScale()) + transform.Position.Load());
+        gameObject->SetPosition(rigidBody.Velocity.Load() * (gt.DeltaTime() * gt.TimeScale()) + gameObject->Position().Load());
     }
 }
 }

@@ -13,7 +13,7 @@ public:
 
 
 private:
-    void ResolveCollisions(const Timer& gt);
+    void ResolveCollisions();
     void UpdateRigidBodies(const Timer& gt);
 };
 }

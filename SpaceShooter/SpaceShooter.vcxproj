@@ -96,20 +96,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\scripts\Score.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\scripts\Controller.cpp" />
-    <ClCompile Include="src\scripts\Rotator.cpp" />
+    <ClCompile Include="src\scripts\CameraController.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\scripts\SpaceShip.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\scripts\Score.h" />
+    <ClInclude Include="src\scripts\CameraController.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\scripts\Controller.h" />
-    <ClInclude Include="src\scripts\Rotator.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\scripts\SpaceShip.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

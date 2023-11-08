@@ -6,20 +6,29 @@ namespace DXH
 {
 void ScriptingSystem::Update(const Timer& gt)
 {
-    for (Script* pScript : s_ScriptsToStart)
+    while (!s_ScriptsToStart.empty())
     {
-        pScript->Start();
-        s_ScriptsToStart.erase(std::find(s_ScriptsToStart.begin(), s_ScriptsToStart.end(), pScript));
+        Script* s = s_ScriptsToStart.front();
+        s_ScriptsToStart.pop();
+        s->Start();
+        s_Scripts.push_back(s);
     }
 
-    for (Script* pScript : s_Scripts)
+    for (auto& s : s_Scripts)
     {
-        pScript->Update(gt);
+        s->Update(gt);
     }
 
-    for (Script* pScript : s_Scripts)
+    for (auto& s : s_Scripts)
     {
-        pScript->LateUpdate();
+        s->LateUpdate(gt);
+    }
+
+    while (!s_ScriptsToDestroy.empty())
+    {
+        Script* s = s_ScriptsToDestroy.front();
+        s_ScriptsToDestroy.pop();
+        s_Scripts.erase(std::remove(s_Scripts.begin(), s_Scripts.end(), s), s_Scripts.end());
     }
 }
 }

@@ -24,7 +24,7 @@ public:
 
 private:
     std::vector<DXH::GameObject*> m_GameObjects;
-
+    DXH::GameObject* m_Camera = nullptr;
 private:
     Game() = default; // This should not be used
     ~Game() = default; // Use Init / Destroy instead
