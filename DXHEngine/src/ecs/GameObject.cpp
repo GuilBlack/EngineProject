@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "systems/GameObjectCollector.h"
 using namespace DirectX;
 
 namespace DXH
@@ -9,9 +10,25 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
+}
+
+GameObject* GameObject::Create()
+{
+    GameObject* obj = new GameObject();
+    GameObjectCollector::GetInstance().AddGameObject(obj);
+    return obj;
+}
+
+void GameObject::Destroy()
+{
     // Call all the destroy callbacks
     for (auto& callback : m_ReleaseCallbacks)
         callback(this);
+    m_ReleaseCallbacks.clear();
+
+    // Remove from the game object manager
+    GameObjectCollector::GetInstance().RemoveGameObject(this);
+    delete this;
 }
 
 void GameObject::SetPosition(Vector3 position)

@@ -21,19 +21,18 @@ void Game::Init(const DXH::Timer& gt)
     LoadAssets();
 
     // Create SpaceShip
-    GameObject* pSpaceShip = new GameObject();
+    GameObject* pSpaceShip = GameObject::Create();
     pSpaceShip->Add<SpaceShip>();
     pSpaceShip->Add<CameraController>();
     pSpaceShip->Add<Camera>().IsPrimary = true;
     pSpaceShip->Add<RigidBody>().Mass = 0.5f;
     pSpaceShip->Add<SphereCollider>().Radius = 1.f;
-    m_GameObjects.push_back(pSpaceShip);
 
     // Create asteroid field
     const size_t asteroidCount = 100;
     for (size_t i = 0; i < asteroidCount; i++)
     {
-        GameObject* pAsteroid = new GameObject();
+        GameObject* pAsteroid = GameObject::Create();
         float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
@@ -44,16 +43,11 @@ void Game::Init(const DXH::Timer& gt)
         pAsteroid->Add<RigidBody>().Velocity = {randX, randY, randZ};
         pAsteroid->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
         pAsteroid->Add<SphereCollider>().Radius = 1.f;
-        m_GameObjects.push_back(pAsteroid);
     }
 }
 
 void Game::Destroy(const DXH::Timer& gt)
 {
-    for (auto go : m_GameObjects)
-    {
-        delete go;
-    }
 }
 
 void Game::LoadAssets()

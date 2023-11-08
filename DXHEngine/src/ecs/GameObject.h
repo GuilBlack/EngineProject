@@ -11,9 +11,16 @@ class GameObject
 {
     // GameObjects are not copyable, as they are managed by ComponentManagers
     GameObject(const GameObject&) = delete;
-public:
+
+    friend class GameObjectCollector;
     GameObject();
     ~GameObject();
+public:
+
+    // Creates a new game object, will be automatically deleted if you don't destroy it yourself.
+    static GameObject* Create();
+    // Removes all components and destroys the game object.
+    void Destroy();
 
 #pragma region Component Manager Remapping
     /// <summary>

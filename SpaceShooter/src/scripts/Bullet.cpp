@@ -5,13 +5,13 @@ void Bullet::Update(const Timer& gt)
 {
     m_LifeTime -= gt.DeltaTime();
     if (m_LifeTime <= 0.f)
-        delete pGameObject;
+        pGameObject->Destroy();
 }
 
 GameObject* Bullet::CreateNShoot(Vector3 position, Vector3 direction, float lifetime)
 {
     direction = direction.Normalize();
-    GameObject* bullet = new GameObject();
+    GameObject* bullet = GameObject::Create();
     bullet->Add<Bullet>().SetLifeTime(lifetime);
     bullet->Add<RigidBody>().Velocity = direction;
     bullet->Add<SphereCollider>().Radius = 0.1f;
