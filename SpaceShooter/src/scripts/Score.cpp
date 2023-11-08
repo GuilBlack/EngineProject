@@ -12,11 +12,9 @@ void Score::Update(const DXH::Timer& gt)
     {
         DXH::NumberUI& num = pGameObject->Get<DXH::NumberUI>();
         num.Number = std::to_string(m_Score);
-        for (uint32_t i = num.Number.size(); i < num.NumCharacters; i++)
+        for (uint64_t i = num.Number.size(); i < num.NumCharacters; i++)
         {
             num.Number = "0" + num.Number;
         }
-        OutputDebugStringA(num.Number.c_str());
-        OutputDebugStringA("\n");
     }
 }
