@@ -58,6 +58,7 @@ void Game::Init(const DXH::Timer& gt)
 
     GameObject* pCrossHair = new GameObject();
     pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
+    pCrossHair->SetScale({ 15.f, 15.f, 0.f });
     m_GameObjects.push_back(pCrossHair);
 }
 
@@ -74,7 +75,7 @@ void Game::LoadAssets()
     using namespace DXH;
     // Create textures
     RendererResource::CreateTexture("AsteroidTexture", L"res/textures/asteroid.dds");
-    RendererResource::CreateTexture("UI_Texture", L"res/textures/crosshair.dds");
+    RendererResource::CreateTexture("CrossHair_Texture", L"res/textures/crosshair.dds");
 
     // Create shaders
     RendererResource::CreateShader(
@@ -134,5 +135,5 @@ void Game::LoadAssets()
     pUIMaterial->DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
     pUIMaterial->FresnelR0 = { 0.01f, 0.01f, 0.01f };
     pUIMaterial->Roughness = 0.5f;
-    pUIMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("UI_Texture");
+    pUIMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("CrossHair_Texture");
 }

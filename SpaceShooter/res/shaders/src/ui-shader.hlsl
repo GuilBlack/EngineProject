@@ -18,7 +18,9 @@ VertexOutput VS(VertexInput vIn)
 {
     VertexOutput vOut;
     
-    float4 pos = mul(float4(vIn.PosL, 1.0f), gProj); // Transform to world space
+    float4 pos = float4(vIn.PosL, 1.f);
+    pos = mul(float4(pos.xy, 0.0f, 1.0f), gProj);
+    pos = mul(float4(pos.xy, 0.0f, 1.0f), gWorld);
     vOut.PosH = float4(pos.xy, 0.f, 1.0f);
     vOut.TexC = vIn.TexC;
 
