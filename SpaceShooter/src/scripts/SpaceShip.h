@@ -13,7 +13,7 @@ private:
     float m_DefaultSpeed = 1.f;
     float m_SqMaxVelocity = 5.f;
 
-    float m_FireRate = 0.05f;
+    float m_FireRate = 0.3f;
     float m_FireCooldown = 0.f;
     float m_CameraDefaultPOV = 65.f;
     float m_ZoomScale = 0.5f;

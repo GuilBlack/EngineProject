@@ -30,13 +30,20 @@ void SpaceShip::Update(const DXH::Timer& gt)
         m_SpaceshipRigibody->Velocity.Store(DirectX::XMVector3Normalize(loadedVelocity));
         m_SpaceshipRigibody->Velocity *= m_SqMaxVelocity;
     }
+    //Attack
     m_FireCooldown -= gt.DeltaTime();
-    if (m_FireCooldown <= 0 && InputManager::GetKeyState(VK_LBUTTON) == KeyState::Pressed)
+    if (m_FireCooldown <= 0)
     {
-        float sideOffset = m_IsLeft ? -1.f : 1.f;
-        Bullet::CreateNShoot(pGameObject->Position()+ m_Camera->Forward + Vector3(sideOffset, 0.f, 0.f) , m_Camera->Forward, 3.f);
-        m_FireCooldown = m_FireRate;
-        m_IsLeft = !m_IsLeft;
+        if (InputManager::GetKeyState(VK_LBUTTON) == KeyState::Pressed)
+        {
+            Bullet::CreateNShoot(pGameObject->Position() + m_Camera->Forward + Vector3(-1, 0.f, 0.f), m_Camera->Forward, 3.f);
+            m_FireCooldown = m_FireRate;
+        }
+        else if (InputManager::GetKeyState(VK_RBUTTON) == KeyState::Pressed)
+        {
+            Bullet::CreateNShoot(pGameObject->Position() + m_Camera->Forward + Vector3(1, 0.f, 0.f), m_Camera->Forward, 3.f);
+            m_FireCooldown = m_FireRate;
+        }
     }
     //Camera Zoom
     if (InputManager::GetKeyState('C') == KeyState::JustPressed)
