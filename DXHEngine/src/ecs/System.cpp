@@ -23,6 +23,6 @@ void System::UpdateAll(const Timer& gt)
     physicsSystem.Update(gt);
     cameraSystem.Update(gt);
     renderSystem.Update(gt);
-    gameObjectCollector.Update(gt); 
+    gameObjectCollector.Update(gt);
 }
 }

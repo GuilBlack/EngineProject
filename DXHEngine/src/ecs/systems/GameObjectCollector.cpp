@@ -34,6 +34,7 @@ void GameObjectCollector::Update(const Timer& gt)
             callback(gameObject);
         gameObject->m_ReleaseCallbacks.clear();
 
+        delete gameObject;
     }
 }
 }
