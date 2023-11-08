@@ -33,6 +33,7 @@ void RendererResource::Init()
     NumberUIMaterial* pMat = dynamic_cast<NumberUIMaterial*>(m_Materials["NumberUI"]);
     pMat->NumberAtlas = m_Textures["NumberTexture"];
 
+    CreateSquare();
     CreateSphere();
 }
 
@@ -190,25 +191,25 @@ void RendererResource::CreateSquare()
 
     if (m_Geometries.contains("Square"))
         return;
-    std::vector<BasicVertex> vertices =
+    std::vector<PosNormTexcoordVertex> vertices =
     {
-        BasicVertex({ XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT4(Colors::Black) }),
-        BasicVertex({ XMFLOAT3(-1.0f, +1.0f, 0.0f), XMFLOAT4(Colors::Red) }),
-        BasicVertex({ XMFLOAT3(+1.0f, +1.0f, 0.0f), XMFLOAT4(Colors::Yellow) }),
-        BasicVertex({ XMFLOAT3(+1.0f, -1.0f, 0.0f), XMFLOAT4(Colors::Green) }),
+        { Vector3(-1.0f, 1.0f, 0.0f), Vector3::Backward, Vector2(0.0f, 0.0f) },
+        { Vector3(1.0f, 1.0f, 0.0f), Vector3::Backward, Vector2(1.0f, 0.0f) },
+        { Vector3(-1.0f, -1.0f, 0.0f), Vector3::Backward, Vector2(0.0f, 1.0f) },
+        { Vector3(1.0f, -1.0f, 0.0f), Vector3::Backward, Vector2(1.0f, 1.0f) },
     };
     vertices.shrink_to_fit();
 
     std::vector<std::uint16_t> indices =
     {
         0, 1, 2,
-        0, 2, 3,
+        1, 3, 2,
     };
 
     indices.shrink_to_fit();
 
-    uint32_t vbByteSize = (uint32_t)vertices.size() * sizeof(BasicVertex);
-    uint32_t vertexByteStride = sizeof(BasicVertex);
+    uint32_t vbByteSize = (uint32_t)vertices.size() * sizeof(PosNormTexcoordVertex);
+    uint32_t vertexByteStride = sizeof(PosNormTexcoordVertex);
 
     m_Geometries["Square"] = new Geometry(vertices.data(), indices, vbByteSize, vertexByteStride);
     m_Geometries["Square"]->BoundingSphere = Geometry::ComputeBoundingSphere(vertices);

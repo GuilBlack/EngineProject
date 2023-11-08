@@ -54,6 +54,10 @@ void Game::Init(const DXH::Timer& gt)
         pAsteroid->Add<SphereCollider>().Radius = 1.f;
         m_GameObjects.push_back(pAsteroid);
     }
+
+    GameObject* pCrossHair = new GameObject();
+    pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
+    m_GameObjects.push_back(pCrossHair);
 }
 
 void Game::Destroy(const DXH::Timer& gt)
@@ -69,7 +73,7 @@ void Game::LoadAssets()
     using namespace DXH;
     // Create textures
     RendererResource::CreateTexture("AsteroidTexture", L"res/textures/asteroid.dds");
-    RendererResource::CreateTexture("UI_Texture", L"res/textures/play.dds");
+    RendererResource::CreateTexture("UI_Texture", L"res/textures/crosshair.dds");
 
     // Create shaders
     RendererResource::CreateShader(
