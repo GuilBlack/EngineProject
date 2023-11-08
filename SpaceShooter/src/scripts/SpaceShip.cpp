@@ -5,10 +5,12 @@ using namespace DXH;
 void SpaceShip::Start()
 {
     m_SpaceshipRigibody = &pGameObject->Get<RigidBody>();
+    m_Camera = &pGameObject->Get<Camera>();
 }
 
 void SpaceShip::Update(const DXH::Timer& gt)
 {
+    //WSAD for displacement && SPACE to Stop
     Vector3 up, right, forward;
     pGameObject->GetLocalAxis(up, right, forward);
     if (InputManager::GetKeyState('W') == KeyState::Pressed || InputManager::GetKeyState('Z') == KeyState::Pressed)
@@ -19,6 +21,8 @@ void SpaceShip::Update(const DXH::Timer& gt)
         m_SpaceshipRigibody->Velocity -= right * m_DefaultSpeed;
     if (InputManager::GetKeyState('D') == KeyState::Pressed)
         m_SpaceshipRigibody->Velocity += right * m_DefaultSpeed;
+    if (InputManager::GetKeyState(VK_SPACE) == KeyState::Pressed)
+        m_SpaceshipRigibody->Velocity = Vector3::Zero;
 
     auto loadedVelocity = m_SpaceshipRigibody->Velocity.Load();
     if (DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(loadedVelocity)) > m_SqMaxVelocity)
@@ -32,7 +36,9 @@ void SpaceShip::Update(const DXH::Timer& gt)
         Bullet::CreateNShoot(pGameObject->Position(), forward, 3.f);
         m_FireCooldown = m_FireRate;
     }
-
-    if (InputManager::GetKeyState(VK_SPACE) == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity = Vector3::Zero;
+    //Camera Zoom
+    if (InputManager::GetKeyState(VK_RBUTTON) == KeyState::JustPressed)
+        m_Camera->FieldOfView *= m_ZoomScale;
+    if (InputManager::GetKeyState(VK_RBUTTON) == KeyState::JustReleased)
+        m_Camera->FieldOfView = m_CameraDefaultPOV;
 }
