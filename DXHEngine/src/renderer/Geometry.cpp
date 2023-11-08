@@ -58,10 +58,10 @@ NumberGeometry::NumberGeometry(uint32_t numCharacters)
         indices[indexOffset+4] = vertexOffset + 3;
         indices[indexOffset+5] = vertexOffset + 2;
 
-        vertices[vertexOffset+0] = { Vector3(i+0.0f, 0.0f, 0.0f), Vector3::Backward, Vector2(0.0f, 0.0f) };
-        vertices[vertexOffset+1] = { Vector3(i+1.0f, 0.0f, 0.0f), Vector3::Backward, Vector2(uvStride, 0.0f) };
-        vertices[vertexOffset+2] = { Vector3(i+0.0f, -1.0f, 0.0f), Vector3::Backward, Vector2(0.0f, 1.0f) };
-        vertices[vertexOffset+3] = { Vector3(i+1.0f, -1.0f, 0.0f), Vector3::Backward, Vector2(uvStride, 1.0f) };
+        vertices[vertexOffset+0] = { Vector3(i*.78f+0.0f, 0.0f, 0.0f), Vector3::Backward, Vector2(0.0f, 0.0f) };
+        vertices[vertexOffset+1] = { Vector3(i*.78f+.78f, 0.0f, 0.0f), Vector3::Backward, Vector2(uvStride, 0.0f) };
+        vertices[vertexOffset+2] = { Vector3(i*.78f+0.0f, -1.0f, 0.0f), Vector3::Backward, Vector2(0.0f, 1.0f) };
+        vertices[vertexOffset+3] = { Vector3(i*.78f+.78f, -1.0f, 0.0f), Vector3::Backward, Vector2(uvStride, 1.0f) };
     }
 
     vertices.shrink_to_fit();

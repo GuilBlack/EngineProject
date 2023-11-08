@@ -35,7 +35,7 @@ void Renderer::Init()
 
     RendererResource::GetInstance().Init();
     BaseShader::s_ObjectCB = std::vector<UploadBuffer<ObjectConstants>>();
-    BaseShader::s_ObjectCB.reserve(MAX_GO_COUNT);
+    BaseShader::s_ObjectCB.reserve(MAX_GO_COUNT*2);
 }
 
 void Renderer::Destroy()
@@ -85,6 +85,13 @@ void Renderer::BeginFrame(const Camera& camera, const Timer& timer)
     ID3D12DescriptorHeap* descriptorHeaps[] = { m_pSrvHeap };
     m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
+    Matrix orthoProj = XMMatrixOrthographicLH(
+        (float)Window::GetInstance().GetWidth(),
+        (float)Window::GetInstance().GetHeight(),
+        camera.NearPlan,
+        camera.FarPlan
+    );
+
     Matrix view = camera.View.GetMatrixTranspose();
     Matrix proj = camera.Proj.GetMatrixTranspose();
     Matrix viewProj = camera.GetViewProjectionMatrix().GetMatrixTranspose();
@@ -92,7 +99,7 @@ void Renderer::BeginFrame(const Camera& camera, const Timer& timer)
     PassConstants passCB =
     {
         .View = view,
-        .Proj = proj,
+        .OrthoProj = orthoProj,
         .ViewProj = viewProj,
         .EyePosW = camera.pGameObject->Position(),
         .NearZ = camera.NearPlan,
@@ -123,7 +130,7 @@ void Renderer::Draw(Mesh& mesh, GameObject& gameObject)
     mesh.Mat->Shader->Unbind(m_pCommandList);
 }
 
-void Renderer::DrawNumber(Mesh& mesh, NumberUI& numberUI, GameObject& transform)
+void Renderer::DrawNumber(NumberUI& numberUI, GameObject& transform)
 {
     if (numberUI.Number.size() != numberUI.NumCharacters)
         return;
@@ -144,7 +151,7 @@ void Renderer::DrawNumber(Mesh& mesh, NumberUI& numberUI, GameObject& transform)
     }
     Material* pMat = RendererResource::GetMaterial("NumberUI");
     pMat->Shader->Bind(m_pCommandList);
-    pMat->Shader->Draw(geo, mesh.GetCBIndex(), pMat, transform, m_pCommandList);
+    pMat->Shader->Draw(geo, numberUI.GetCBIndex(), pMat, transform, m_pCommandList);
     pMat->Shader->Unbind(m_pCommandList);
 }
 
@@ -372,8 +379,8 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 
     static std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> samplerDescs =
     {
-        pointWrap, pointClamp,
         linearWrap, linearClamp,
+        pointWrap, pointClamp,
         anisotropicWrap, anisotropicClamp
     };
 

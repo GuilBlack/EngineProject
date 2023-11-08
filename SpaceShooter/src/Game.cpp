@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "scripts/CameraController.h"
 #include "scripts/SpaceShip.h"
+#include "scripts/Score.h"
 #include <DXHCore.h>
 #include <DXHRendering.h>
 using namespace DXH;
@@ -29,11 +30,11 @@ void Game::Init(const DXH::Timer& gt)
     pSpaceShip->Add<SphereCollider>().Radius = 1.f;
     m_GameObjects.push_back(pSpaceShip);
     GameObject* pScore = new GameObject();
-    pScore->SetPosition(-1.f, 1.f, 0.f);
-    pScore->Add<Mesh>();
+    pScore->Add<Score>();
+    pScore->SetPosition(-.975f, .95f, 0.f);
     NumberUI& num = pScore->Add<NumberUI>();
     num.InitGeometry(5);
-    num.Number = "12345";
+    num.Number = "00000";
     m_GameObjects.push_back(pScore);
 
 

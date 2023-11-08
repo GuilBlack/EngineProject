@@ -3,12 +3,14 @@
 
 namespace DXH
 {
-    NumberUI::~NumberUI()
-    {
-        DELETE_PTR(Geo);
-    }
 
-    void NumberUI::InitGeometry(uint32_t numCharacters)
+void NumberUI::OnDetach()
+{
+    if (Geo)
+        DELETE_PTR(Geo);
+}
+
+void NumberUI::InitGeometry(uint32_t numCharacters)
 {
     NumCharacters = numCharacters;
     Geo = new NumberGeometry(numCharacters);

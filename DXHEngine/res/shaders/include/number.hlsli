@@ -9,7 +9,7 @@ cbuffer cbPerObject : register(b0)
 cbuffer cbPass : register(b1)
 {
     float4x4 gView;
-    float4x4 gProj;
+    float4x4 gOrthoProj;
     float4x4 gViewProj;
     float3 gEyePosW;
     float gNearZ;
