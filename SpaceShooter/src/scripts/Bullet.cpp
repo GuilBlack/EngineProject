@@ -14,6 +14,7 @@ GameObject* Bullet::CreateNShoot(Vector3 position, Vector3 direction, float life
     GameObject* bullet = GameObject::Create();
     bullet->Add<Bullet>().SetLifeTime(lifetime);
     bullet->Add<RigidBody>().Velocity = direction;
+    bullet->Get<RigidBody>().Velocity *= s_BulletSpeed;
     bullet->Add<SphereCollider>().Radius = 0.1f;
     bullet->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
     bullet->SetPosition(position + direction * 2.f);
