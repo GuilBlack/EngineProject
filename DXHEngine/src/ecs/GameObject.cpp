@@ -21,14 +21,8 @@ GameObject* GameObject::Create()
 
 void GameObject::Destroy()
 {
-    // Call all the destroy callbacks
-    for (auto& callback : m_ReleaseCallbacks)
-        callback(this);
-    m_ReleaseCallbacks.clear();
-
-    // Remove from the game object manager
+    // Schedule the delete to the end of the frame
     GameObjectCollector::GetInstance().RemoveGameObject(this);
-    delete this;
 }
 
 void GameObject::SetPosition(Vector3 position)

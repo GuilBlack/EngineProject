@@ -8,6 +8,7 @@ public:
 
     static DXH::GameObject* CreateNShoot(DXH::Vector3 position, DXH::Vector3 velocity, float lifetime);
     void SetLifeTime(float lifetime) { m_LifeTime = lifetime; }
+    void OnCollision(DXH::GameObject* other) override;
 
 private:
     float m_LifeTime = 1.f;
