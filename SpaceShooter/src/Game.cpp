@@ -31,8 +31,7 @@ void Game::Init(const DXH::Timer& gt)
     c.Radius = 1.f;
     c.CollisionLayer = DXH::CollisionLayer::One;
     c.CollisionMask = DXH::CollisionLayer::One;
-    m_GameObjects.push_back(pSpaceShip);
-    GameObject* pScore = new GameObject();
+    GameObject* pScore = GameObject::Create();
     pScore->Add<Score>();
     pScore->SetPosition(-.975f, .95f, 0.f);
     NumberUI &num = pScore->Add<NumberUI>();
@@ -56,10 +55,9 @@ void Game::Init(const DXH::Timer& gt)
         pAsteroid->Add<SphereCollider>().Radius = 1.f;
     }
 
-    GameObject* pCrossHair = new GameObject();
+    GameObject* pCrossHair = GameObject::Create();
     pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
     pCrossHair->SetScale({ 10.f, 10.f, 1.f });
-    m_GameObjects.push_back(pCrossHair);
 }
 
 void Game::Destroy(const DXH::Timer& gt)
