@@ -14,7 +14,8 @@ enum class ShaderProgramType
     SimpleShader,
     BasicLightingShader,
     TextureLightingShader,
-    NumberUIShader
+    NumberUIShader,
+    ParticleShader
 };
 
 
@@ -57,6 +58,7 @@ struct Geometry;
 class GameObject;
 struct PassConstants;
 struct ObjectConstants;
+struct ParticleData;
 
 /// <summary>
 /// The base class for all shaders, providing common functionality. It includes methods for creating shaders, binding them to a graphics command list, drawing with shaders, unbinding shaders, and updating constant buffers for shaders. It also manages the root signature, input layout, and other shader-related resources.
@@ -241,5 +243,20 @@ public:
     virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl) override;
 
 private:
+};
+
+//////////////////////////////////////////////////////////////////////////
+// ParticleShader ////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleShader : public BaseShader
+{
+public:
+    ParticleShader();
+    ~ParticleShader() {}
+
+    virtual void Bind(ID3D12GraphicsCommandList* cl) override;
+
+    void DrawInstanced(Geometry* geometry, GameObject& gameObject, uint32_t objectCBIndex, UploadBuffer<ParticleConstants>& instanceData, Material* material, ID3D12GraphicsCommandList* cl, uint32_t instanceCount);
 };
 }

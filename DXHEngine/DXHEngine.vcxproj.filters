@@ -27,6 +27,8 @@
     <ClCompile Include="src\maths\Shorthands.cpp" />
     <ClCompile Include="vendor\DDSTextureLoader.cpp" />
     <ClCompile Include="src\ecs\components\Render.cpp" />
+    <ClCompile Include="src\ecs\components\Particles.cpp" />
+    <ClCompile Include="src\ecs\systems\ParticleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHCore.h" />
@@ -70,9 +72,10 @@
     <ClInclude Include="src\ecs\components\scripts\StateMachine.h" />
     <ClInclude Include="src\ecs\components\scripts\BaseState.h" />
     <ClInclude Include="src\maths\Color.h" />
-    <ClInclude Include="res\shaders\include\DXHRendering.h" />
     <ClInclude Include="DXHRendering.h" />
     <ClInclude Include="vendor\DDSTextureLoader.h" />
     <ClInclude Include="src\renderer\Texture.h" />
+    <ClInclude Include="src\ecs\components\Particles.h" />
+    <ClInclude Include="src\ecs\systems\ParticleSystem.h" />
   </ItemGroup>
 </Project>

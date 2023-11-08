@@ -54,6 +54,11 @@ BaseShader* BaseShader::Create(const std::string& vsFilePath, const std::string&
         shader = new NumberUIShader();
         break;
     }
+    case ShaderProgramType::ParticleShader:
+    {
+        shader = new ParticleShader();
+        break;
+    }
     }
     assert(shader && "Wrong shader program type given!");
 
@@ -439,19 +444,6 @@ void NumberUIShader::Bind(ID3D12GraphicsCommandList* cl)
     cl->SetGraphicsRootConstantBufferView(2, m_PassCB.GetResource()->GetGPUVirtualAddress()); // passCB
 }
 
-//void NumberUIShader::Draw(Geometry* geometry, uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl)
-//{
-//    SetCbvSrv(objectCBIndex, material, gameObject, cl);
-//    D3D12_VERTEX_BUFFER_VIEW vbv = geometry->VertexBufferView();
-//    D3D12_INDEX_BUFFER_VIEW ibv = geometry->IndexBufferView();
-//
-//    cl->IASetVertexBuffers(0, 1, &vbv);
-//    cl->IASetIndexBuffer(&ibv);
-//    cl->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-//
-//    cl->DrawIndexedInstanced(geometry->IndexBufferByteSize / sizeof(uint16_t), 1, 0, 0, 0);
-//}
-
 void NumberUIShader::SetCbvSrv(uint32_t objectCBIndex, Material * material, GameObject & gameObject, ID3D12GraphicsCommandList * cl)
 {
     using namespace DirectX;
@@ -467,6 +459,60 @@ void NumberUIShader::SetCbvSrv(uint32_t objectCBIndex, Material * material, Game
     tex.Offset(pMat->NumberAtlas->heapIndex, Renderer::GetRenderContext()->GetDescriptorIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
 
     cl->SetGraphicsRootDescriptorTable(0, tex); // t0
+}
+
+//////////////////////////////////////////////////////////////////////////
+// ParticleShader ////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+ParticleShader::ParticleShader()
+{
+    m_PassCB.CopyData(0, PassConstants());
+    m_Type = ShaderProgramType::ParticleShader;
+
+    CD3DX12_ROOT_PARAMETER rootParameters[3];
+
+    rootParameters[0].InitAsShaderResourceView(0, 1); // t0
+    rootParameters[1].InitAsConstantBufferView(0); // b0
+    rootParameters[2].InitAsConstantBufferView(1); // b1
+
+    auto staticSamplers = Renderer::GetInstance().GetStaticSamplers();
+
+    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+    rootSignatureDesc.Init(
+        3, rootParameters,
+        (uint32_t)staticSamplers.size(), staticSamplers.data(),
+        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+    );
+
+    BuildRootSignature(rootSignatureDesc);
+}
+
+void ParticleShader::Bind(ID3D12GraphicsCommandList* cl)
+{
+    BaseShader::Bind(cl);
+    cl->SetGraphicsRootConstantBufferView(2, m_PassCB.GetResource()->GetGPUVirtualAddress()); // passCB
+}
+
+void ParticleShader::DrawInstanced(Geometry* geometry, GameObject& gameObject, uint32_t objectCBIndex, UploadBuffer<ParticleConstants>& instanceData, Material* material, ID3D12GraphicsCommandList* cl, uint32_t instanceCount)
+{
+    using namespace DirectX;
+
+    ObjectConstants objectCB;
+    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(gameObject.GetModelMatrix()));
+    UpdateObjectCB(objectCB, objectCBIndex);
+    cl->SetGraphicsRootConstantBufferView(1, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // b0
+
+    D3D12_VERTEX_BUFFER_VIEW vbv = geometry->VertexBufferView();
+    D3D12_INDEX_BUFFER_VIEW ibv = geometry->IndexBufferView();
+
+    cl->IASetVertexBuffers(0, 1, &vbv);
+    cl->IASetIndexBuffer(&ibv);
+    cl->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    cl->SetGraphicsRootShaderResourceView(0, instanceData.GetResource()->GetGPUVirtualAddress());
+
+    cl->DrawIndexedInstanced(geometry->IndexBufferByteSize / sizeof(uint16_t), instanceCount, 0, 0, 0);
 }
 
 

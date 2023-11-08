@@ -12,6 +12,7 @@ struct Camera;
 struct Texture;
 class Timer;
 struct NumberUI;
+struct Particles;
 
 class Renderer
 {
@@ -59,6 +60,8 @@ public:
     void Draw(Mesh& mesh, GameObject& transform);
 
     void DrawNumber(NumberUI& number, GameObject& transform);
+
+    void DrawParticles(Particles particles, GameObject& transform);
 
     /// <summary>
     /// End the frame and present the back buffer

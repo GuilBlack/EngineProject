@@ -78,9 +78,9 @@ public:
     /// </summary>
     /// <param name="elementIndex">Index of the element to copy.</param>
     template<typename ElementType>
-    void CopyData(uint32_t elementIndexByte, const ElementType& data)
+    void CopyData(uint32_t elementIndexByte, const ElementType& data, size_t dataSizeByte = sizeof(ElementType))
     {
-        memcpy(&m_CPUData[elementIndexByte], &data, sizeof(ElementType));
+        memcpy(&m_CPUData[elementIndexByte], &data, dataSizeByte);
     }
 
 private:

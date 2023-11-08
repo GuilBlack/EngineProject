@@ -2,6 +2,7 @@
 #include "../ComponentManager.h"
 #include "src/renderer/Renderer.h"
 #include "../components/Render.h"
+#include "../components/Particles.h"
 #include "src/ecs/GameObject.h"
 #include "../components/Camera.h"
 #include "../GameObject.h"
@@ -66,6 +67,19 @@ void DXH::RenderSystem::Update(const Timer& gt)
         {
             Renderer::GetInstance().Draw(mesh, *go);
         }
+    }
+
+    auto& particlesMap = ComponentManager<Particles>::GetInstance().GetUsedComponentsMap();
+
+    for (auto& pair : particlesMap)
+    {
+        auto go = pair.first;
+        auto& particles = pair.second;
+
+        if (particles.Geo == nullptr)
+            continue;
+
+        Renderer::GetInstance().DrawParticles(particles, *go);
     }
 
     auto& numMap = ComponentManager<NumberUI>::GetInstance().GetUsedComponentsMap();
