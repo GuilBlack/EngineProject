@@ -17,4 +17,5 @@ private:
     float m_FireCooldown = 0.f;
     float m_CameraDefaultPOV = 65.f;
     float m_ZoomScale = 0.5f;
+    bool  m_IsLeft = true;
 };

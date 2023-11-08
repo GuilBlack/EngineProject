@@ -33,8 +33,10 @@ void SpaceShip::Update(const DXH::Timer& gt)
     m_FireCooldown -= gt.DeltaTime();
     if (m_FireCooldown <= 0 && InputManager::GetKeyState(VK_LBUTTON) == KeyState::Pressed)
     {
-        Bullet::CreateNShoot(pGameObject->Position(), forward, 3.f);
+        float sideOffset = m_IsLeft ? -1.f : 1.f;
+        Bullet::CreateNShoot(pGameObject->Position() + Vector3(sideOffset, 0.f, 0.f), forward, 3.f);
         m_FireCooldown = m_FireRate;
+        m_IsLeft = !m_IsLeft;
     }
     //Camera Zoom
     if (InputManager::GetKeyState('C') == KeyState::JustPressed)
