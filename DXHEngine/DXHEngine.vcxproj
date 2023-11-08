@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ecs\systems\GameObjectCollector.cpp" />
+    <ClCompile Include="src\ecs\components\Render.cpp" />
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />
     <ClCompile Include="src\ecs\systems\RenderSystem.cpp" />

@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "scripts/CameraController.h"
 #include "scripts/SpaceShip.h"
+#include "scripts/Score.h"
 #include <DXHCore.h>
 #include <DXHRendering.h>
 using namespace DXH;
@@ -28,11 +29,18 @@ void Game::Init(const DXH::Timer& gt)
     pSpaceShip->Add<RigidBody>().Mass = 0.5f;
     pSpaceShip->Add<SphereCollider>().Radius = 1.f;
 
+    GameObject *pScore = GameObject::Create();
+    pScore->Add<Score>();
+    pScore->SetPosition(-.975f, .95f, 0.f);
+    NumberUI &num = pScore->Add<NumberUI>();
+    num.InitGeometry(5);
+    num.Number = "00000";
+
     // Create asteroid field
     const size_t asteroidCount = 100;
     for (size_t i = 0; i < asteroidCount; i++)
     {
-        GameObject* pAsteroid = GameObject::Create();
+        GameObject *pAsteroid = GameObject::Create();
         float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
         float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
@@ -64,6 +72,7 @@ void Game::LoadAssets()
         ShaderProgramType::BasicLightingShader,
         InputLayoutType::PositionNormalTexcoord
     );
+
     RendererResource::CreateShader(
         "TextureLightingShader",
         "res/shaders/compiled/texture-lighting-vs.cso",

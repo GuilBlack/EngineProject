@@ -58,11 +58,28 @@ void DXH::RenderSystem::Update(const Timer& gt)
     {
         auto go = pair.first;
         auto& mesh = pair.second;
+
+        if (mesh.Geo == nullptr || mesh.Mat == nullptr)
+            continue;
+
         if (mesh.Geo->BoundingSphere.IsOnFrustum(camFrustum, *go))
         {
             Renderer::GetInstance().Draw(mesh, *go);
         }
     }
+
+    auto& numMap = ComponentManager<NumberUI>::GetInstance().GetUsedComponentsMap();
+    for (auto& pair : numMap)
+    {
+        auto go = pair.first;
+        auto& num = pair.second;
+
+        if (num.Geo == nullptr)
+            continue;
+
+        Renderer::GetInstance().DrawNumber(num, *go);
+    }
+
     Renderer::GetInstance().EndFrame();
 }
 }

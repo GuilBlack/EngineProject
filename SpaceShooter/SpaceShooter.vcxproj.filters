@@ -32,6 +32,8 @@
     </ClCompile>
     <ClCompile Include="src\scripts\Bullet.cpp">
       <Filter>Fichiers sources</Filter>
+    <ClCompile Include="src\scripts\Score.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +53,8 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\scripts\Bullet.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="src\scripts\Score.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
