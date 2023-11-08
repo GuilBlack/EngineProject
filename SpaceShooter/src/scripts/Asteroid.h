@@ -4,9 +4,8 @@
 class Asteroid : public DXH::Script
 {
 public:
-	void Update(const DXH::Timer& gt) override;
-	static DXH::GameObject* CreateAsteroid();
-	void SetRandomPosition();
-
+    void Update(const DXH::Timer& gt) override;
+    static Asteroid& CreateAsteroid();
+    void SetRandomPosition();
 };
 
