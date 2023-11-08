@@ -37,8 +37,8 @@ void SpaceShip::Update(const DXH::Timer& gt)
         m_FireCooldown = m_FireRate;
     }
     //Camera Zoom
-    if (InputManager::GetKeyState(VK_RBUTTON) == KeyState::JustPressed)
+    if (InputManager::GetKeyState('C') == KeyState::JustPressed)
         m_Camera->FieldOfView *= m_ZoomScale;
-    if (InputManager::GetKeyState(VK_RBUTTON) == KeyState::JustReleased)
+    if (InputManager::GetKeyState('C') == KeyState::JustReleased)
         m_Camera->FieldOfView = m_CameraDefaultPOV;
 }
