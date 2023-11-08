@@ -27,9 +27,12 @@ void Game::Init(const DXH::Timer& gt)
     pSpaceShip->Add<CameraController>();
     pSpaceShip->Add<Camera>().IsPrimary = true;
     pSpaceShip->Add<RigidBody>().Mass = 0.5f;
-    pSpaceShip->Add<SphereCollider>().Radius = 1.f;
-
-    GameObject *pScore = GameObject::Create();
+    auto& c = pSpaceShip->Add<SphereCollider>();
+    c.Radius = 1.f;
+    c.CollisionLayer = DXH::CollisionLayer::One;
+    c.CollisionMask = DXH::CollisionLayer::One;
+    m_GameObjects.push_back(pSpaceShip);
+    GameObject* pScore = new GameObject();
     pScore->Add<Score>();
     pScore->SetPosition(-.975f, .95f, 0.f);
     NumberUI &num = pScore->Add<NumberUI>();
@@ -52,6 +55,11 @@ void Game::Init(const DXH::Timer& gt)
         pAsteroid->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
         pAsteroid->Add<SphereCollider>().Radius = 1.f;
     }
+
+    GameObject* pCrossHair = new GameObject();
+    pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
+    pCrossHair->SetScale({ 10.f, 10.f, 1.f });
+    m_GameObjects.push_back(pCrossHair);
 }
 
 void Game::Destroy(const DXH::Timer& gt)
@@ -63,6 +71,7 @@ void Game::LoadAssets()
     using namespace DXH;
     // Create textures
     RendererResource::CreateTexture("AsteroidTexture", L"res/textures/asteroid.dds");
+    RendererResource::CreateTexture("CrossHair_Texture", L"res/textures/crosshair.dds");
 
     // Create shaders
     RendererResource::CreateShader(
@@ -77,6 +86,14 @@ void Game::LoadAssets()
         "TextureLightingShader",
         "res/shaders/compiled/texture-lighting-vs.cso",
         "res/shaders/compiled/texture-lighting-ps.cso",
+        ShaderProgramType::TextureLightingShader,
+        InputLayoutType::PositionNormalTexcoord
+    );
+
+    RendererResource::CreateShader(
+        "UI_Shader",
+        "res/shaders/compiled/ui-shader-vs.cso",
+        "res/shaders/compiled/ui-shader-ps.cso",
         ShaderProgramType::TextureLightingShader,
         InputLayoutType::PositionNormalTexcoord
     );
@@ -97,10 +114,22 @@ void Game::LoadAssets()
         "TextureLightingShader"
     );
 
+    RendererResource::CreateMaterial(
+        "UI_Material", MaterialType::TextureLighting,
+        "UI_Shader"
+    );
+
     TextureLightingMaterial* pAsteroidMaterial =
         dynamic_cast<TextureLightingMaterial*>(RendererResource::GetInstance().GetMaterial("AsteroidMaterial"));
     pAsteroidMaterial->DiffuseAlbedo = {1.0f, 1.0f, 1.0f, 1.0f};
     pAsteroidMaterial->FresnelR0 = {0.01f, 0.01f, 0.01f};
     pAsteroidMaterial->Roughness = 0.5f;
     pAsteroidMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("AsteroidTexture");
+
+    TextureLightingMaterial* pUIMaterial =
+        dynamic_cast<TextureLightingMaterial*>(RendererResource::GetInstance().GetMaterial("UI_Material"));
+    pUIMaterial->DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+    pUIMaterial->FresnelR0 = { 0.01f, 0.01f, 0.01f };
+    pUIMaterial->Roughness = 0.5f;
+    pUIMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("CrossHair_Texture");
 }
