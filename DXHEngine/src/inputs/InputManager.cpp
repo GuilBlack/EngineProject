@@ -8,7 +8,7 @@ InputManager::InputManager()
     // Set default keys
     std::vector<int> keys =
     {
-        'W', 'A', 'S', 'D',
+        'W', 'Z', 'A', 'Q', 'S', 'D',
         VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
         VK_XBUTTON1, VK_XBUTTON2, VK_ESCAPE,
         VK_SPACE

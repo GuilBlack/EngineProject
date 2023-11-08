@@ -22,7 +22,7 @@ public:
     // Update is called once per frame.
     virtual void Update(const Timer& gt) {}
     // LateUpdate is called after all Update functions have been called.
-    virtual void LateUpdate() {}
+    virtual void LateUpdate(const Timer& gt) {}
     // OnDestroy is called when the script is removed from a game object.
     virtual void OnDestroy() {}
     // OnCollision is called when the game object collides with another game object.
