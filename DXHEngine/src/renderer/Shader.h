@@ -13,7 +13,8 @@ enum class ShaderProgramType
     None,
     SimpleShader,
     BasicLightingShader,
-    TextureLightingShader
+    TextureLightingShader,
+    NumberUIShader
 };
 
 
@@ -204,7 +205,7 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////////
-// TextureLightingShader ///////////////////////////////////////////////////
+// TextureLightingShader /////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
 class TextureLightingShader : public BaseShader
@@ -221,5 +222,24 @@ public:
 
 private:
     std::vector<UploadBuffer<LightingMaterialConstants>> m_MaterialCB;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// NumberUIShader ////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+class NumberUIShader : public BaseShader
+{
+public:
+    NumberUIShader();
+    ~NumberUIShader() {}
+
+    virtual void Bind(ID3D12GraphicsCommandList* cl) override;
+
+    //virtual void Draw(Geometry* geometry, uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl) override;
+
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl) override;
+
+private:
 };
 }

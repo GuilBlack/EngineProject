@@ -10,7 +10,7 @@ namespace DXH
 struct PassConstants
 {
     Matrix View;
-    Matrix Proj;
+    Matrix OrthoProj;
     Matrix ViewProj;
     Vector3 EyePosW;
     float NearZ;

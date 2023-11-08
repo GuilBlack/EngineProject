@@ -35,7 +35,7 @@ void Renderer::Init()
 
     RendererResource::GetInstance().Init();
     BaseShader::s_ObjectCB = std::vector<UploadBuffer<ObjectConstants>>();
-    BaseShader::s_ObjectCB.reserve(MAX_GO_COUNT);
+    BaseShader::s_ObjectCB.reserve(MAX_GO_COUNT*2);
 }
 
 void Renderer::Destroy()
@@ -85,6 +85,13 @@ void Renderer::BeginFrame(const Camera& camera, const Timer& timer)
     ID3D12DescriptorHeap* descriptorHeaps[] = { m_pSrvHeap };
     m_pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
+    Matrix orthoProj = XMMatrixOrthographicLH(
+        (float)Window::GetInstance().GetWidth(),
+        (float)Window::GetInstance().GetHeight(),
+        camera.NearPlan,
+        camera.FarPlan
+    );
+
     Matrix view = camera.View.GetMatrixTranspose();
     Matrix proj = camera.Proj.GetMatrixTranspose();
     Matrix viewProj = camera.GetViewProjectionMatrix().GetMatrixTranspose();
@@ -92,7 +99,7 @@ void Renderer::BeginFrame(const Camera& camera, const Timer& timer)
     PassConstants passCB =
     {
         .View = view,
-        .Proj = proj,
+        .OrthoProj = orthoProj,
         .ViewProj = viewProj,
         .EyePosW = camera.pGameObject->Position(),
         .NearZ = camera.NearPlan,
@@ -121,6 +128,31 @@ void Renderer::Draw(Mesh& mesh, GameObject& gameObject)
     mesh.Mat->Shader->Bind(m_pCommandList);
     mesh.Mat->Shader->Draw(mesh.Geo, mesh.GetCBIndex(), mesh.Mat, gameObject, m_pCommandList);
     mesh.Mat->Shader->Unbind(m_pCommandList);
+}
+
+void Renderer::DrawNumber(NumberUI& numberUI, GameObject& transform)
+{
+    if (numberUI.Number.size() != numberUI.NumCharacters)
+        return;
+    NumberGeometry* geo = numberUI.Geo;
+
+    for (uint32_t i = 0; i < numberUI.NumCharacters; i++)
+    {
+        float uvStride = .1f;
+        float numUV = (numberUI.Number[i] - 48) * uvStride;
+        uint32_t uvByteIndex = i * 4 * sizeof(PosNormTexcoordVertex) + sizeof(PosNormVertex);
+        geo->VertexBuffer.CopyData(uvByteIndex, Vector2(numUV, 0.f));
+        uvByteIndex += sizeof(PosNormTexcoordVertex);
+        geo->VertexBuffer.CopyData(uvByteIndex, Vector2(numUV + uvStride, 0.f));
+        uvByteIndex += sizeof(PosNormTexcoordVertex);
+        geo->VertexBuffer.CopyData(uvByteIndex, Vector2(numUV, 1.f));
+        uvByteIndex += sizeof(PosNormTexcoordVertex);
+        geo->VertexBuffer.CopyData(uvByteIndex, Vector2(numUV + uvStride, 1.f));
+    }
+    Material* pMat = RendererResource::GetMaterial("NumberUI");
+    pMat->Shader->Bind(m_pCommandList);
+    pMat->Shader->Draw(geo, numberUI.GetCBIndex(), pMat, transform, m_pCommandList);
+    pMat->Shader->Unbind(m_pCommandList);
 }
 
 void Renderer::EndFrame()
@@ -285,7 +317,7 @@ Texture* Renderer::CreateTexture2D(const std::wstring& texturePath)
         }
     };
 
-    m_pRenderContext->GetDevice()->CreateShaderResourceView(pTexture->Resource.Get(), &srvDesc, m_pSrvHeap->GetCPUDescriptorHandleForHeapStart());
+    m_pRenderContext->GetDevice()->CreateShaderResourceView(pTexture->Resource.Get(), &srvDesc, hDescriptor);
 
     ASSERT_HRESULT(m_pCommandList->Close());
     ID3D12CommandList* commandLists[] = { m_pCommandList };
@@ -347,8 +379,8 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 
     static std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> samplerDescs =
     {
-        pointWrap, pointClamp,
         linearWrap, linearClamp,
+        pointWrap, pointClamp,
         anisotropicWrap, anisotropicClamp
     };
 
