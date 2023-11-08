@@ -58,6 +58,7 @@ void Game::Init(const DXH::Timer& gt)
 
     GameObject* pCrossHair = new GameObject();
     pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
+    pCrossHair->SetScale({ 10.f, 10.f, 1.f });
     m_GameObjects.push_back(pCrossHair);
 }
 
