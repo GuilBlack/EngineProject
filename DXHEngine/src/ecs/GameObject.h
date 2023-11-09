@@ -15,8 +15,8 @@ class GameObject
     GameObject(const GameObject&) = delete;
 
     friend class GameObjectCollector;
-    GameObject();
-    ~GameObject();
+    GameObject() = default;
+    ~GameObject() = default;
 public:
 
     // Creates a new game object, will be automatically deleted if you don't destroy it yourself.
@@ -106,7 +106,7 @@ public:
         forward = m_Forward;
     }
 
-    void OnCollision(GameObject* other) { m_OnCollisions.Invoke(other); }
+    void OnCollision(GameObject* other);
 
 private:
     typedef void(*ReleaseCallback)(GameObject*);
@@ -123,8 +123,8 @@ private:
     Vector3 m_Right = Vector3::Right;
     Vector3 m_Forward = Vector3::Forward;
 
-    // Collisions callbacks
-    Event<GameObject*> m_OnCollisions = Event<GameObject*>();
+    // Scripts listening for collision events
+    std::vector<Script*> m_Scripts;
     friend void Script::OnAssign();
     friend void Script::OnDetach();
 };

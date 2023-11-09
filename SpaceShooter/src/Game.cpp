@@ -3,6 +3,7 @@
 #include "scripts/SpaceShip.h"
 #include "scripts/Score.h"
 #include "scripts/Asteroid.h"
+#include "scripts/AsteroidSpawner.h"
 #include <DXHCore.h>
 #include <DXHRendering.h>
 #include "ui/Button.h"
@@ -42,33 +43,42 @@ void Game::Init(const DXH::Timer& gt)
 
     // set callback start
     startButton.SetStartCallback([]() {
-        // Create SpaceShip
-        GameObject* pSpaceShip = GameObject::Create();
-        pSpaceShip->Add<SpaceShip>();
-        pSpaceShip->Add<CameraController>();
-        pSpaceShip->Add<Camera>().IsPrimary = true;
-        pSpaceShip->Add<RigidBody>().Mass = 0.5f;
-        auto& c = pSpaceShip->Add<SphereCollider>();
-        c.Radius = 1.f;
-        c.CollisionLayer = DXH::CollisionLayer::One;
-        c.CollisionMask = DXH::CollisionLayer::One;
-        GameObject* pScore = GameObject::Create();
-        pScore->Add<Score>();
-        pScore->SetPosition(-.975f, .95f, 0.f);
-        NumberUI& num = pScore->Add<NumberUI>();
-        num.InitGeometry(5);
-        num.Number = "00000";
+            // Create SpaceShip
+    GameObject* pSpaceShip = GameObject::Create();
+    pSpaceShip->SetPosition(0.f, 0.f, -1.f);
+    pSpaceShip->Add<SpaceShip>();
+    pSpaceShip->Add<CameraController>();
+    pSpaceShip->Add<Camera>().IsPrimary = true;
+    pSpaceShip->Add<RigidBody>().Mass = 0.5f;
+    auto& c = pSpaceShip->Add<SphereCollider>();
+    c.Radius = 1.f;
+    //c.CollisionLayer = DXH::CollisionLayer::One;
+    //c.CollisionMask = DXH::CollisionLayer::One;
 
-        // Create asteroid field
-        const size_t asteroidCount = 100;
-        for (size_t i = 0; i < asteroidCount; i++)
-        {
-            Asteroid::CreateAsteroid(pSpaceShip).SetRandomPosition();
-        }
+    // Create Score
+    GameObject* pScore = GameObject::Create();
+    auto& s = pScore->Add<Score>();
+    s.SetSpaceShip(pSpaceShip);
+    pScore->SetPosition(-.975f, .95f, 0.f);
+    NumberUI &num = pScore->Add<NumberUI>();
+    num.InitGeometry(5);
+    num.Number = "00000";
 
-        GameObject* pCrossHair = GameObject::Create();
-        pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
-        pCrossHair->SetScale({ 10.f, 10.f, 1.f });
+    // Create asteroid field
+    //const size_t asteroidCount = 100;
+    GameObject* asteroidSpawnerObj = GameObject::Create();
+    AsteroidSpawner&  ap = asteroidSpawnerObj->Add<AsteroidSpawner>();
+    ap.SetSpaceShip(pSpaceShip);
+    /*for (size_t i = 0; i < asteroidCount; i++)
+    {
+        Asteroid::CreateAsteroid(pSpaceShip).SetRandomPosition();
+    }*/
+
+
+    //Create crosshair
+    GameObject* pCrossHair =  GameObject::Create();
+    pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
+    pCrossHair->SetScale({ 10.f, 10.f, 1.f });
     });
     //Set exit call back
     exitButton.SetExitCallback([]() {DXHEngine::GetInstance().Shutdown(); });

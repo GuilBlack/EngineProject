@@ -1,12 +1,14 @@
 #include "SpaceShip.h"
 #include "Bullet.h"
 #include "Blaster/Blaster.h"
+#include "Asteroid.h"
 using namespace DXH;
 
 void SpaceShip::Start()
 {
     m_SpaceshipRigibody = &pGameObject->Get<RigidBody>();
     m_Camera = &pGameObject->Get<Camera>();
+    m_IsDead = false;
 
     m_LeftCannon = new Blaster();
     m_RightCannon = new Blaster();
@@ -14,26 +16,25 @@ void SpaceShip::Start()
 
 void SpaceShip::Update(const DXH::Timer& gt)
 {
-    //WSAD for displacement && SPACE to Stop
+    // WASD shift Space to move
     Vector3 up, right, forward;
     pGameObject->GetLocalAxis(up, right, forward);
     if (InputManager::GetKeyState('W') == KeyState::Pressed || InputManager::GetKeyState('Z') == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity += forward * m_DefaultSpeed;
+        m_SpaceshipRigibody->Velocity += forward * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState('S') == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity -= forward * m_DefaultSpeed;
+        m_SpaceshipRigibody->Velocity -= forward * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState('A') == KeyState::Pressed || InputManager::GetKeyState('Q') == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity -= right * m_DefaultSpeed;
+        m_SpaceshipRigibody->Velocity -= right * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState('D') == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity += right * m_DefaultSpeed;
+        m_SpaceshipRigibody->Velocity += right * (m_Propulsion * gt.DeltaTime());
+    if (InputManager::GetKeyState(VK_SHIFT) == KeyState::Pressed)
+        m_SpaceshipRigibody->Velocity -= up * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState(VK_SPACE) == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity = Vector3::Zero;
+        m_SpaceshipRigibody->Velocity += up * (m_Propulsion * gt.DeltaTime());
 
     auto loadedVelocity = m_SpaceshipRigibody->Velocity.Load();
-    if (DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(loadedVelocity)) > m_SqMaxVelocity)
-    {
-        m_SpaceshipRigibody->Velocity.Store(DirectX::XMVector3Normalize(loadedVelocity));
-        m_SpaceshipRigibody->Velocity *= m_SqMaxVelocity;
-    }
+    if (DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(loadedVelocity)) > m_MaxVelocity * m_MaxVelocity)
+        m_SpaceshipRigibody->Velocity = Vector3(m_SpaceshipRigibody->Velocity.Normalize()) * m_MaxVelocity;
 
     if (InputManager::GetKeyState(VK_TAB) == KeyState::JustPressed)
     {
@@ -58,4 +59,13 @@ void SpaceShip::OnDestroy()
 {
     delete m_LeftCannon;
     delete m_RightCannon;
+}
+
+void SpaceShip::OnCollision(DXH::GameObject* other)
+{
+    m_Life--;
+    if (m_Life <= 0)
+    {
+        m_IsDead = true;
+    }
 }

@@ -10,6 +10,7 @@
     <ClCompile Include="src\WinMain.cpp" />
     <ClCompile Include="src\scripts\Asteroid.cpp" />
     <ClCompile Include="src\ui\Button.cpp" />
+    <ClCompile Include="src\scripts\AsteroidSpawner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\scripts\Bullet.h" />
@@ -25,5 +26,6 @@
     <ClInclude Include="src\scripts\Blaster\Sniper.h" />
     <ClInclude Include="src\scripts\Blaster\Weapon.h" />
     <ClInclude Include="src\ui\Button.h" />
+    <ClInclude Include="src\scripts\AsteroidSpawner.h" />
   </ItemGroup>
 </Project>
