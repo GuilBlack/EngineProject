@@ -7,6 +7,7 @@
 #include "src/ecs/GameObject.h"
 #include "src/ecs/components/Render.h"
 #include "src/ecs/components/Camera.h"
+#include "src/ecs/components/Particles.h"
 #include "src/core/Window.h"
 #include "src/time/Timer.h"
 #include "Texture.h"
@@ -153,6 +154,16 @@ void Renderer::DrawNumber(NumberUI& numberUI, GameObject& transform)
     pMat->Shader->Bind(m_pCommandList);
     pMat->Shader->Draw(geo, numberUI.GetCBIndex(), pMat, transform, m_pCommandList);
     pMat->Shader->Unbind(m_pCommandList);
+}
+
+void Renderer::DrawParticles(Particles particles, GameObject& transform)
+{
+    Material* pMat = RendererResource::GetMaterial("Particles");
+    ParticleShader* shader = static_cast<ParticleShader*>(pMat->Shader);
+
+    shader->Bind(m_pCommandList);
+    shader->DrawInstanced(particles.Geo, transform, particles.GetCBIndex(), particles.GetInstanceData(), pMat, m_pCommandList, (uint32_t)particles.ParticlesData.size());
+    shader->Unbind(m_pCommandList);
 }
 
 void Renderer::EndFrame()

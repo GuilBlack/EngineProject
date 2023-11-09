@@ -27,11 +27,15 @@ void RendererResource::Init()
 
     PrivateCreateShader("NumberUI", "../DXHEngine/res/shaders/number-vs.cso", "../DXHEngine/res/shaders/number-ps.cso", ShaderProgramType::NumberUIShader, InputLayoutType::PositionNormalTexcoord);
 
+    PrivateCreateShader("Particles", "../DXHEngine/res/shaders/particles-vs.cso", "../DXHEngine/res/shaders/particles-ps.cso", ShaderProgramType::ParticleShader, InputLayoutType::PositionNormalTexcoord);
+
     PrivateCreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
 
     PrivateCreateMaterial("NumberUI", MaterialType::NumberUI, "NumberUI");
     NumberUIMaterial* pMat = dynamic_cast<NumberUIMaterial*>(m_Materials["NumberUI"]);
     pMat->NumberAtlas = m_Textures["NumberTexture"];
+
+    PrivateCreateMaterial("Particles", MaterialType::ParticleMaterial, "Particles");
 
     CreateSquare();
     CreateSphere();
@@ -108,6 +112,20 @@ void RendererResource::PrivateCreateMaterial(const std::string& materialName, Ma
         }
         Material* pMaterial = new NumberUIMaterial();
         pMaterial->Type = MaterialType::NumberUI;
+        pMaterial->Shader = pShader;
+        m_Materials[materialName] = pMaterial;
+        break;
+    }
+    case MaterialType::ParticleMaterial:
+    {
+        BaseShader* pShader = m_Shaders[shaderName];
+        if (pShader->GetType() != ShaderProgramType::ParticleShader)
+        { // TODO: Add error handling
+            assert(false && "Shader type mismatch");
+            return;
+        }
+        Material* pMaterial = new Material();
+        pMaterial->Type = MaterialType::ParticleMaterial;
         pMaterial->Shader = pShader;
         m_Materials[materialName] = pMaterial;
         break;
