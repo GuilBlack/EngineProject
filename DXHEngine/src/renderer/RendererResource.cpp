@@ -21,13 +21,13 @@ RendererResource::~RendererResource()
 
 void RendererResource::Init()
 {
-    PrivateCreateTexture("NumberTexture", L"../DXHEngine/res/textures/numbers.dds");
+    PrivateCreateTexture("NumberTexture", L"res/textures/numbers.dds");
 
-    PrivateCreateShader("SimpleShader", "../DXHEngine/res/shaders/color-vs.cso", "../DXHEngine/res/shaders/color-ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
+    PrivateCreateShader("SimpleShader", "res/shaders/compiled/color-vs.cso", "res/shaders/compiled/color-ps.cso", ShaderProgramType::SimpleShader, InputLayoutType::PositionColor);
 
-    PrivateCreateShader("NumberUI", "../DXHEngine/res/shaders/number-vs.cso", "../DXHEngine/res/shaders/number-ps.cso", ShaderProgramType::NumberUIShader, InputLayoutType::PositionNormalTexcoord);
+    PrivateCreateShader("NumberUI", "res/shaders/compiled/number-vs.cso", "res/shaders/compiled/number-ps.cso", ShaderProgramType::NumberUIShader, InputLayoutType::PositionNormalTexcoord);
 
-    PrivateCreateShader("Particles", "../DXHEngine/res/shaders/particles-vs.cso", "../DXHEngine/res/shaders/particles-ps.cso", ShaderProgramType::ParticleShader, InputLayoutType::PositionNormalTexcoord);
+    PrivateCreateShader("Particles", "res/shaders/compiled/particles-vs.cso", "res/shaders/compiled/particles-ps.cso", ShaderProgramType::ParticleShader, InputLayoutType::PositionNormalTexcoord);
 
     PrivateCreateMaterial("SimpleMaterial", MaterialType::Simple, "SimpleShader");
 
