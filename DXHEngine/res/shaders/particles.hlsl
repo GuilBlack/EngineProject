@@ -19,8 +19,8 @@ VertexOutput VS(VertexInput vIn, uint instanceID : SV_InstanceID)
 
     ParticleData instData = gParticlesData[instanceID];
 
-    float4 posW = mul(float4(vIn.PosL, 1.0f), gWorld);
-    posW = mul(posW, instData.World);
+    float4 posW = mul(float4(vIn.PosL, 1.0f), instData.World);
+    posW = mul(posW, gWorld);
 
     vOut.PosH = mul(posW, gViewProj);
     
@@ -31,6 +31,6 @@ VertexOutput VS(VertexInput vIn, uint instanceID : SV_InstanceID)
 
 float4 PS(VertexOutput pIn) : SV_TARGET
 {
-    clip(pIn.Color.a - 0.3f);
+    clip(pIn.Color.a - 0.1f);
     return pIn.Color;
 }

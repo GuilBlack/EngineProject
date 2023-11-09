@@ -147,6 +147,9 @@ protected:
 
     UploadBuffer<PassConstants> m_PassCB;
     ShaderProgramType m_Type = ShaderProgramType::None;
+
+    bool m_IsTransparent = false;
+
     static std::vector<UploadBuffer<ObjectConstants>> s_ObjectCB;
 
 protected:
@@ -167,7 +170,7 @@ protected:
     /// <summary>
     /// Builds the pipeline state object for the shader.
     /// </summary>
-    void BuildPSO();
+    virtual void BuildPSO();
 };
 
 //////////////////////////////////////////////////////////////////////////

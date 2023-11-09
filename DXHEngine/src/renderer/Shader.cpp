@@ -231,6 +231,25 @@ void BaseShader::BuildPSO()
     };
     psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
+    if (m_IsTransparent)
+    {
+        D3D12_RENDER_TARGET_BLEND_DESC transparencyBlendDesc =
+        {
+            .BlendEnable = true,
+            .LogicOpEnable = false,
+            .SrcBlend = D3D12_BLEND_SRC_ALPHA,
+            .DestBlend = D3D12_BLEND_INV_SRC_ALPHA,
+            .BlendOp = D3D12_BLEND_OP_ADD,
+            .SrcBlendAlpha = D3D12_BLEND_ONE,
+            .DestBlendAlpha = D3D12_BLEND_ZERO,
+            .BlendOpAlpha = D3D12_BLEND_OP_ADD,
+            .LogicOp = D3D12_LOGIC_OP_NOOP,
+            .RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL
+        };
+        
+        psoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;
+    }
+
     Renderer::GetRenderContext()->CreatePSO(psoDesc, &m_pPSO);
 }
 
@@ -416,6 +435,8 @@ NumberUIShader::NumberUIShader()
 {
     m_PassCB.CopyData(0, PassConstants());
     m_Type = ShaderProgramType::NumberUIShader;
+    m_IsTransparent = true;
+
     CD3DX12_ROOT_PARAMETER rootParameters[3];
 
     CD3DX12_DESCRIPTOR_RANGE texTable;
@@ -469,6 +490,7 @@ ParticleShader::ParticleShader()
 {
     m_PassCB.CopyData(0, PassConstants());
     m_Type = ShaderProgramType::ParticleShader;
+    m_IsTransparent = true;
 
     CD3DX12_ROOT_PARAMETER rootParameters[3];
 
@@ -514,7 +536,5 @@ void ParticleShader::DrawInstanced(Geometry* geometry, GameObject& gameObject, u
 
     cl->DrawIndexedInstanced(geometry->IndexBufferByteSize / sizeof(uint16_t), instanceCount, 0, 0, 0);
 }
-
-
 
 }

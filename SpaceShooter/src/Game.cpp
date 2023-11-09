@@ -23,7 +23,7 @@ void Game::Init(const DXH::Timer& gt)
 
     // Create SpaceShip
     GameObject* pSpaceShip = new GameObject();
-    pSpaceShip->SetPosition(0.f, 0.f, -20.f);
+    pSpaceShip->SetPosition(0.f, 0.f, -60.f);
     pSpaceShip->Add<SpaceShip>();
     pSpaceShip->Add<CameraController>();
     pSpaceShip->Add<Camera>().IsPrimary = true;
@@ -37,11 +37,6 @@ void Game::Init(const DXH::Timer& gt)
     num.InitGeometry(5);
     num.Number = "00000";
     m_GameObjects.push_back(pScore);
-    GameObject* pParticlesObj = new GameObject();
-    pParticlesObj->SetPosition(-20.f, 0.f, 0.f);
-    Particles& pParticles = pParticlesObj->Add<Particles>();
-    pParticles.Geo = RendererResource::GetInstance().GetGeometry("Sphere");
-    m_GameObjects.push_back(pParticlesObj);
 
 
     // Create asteroid field

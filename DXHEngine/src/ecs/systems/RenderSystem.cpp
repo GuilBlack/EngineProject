@@ -70,7 +70,7 @@ void DXH::RenderSystem::Update(const Timer& gt)
     }
 
     auto& particlesMap = ComponentManager<Particles>::GetInstance().GetUsedComponentsMap();
-
+    int count = 0;
     for (auto& pair : particlesMap)
     {
         auto go = pair.first;
@@ -80,6 +80,7 @@ void DXH::RenderSystem::Update(const Timer& gt)
             continue;
 
         Renderer::GetInstance().DrawParticles(particles, *go);
+        ++count;
     }
 
     auto& numMap = ComponentManager<NumberUI>::GetInstance().GetUsedComponentsMap();
