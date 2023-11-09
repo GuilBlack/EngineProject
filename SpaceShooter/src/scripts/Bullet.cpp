@@ -16,7 +16,7 @@ DXH::GameObject* Bullet::CreateNShoot(DXH::Vector3 position, DXH::Vector3 veloci
     bs.m_Damage = damage;
     bullet->Add<RigidBody>().Velocity = velocity;
     bullet->Add<SphereCollider>().Radius = 0.1f;
-    bullet->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
+    bullet->Add<Mesh>().SetGeoAndMatByName("Sphere", "RedLightingMaterial");
     bullet->SetPosition(position + velocity.Normalize());
     bullet->SetScale(0.1f, 0.1f, 0.1f);
     return bullet;
