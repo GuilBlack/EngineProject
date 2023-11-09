@@ -29,10 +29,15 @@ void GameObjectCollector::Update(const Timer& gt)
         m_GameObjectsToRemove.pop();
         m_GameObjects.erase(std::remove(m_GameObjects.begin(), m_GameObjects.end(), gameObject), m_GameObjects.end());
 
+        if (gameObject == nullptr)
+            continue;
+
         // Call all the destroy callbacks
         for (auto& callback : gameObject->m_ReleaseCallbacks)
+        {
             callback(gameObject);
-        gameObject->m_ReleaseCallbacks.clear();
+            callback = nullptr;
+        }
 
         delete gameObject;
     }

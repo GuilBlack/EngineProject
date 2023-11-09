@@ -5,10 +5,9 @@ using namespace DXH;
 void Asteroid::Update(const DXH::Timer& gt)
 {
     auto& rb = pGameObject->Get<RigidBody>();
-    Vector3 currentVelNorm = rb.Velocity.Normalize();
     Vector3 normalize = (m_SpaceShip->Position() - pGameObject->Position()).Normalize();
 
-    rb.Velocity = (currentVelNorm + normalize).Normalize();
+    rb.Velocity = (rb.Velocity + normalize).Normalize();
     rb.Velocity *= m_AsteroidSpeed;
 
     if (!m_IsDestroyed)
