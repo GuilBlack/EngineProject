@@ -52,6 +52,9 @@ public:
 
     void ChangeTimeScale(float timeScale);
 
+    // Stops the main loop
+    void Shutdown();
+
 protected:
     // Updates the application
     virtual void Update(const Timer&) {};
@@ -82,8 +85,6 @@ private:
     // Updates the FPS counter
     void UpdateFpsCounter();
 
-    // Stops the main loop
-    void Shutdown();
     // Waits for any operations to finish and destroy the window
     void Cleanup();
 };

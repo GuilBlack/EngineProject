@@ -98,4 +98,16 @@ void InputManager::ToggleCursorLock(bool locked)
     im.m_MousePosition = Vector2::Zero;
     ShowCursor(!locked);
 }
+
+Vector2 InputManager::NormalizeCoordinates(Vector2 position, float screenWidth, float screebHeight)
+{
+    Vector2 tmp = position;
+    tmp.x = (tmp.x / (screenWidth * 0.5f)) - 1.f;
+    tmp.y = 1.f - (tmp.y / (screebHeight * 0.5f));
+    return tmp;
+}
+Vector2 InputManager::GetNormalizeCoord()
+{
+    return NormalizeCoordinates(GetMousePosition(),Window::GetInstance().GetWidth(), Window::GetInstance().GetHeight());
+}
 }

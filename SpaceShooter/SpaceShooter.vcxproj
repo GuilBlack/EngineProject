@@ -106,6 +106,7 @@
     <ClCompile Include="src\scripts\CameraController.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\scripts\SpaceShip.cpp" />
+    <ClCompile Include="src\ui\Button.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -115,12 +116,16 @@
     <ClInclude Include="src\scripts\Blaster\Sniper.h" />
     <ClInclude Include="src\scripts\Blaster\MachineGun.h" />
     <ClInclude Include="src\scripts\Blaster\Weapon.h" />
+    <ClInclude Include="src\ui\Button.h" />
     <ClInclude Include="src\scripts\Score.h" />
     <ClInclude Include="src\scripts\CameraController.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\scripts\Controller.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scripts\SpaceShip.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\menu.dds" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
