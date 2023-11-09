@@ -52,7 +52,8 @@ public:
     /// Toggle the cursor lock and visibility.
     /// </summary>
     inline static void ToggleCursorLock() { ToggleCursorLock(!GetInstance().m_CursorLocked); }
-
+    static Vector2 NormalizeCoordinates(Vector2 position, float screenWidth, float screebHeight);
+    static Vector2 GetNormalizeCoord();
 private:
     Vector2 m_MouseDelta = Vector2::Zero;
     Vector2 m_MousePosition = Vector2::Zero;

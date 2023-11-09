@@ -6,7 +6,7 @@ namespace DXH
 {
 void Script::OnAssign()
 {
-    pGameObject->m_OnCollisions += std::bind(&Script::OnCollision, this, std::placeholders::_1);
+    pGameObject->m_Scripts.push_back(this);
     Awake();
     ScriptingSystem::Register(this); // This will call Start() before the next frame
 }
@@ -14,6 +14,7 @@ void Script::OnAssign()
 void Script::OnDetach()
 {
     OnDestroy();
+    pGameObject->m_Scripts.erase(std::find(pGameObject->m_Scripts.begin(), pGameObject->m_Scripts.end(), this));
     ScriptingSystem::Unregister(this);
 }
 }

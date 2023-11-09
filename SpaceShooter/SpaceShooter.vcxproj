@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\scripts\AsteroidSpawner.cpp" />
     <ClCompile Include="src\scripts\Asteroid.cpp" />
     <ClCompile Include="src\scripts\Score.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -106,11 +107,18 @@
     <ClCompile Include="src\scripts\CameraController.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\scripts\SpaceShip.cpp" />
+    <ClCompile Include="src\ui\Button.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\scripts\AsteroidSpawner.h" />
     <ClInclude Include="src\scripts\Asteroid.h" />
     <ClInclude Include="src\scripts\Bullet.h" />
+    <ClInclude Include="src\scripts\Blaster\Blaster.h" />
+    <ClInclude Include="src\scripts\Blaster\Sniper.h" />
+    <ClInclude Include="src\scripts\Blaster\MachineGun.h" />
+    <ClInclude Include="src\scripts\Blaster\Weapon.h" />
+    <ClInclude Include="src\ui\Button.h" />
     <ClInclude Include="src\scripts\Score.h" />
     <ClInclude Include="src\scripts\CameraController.h" />
     <ClInclude Include="src\pch.h" />

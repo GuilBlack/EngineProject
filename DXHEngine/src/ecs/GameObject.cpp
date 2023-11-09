@@ -4,14 +4,6 @@ using namespace DirectX;
 
 namespace DXH
 {
-GameObject::GameObject()
-{
-}
-
-GameObject::~GameObject()
-{
-}
-
 GameObject* GameObject::Create()
 {
     GameObject* obj = new GameObject();
@@ -67,5 +59,13 @@ void GameObject::Rotate(Vector3 rotation)
     Quaternion q;
     q.SetEulerAngles(rotation);
     Rotate(q);
+}
+
+void GameObject::OnCollision(GameObject* other)
+{
+    for (auto& c : m_Scripts)
+    {
+        c->OnCollision(other);
+	}
 }
 }

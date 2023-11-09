@@ -20,7 +20,7 @@ struct Vector3 : public DirectX::XMFLOAT3
     /// <summary>
     /// Stores the given XMVECTOR in this Vector3.
     /// </summary>
-    inline void Store(DirectX::FXMVECTOR v)
+    inline void XM_CALLCONV Store(DirectX::FXMVECTOR v)
     {
         XMStoreFloat3(this, v);
     }
@@ -37,6 +37,11 @@ struct Vector3 : public DirectX::XMFLOAT3
     inline static float Dot(Vector3 v1, Vector3 v2)
     {
         return DirectX::XMVectorGetX(DirectX::XMVector3Dot(v1.Load(), v2.Load()));
+    }
+
+    inline static Vector3 Cross(Vector3 v1, Vector3 v2)
+    {
+        return Vector3(DirectX::XMVector3Cross(v1.Load(), v2.Load()));
     }
 
     static const Vector3 Zero; // Shorthand for writing Vector3(0, 0, 0).
