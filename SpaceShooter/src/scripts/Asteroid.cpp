@@ -1,9 +1,13 @@
 #include "Asteroid.h"
 #include "DXHRendering.h"
+#include "SpaceShip.h"
 using namespace DXH;
 
 void Asteroid::Update(const DXH::Timer& gt)
 {
+    if (m_SpaceShip->Get<SpaceShip>().IsSpaceShipDead())
+        OnAsteroidDestroy();
+
     auto& rb = pGameObject->Get<RigidBody>();
     Vector3 currentVelNorm = rb.Velocity.Normalize();
     Vector3 normalize = (m_SpaceShip->Position() - pGameObject->Position()).Normalize();
@@ -19,6 +23,7 @@ void Asteroid::Update(const DXH::Timer& gt)
     pGameObject->Remove<SphereCollider>();
 	if (m_TimeToLive > 6.f)
         OnAsteroidDestroy();
+
 }
 
 void Asteroid::OnAsteroidDestroy()

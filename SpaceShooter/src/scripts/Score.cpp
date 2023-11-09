@@ -1,7 +1,12 @@
 #include "Score.h"
+#include "SpaceShip.h"
 
 void Score::Update(const DXH::Timer& gt)
 {
+    if (m_SpaceShip->Get<SpaceShip>().IsSpaceShipDead())
+    {
+		m_Score = 0;
+    }
     m_DeltaTime += gt.DeltaTime();
     if (m_DeltaTime >= 1.f)
     {
