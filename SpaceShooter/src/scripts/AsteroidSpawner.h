@@ -7,6 +7,7 @@ public:
 	void Update(const DXH::Timer& gt) override;
 	void CreateAsteroid(DXH::Vector3& point);
 	void SetSpaceShip(DXH::GameObject* spaceShip) { m_SpaceShip = spaceShip; }
+	void ResetAsteroidSpawner();
 
 private:
 	float m_Radius = 20.f; 

@@ -1,9 +1,13 @@
 #include "AsteroidSpawner.h"
 #include "Asteroid.h"
+#include "SpaceShip.h"
 
 using namespace DXH;
 void AsteroidSpawner::Update(const DXH::Timer& gt)
 {
+    if(m_SpaceShip->Get<SpaceShip>().IsSpaceShipDead() == true)
+		ResetAsteroidSpawner();
+
     if(m_SpaceShip == nullptr)
 		return;
 
@@ -44,4 +48,10 @@ void AsteroidSpawner::CreateAsteroid(Vector3& point)
     rb.Velocity = normalize * m_AsteroidSpeed;
     a.SetSpaceShip(m_SpaceShip);
     a.SetAsteroidSpeed(m_AsteroidSpeed);
+}
+
+void AsteroidSpawner::ResetAsteroidSpawner()
+{
+    m_SpawnRate = 4.f; 
+    m_DeltaTime = 0.f;
 }

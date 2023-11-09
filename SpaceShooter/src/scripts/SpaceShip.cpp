@@ -1,12 +1,14 @@
 #include "SpaceShip.h"
 #include "Bullet.h"
 #include "Blaster/Blaster.h"
+#include "Asteroid.h"
 using namespace DXH;
 
 void SpaceShip::Start()
 {
     m_SpaceshipRigibody = &pGameObject->Get<RigidBody>();
     m_Camera = &pGameObject->Get<Camera>();
+    m_IsDead = false;
 
     m_LeftCannon = new Blaster();
     m_RightCannon = new Blaster();
@@ -57,4 +59,13 @@ void SpaceShip::OnDestroy()
 {
     delete m_LeftCannon;
     delete m_RightCannon;
+}
+
+void SpaceShip::OnCollision(DXH::GameObject* other)
+{
+    m_Life--;
+    if (m_Life <= 0)
+    {
+        m_IsDead = true;
+    }
 }

@@ -9,6 +9,9 @@ public:
     void Start() override;
     void Update(const DXH::Timer& gt) override;
     void OnDestroy() override;
+    void GetPlayerLife(int& life) { life = m_Life; }
+    void OnCollision(DXH::GameObject* other) override;
+    bool IsSpaceShipDead() { return m_IsDead; }
 
 private:
     DXH::RigidBody* m_SpaceshipRigibody;
@@ -21,4 +24,7 @@ private:
 
     Blaster* m_LeftCannon;
     Blaster* m_RightCannon;
+
+    int m_Life = 3;
+    bool m_IsDead = false;
 };

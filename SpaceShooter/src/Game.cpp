@@ -32,12 +32,13 @@ void Game::Init(const DXH::Timer& gt)
     pSpaceShip->Add<RigidBody>().Mass = 0.5f;
     auto& c = pSpaceShip->Add<SphereCollider>();
     c.Radius = 1.f;
-    c.CollisionLayer = DXH::CollisionLayer::One;
-    c.CollisionMask = DXH::CollisionLayer::One;
+    //c.CollisionLayer = DXH::CollisionLayer::One;
+    //c.CollisionMask = DXH::CollisionLayer::One;
 
     // Create Score
     GameObject* pScore = GameObject::Create();
-    pScore->Add<Score>();
+    auto& s = pScore->Add<Score>();
+    s.SetSpaceShip(pSpaceShip);
     pScore->SetPosition(-.975f, .95f, 0.f);
     NumberUI &num = pScore->Add<NumberUI>();
     num.InitGeometry(5);
