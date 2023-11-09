@@ -1,11 +1,14 @@
 #pragma once
 #include <DXHScripting.h>
 
+class Blaster;
+
 class SpaceShip : public DXH::Script
 {
 public:
     void Start() override;
     void Update(const DXH::Timer& gt) override;
+    void OnDestroy() override;
 
 private:
     DXH::RigidBody* m_SpaceshipRigibody;
@@ -13,9 +16,9 @@ private:
     float m_DefaultSpeed = 1.f;
     float m_SqMaxVelocity = 5.f;
 
-    float m_FireRate = 0.3f;
-    float m_FireCooldown = 0.f;
     float m_CameraDefaultPOV = 65.f;
     float m_ZoomScale = 0.5f;
-    bool  m_IsLeft = true;
+
+    Blaster* m_LeftCannon;
+    Blaster* m_RightCannon;
 };

@@ -9,7 +9,7 @@ class BaseState;
 /// <summary>
 /// A state machine is a script that can change behaviour at runtime.
 /// </summary>
-class StateMachine : private Script
+class StateMachine
 {
 public:
     StateMachine(BaseState* currentState)
@@ -37,7 +37,8 @@ public:
         m_currentState->EnterState();
     }
 
-private:
+protected:
+    StateMachine() = default;
     BaseState* m_currentState = nullptr;
 };
 }

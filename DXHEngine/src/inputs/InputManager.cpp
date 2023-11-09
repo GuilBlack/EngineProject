@@ -11,7 +11,7 @@ InputManager::InputManager()
         'W', 'Z', 'A', 'Q', 'S', 'D', 'C',
         VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
         VK_XBUTTON1, VK_XBUTTON2, VK_ESCAPE,
-        VK_SPACE
+        VK_SPACE, VK_TAB
     };
 
     for (auto key : keys)

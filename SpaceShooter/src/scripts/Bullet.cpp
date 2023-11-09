@@ -8,16 +8,16 @@ void Bullet::Update(const Timer& gt)
         pGameObject->Destroy();
 }
 
-GameObject* Bullet::CreateNShoot(Vector3 position, Vector3 direction, float lifetime)
+DXH::GameObject* Bullet::CreateNShoot(DXH::Vector3 position, DXH::Vector3 velocity, float lifetime, float damage)
 {
-    direction = direction.Normalize();
     GameObject* bullet = GameObject::Create();
-    bullet->Add<Bullet>().SetLifeTime(lifetime);
-    bullet->Add<RigidBody>().Velocity = direction;
-    bullet->Get<RigidBody>().Velocity *= s_BulletSpeed;
+    auto& bs = bullet->Add<Bullet>();
+    bs.SetLifeTime(lifetime);
+    bs.m_Damage = damage;
+    bullet->Add<RigidBody>().Velocity = velocity;
     bullet->Add<SphereCollider>().Radius = 0.1f;
     bullet->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
-    bullet->SetPosition(position + direction * 2.f);
+    bullet->SetPosition(position + velocity.Normalize());
     bullet->SetScale(0.1f, 0.1f, 0.1f);
     return bullet;
 }

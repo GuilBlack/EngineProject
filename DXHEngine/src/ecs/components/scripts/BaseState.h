@@ -8,8 +8,7 @@ namespace DXH
 class BaseState
 {
 public:
-    // pure virtual destructor to make this class abstract
-    virtual ~BaseState() = 0;
+    virtual ~BaseState() {};
     /// <summary>
     /// Called when the state is entered.
     /// </summary>

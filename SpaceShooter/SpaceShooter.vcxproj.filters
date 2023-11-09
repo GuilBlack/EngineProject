@@ -19,5 +19,9 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scripts\SpaceShip.h" />
     <ClInclude Include="src\scripts\Asteroid.h" />
+    <ClInclude Include="src\scripts\Blaster\Blaster.h" />
+    <ClInclude Include="src\scripts\Blaster\MachineGun.h" />
+    <ClInclude Include="src\scripts\Blaster\Sniper.h" />
+    <ClInclude Include="src\scripts\Blaster\Weapon.h" />
   </ItemGroup>
 </Project>

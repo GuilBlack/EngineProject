@@ -1,11 +1,15 @@
 #include "SpaceShip.h"
 #include "Bullet.h"
+#include "Blaster/Blaster.h"
 using namespace DXH;
 
 void SpaceShip::Start()
 {
     m_SpaceshipRigibody = &pGameObject->Get<RigidBody>();
     m_Camera = &pGameObject->Get<Camera>();
+
+    m_LeftCannon = new Blaster();
+    m_RightCannon = new Blaster();
 }
 
 void SpaceShip::Update(const DXH::Timer& gt)
@@ -30,24 +34,28 @@ void SpaceShip::Update(const DXH::Timer& gt)
         m_SpaceshipRigibody->Velocity.Store(DirectX::XMVector3Normalize(loadedVelocity));
         m_SpaceshipRigibody->Velocity *= m_SqMaxVelocity;
     }
-    //Attack
-    m_FireCooldown -= gt.DeltaTime();
-    if (m_FireCooldown <= 0)
+
+    if (InputManager::GetKeyState(VK_TAB) == KeyState::JustPressed)
     {
-        if (InputManager::GetKeyState(VK_LBUTTON) == KeyState::Pressed)
-        {
-            Bullet::CreateNShoot(pGameObject->Position() + m_Camera->Forward + Vector3(-1, 0.f, 0.f), m_Camera->Forward, 3.f);
-            m_FireCooldown = m_FireRate;
-        }
-        else if (InputManager::GetKeyState(VK_RBUTTON) == KeyState::Pressed)
-        {
-            Bullet::CreateNShoot(pGameObject->Position() + m_Camera->Forward + Vector3(1, 0.f, 0.f), m_Camera->Forward, 3.f);
-            m_FireCooldown = m_FireRate;
-        }
+        m_LeftCannon->SwitchWeapon();
+        m_RightCannon->SwitchWeapon();
     }
-    //Camera Zoom
-    if (InputManager::GetKeyState('C') == KeyState::JustPressed)
-        m_Camera->FieldOfView *= m_ZoomScale;
-    if (InputManager::GetKeyState('C') == KeyState::JustReleased)
-        m_Camera->FieldOfView = m_CameraDefaultPOV;
+
+    // Attack
+    m_LeftCannon->Update(gt);
+    if (InputManager::GetKeyState(VK_LBUTTON) == KeyState::Pressed)
+        m_LeftCannon->Shoot(pGameObject->Position() + Vector3::Cross(m_Camera->Forward, up), m_Camera->Forward);
+
+    m_RightCannon->Update(gt);
+    if (InputManager::GetKeyState(VK_RBUTTON) == KeyState::Pressed)
+        m_RightCannon->Shoot(pGameObject->Position() + Vector3::Cross(up, m_Camera->Forward), m_Camera->Forward);
+
+    // Camera Zoom
+    m_Camera->FieldOfView = InputManager::GetKeyState('C') == KeyState::Pressed ? m_CameraDefaultPOV * m_ZoomScale : m_CameraDefaultPOV;
+}
+
+void SpaceShip::OnDestroy()
+{
+    delete m_LeftCannon;
+    delete m_RightCannon;
 }

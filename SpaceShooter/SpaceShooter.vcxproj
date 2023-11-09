@@ -111,6 +111,10 @@
   <ItemGroup>
     <ClInclude Include="src\scripts\Asteroid.h" />
     <ClInclude Include="src\scripts\Bullet.h" />
+    <ClInclude Include="src\scripts\Blaster\Blaster.h" />
+    <ClInclude Include="src\scripts\Blaster\Sniper.h" />
+    <ClInclude Include="src\scripts\Blaster\MachineGun.h" />
+    <ClInclude Include="src\scripts\Blaster\Weapon.h" />
     <ClInclude Include="src\scripts\Score.h" />
     <ClInclude Include="src\scripts\CameraController.h" />
     <ClInclude Include="src\pch.h" />
