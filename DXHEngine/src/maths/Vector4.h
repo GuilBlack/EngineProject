@@ -20,7 +20,7 @@ struct Vector4 : public DirectX::XMFLOAT4
     /// <summary>
     /// Stores the given XMVECTOR in this Vector3.
     /// </summary>
-    inline void Store(DirectX::FXMVECTOR v)
+    inline void XM_CALLCONV Store(DirectX::FXMVECTOR v)
     {
         XMStoreFloat4(this, v);
     }

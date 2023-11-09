@@ -4,14 +4,6 @@ using namespace DirectX;
 
 namespace DXH
 {
-GameObject::GameObject()
-{
-}
-
-GameObject::~GameObject()
-{
-}
-
 GameObject* GameObject::Create()
 {
     GameObject* obj = new GameObject();

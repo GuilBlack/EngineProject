@@ -16,7 +16,7 @@ void SpaceShip::Start()
 
 void SpaceShip::Update(const DXH::Timer& gt)
 {
-    //WSAD for displacement && SPACE to Stop
+    // WASD shift Space to move
     Vector3 up, right, forward;
     pGameObject->GetLocalAxis(up, right, forward);
     if (InputManager::GetKeyState('W') == KeyState::Pressed || InputManager::GetKeyState('Z') == KeyState::Pressed)
@@ -27,15 +27,14 @@ void SpaceShip::Update(const DXH::Timer& gt)
         m_SpaceshipRigibody->Velocity -= right * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState('D') == KeyState::Pressed)
         m_SpaceshipRigibody->Velocity += right * (m_Propulsion * gt.DeltaTime());
+    if (InputManager::GetKeyState(VK_SHIFT) == KeyState::Pressed)
+        m_SpaceshipRigibody->Velocity -= up * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState(VK_SPACE) == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity -= Vector3(m_SpaceshipRigibody->Velocity.Normalize()) * (m_Propulsion * gt.DeltaTime());
+        m_SpaceshipRigibody->Velocity += up * (m_Propulsion * gt.DeltaTime());
 
     auto loadedVelocity = m_SpaceshipRigibody->Velocity.Load();
     if (DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(loadedVelocity)) > m_MaxVelocity * m_MaxVelocity)
-    {
-        m_SpaceshipRigibody->Velocity.Store(DirectX::XMVector3Normalize(loadedVelocity));
-        m_SpaceshipRigibody->Velocity *= m_MaxVelocity;
-    }
+        m_SpaceshipRigibody->Velocity = Vector3(m_SpaceshipRigibody->Velocity.Normalize()) * m_MaxVelocity;
 
     if (InputManager::GetKeyState(VK_TAB) == KeyState::JustPressed)
     {

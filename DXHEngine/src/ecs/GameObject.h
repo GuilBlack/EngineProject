@@ -15,8 +15,8 @@ class GameObject
     GameObject(const GameObject&) = delete;
 
     friend class GameObjectCollector;
-    GameObject();
-    ~GameObject();
+    GameObject() = default;
+    ~GameObject() = default;
 public:
 
     // Creates a new game object, will be automatically deleted if you don't destroy it yourself.

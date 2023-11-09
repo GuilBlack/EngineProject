@@ -15,9 +15,9 @@ void PhysicsSystem::Update(const Timer& gt)
 }
 
 // Calculate the collision normal between two positions, from A to B
-inline XMVECTOR CalculateCollisionNormal(FXMVECTOR posA, FXMVECTOR posB) { return XMVector3Normalize(posB - posA); }
+inline XMVECTOR XM_CALLCONV CalculateCollisionNormal(FXMVECTOR posA, FXMVECTOR posB) { return XMVector3Normalize(posB - posA); }
 // Calculate the squared distance between two positions
-inline float SqDistanceBetween(FXMVECTOR posA, FXMVECTOR posB) { return XMVectorGetX(XMVector3LengthSq(posB - posA)); }
+inline float XM_CALLCONV SqDistanceBetween(FXMVECTOR posA, FXMVECTOR posB) { return XMVectorGetX(XMVector3LengthSq(posB - posA)); }
 
 void PhysicsSystem::ResolveCollisions()
 {
