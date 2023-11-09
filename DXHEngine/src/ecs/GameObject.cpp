@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "systems/GameObjectCollector.h"
 using namespace DirectX;
 
 namespace DXH
@@ -9,9 +10,19 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
-    // Call all the destroy callbacks
-    for (auto& callback : m_ReleaseCallbacks)
-        callback(this);
+}
+
+GameObject* GameObject::Create()
+{
+    GameObject* obj = new GameObject();
+    GameObjectCollector::GetInstance().AddGameObject(obj);
+    return obj;
+}
+
+void GameObject::Destroy()
+{
+    // Schedule the delete to the end of the frame
+    GameObjectCollector::GetInstance().RemoveGameObject(this);
 }
 
 void GameObject::SetPosition(Vector3 position)
@@ -49,7 +60,6 @@ void GameObject::Rotate(Quaternion rotation)
     m_Up = {m._21,m._22,m._23};
     m_Right = {m._11,m._12,m._13};
     m_Forward = {m._31, m._32,m._33};
-
 }
 
 void GameObject::Rotate(Vector3 rotation)

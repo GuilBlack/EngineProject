@@ -2,6 +2,7 @@
 #include "scripts/CameraController.h"
 #include "scripts/SpaceShip.h"
 #include "scripts/Score.h"
+#include "scripts/Asteroid.h"
 #include <DXHCore.h>
 #include <DXHRendering.h>
 using namespace DXH;
@@ -22,50 +23,36 @@ void Game::Init(const DXH::Timer& gt)
     LoadAssets();
 
     // Create SpaceShip
-    GameObject* pSpaceShip = new GameObject();
-    pSpaceShip->SetPosition(0.f, 0.f, -60.f);
+    GameObject* pSpaceShip = GameObject::Create();
     pSpaceShip->Add<SpaceShip>();
     pSpaceShip->Add<CameraController>();
     pSpaceShip->Add<Camera>().IsPrimary = true;
     pSpaceShip->Add<RigidBody>().Mass = 0.5f;
-    pSpaceShip->Add<SphereCollider>().Radius = 1.f;
-    m_GameObjects.push_back(pSpaceShip);
-    GameObject* pScore = new GameObject();
+    auto& c = pSpaceShip->Add<SphereCollider>();
+    c.Radius = 1.f;
+    c.CollisionLayer = DXH::CollisionLayer::One;
+    c.CollisionMask = DXH::CollisionLayer::One;
+    GameObject* pScore = GameObject::Create();
     pScore->Add<Score>();
     pScore->SetPosition(-.975f, .95f, 0.f);
-    NumberUI& num = pScore->Add<NumberUI>();
+    NumberUI &num = pScore->Add<NumberUI>();
     num.InitGeometry(5);
     num.Number = "00000";
-    m_GameObjects.push_back(pScore);
-
 
     // Create asteroid field
     const size_t asteroidCount = 100;
     for (size_t i = 0; i < asteroidCount; i++)
     {
-        GameObject* pAsteroid = new GameObject();
-        float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-        float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-        float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-        pAsteroid->SetPosition(randX, randY, randZ);
-        randX = ((float)rand() / (float)RAND_MAX - 0.5f);
-        randY = ((float)rand() / (float)RAND_MAX - 0.5f);
-        randZ = ((float)rand() / (float)RAND_MAX - 0.5f);
-        pAsteroid->Add<RigidBody>().Velocity = {randX, randY, randZ};
-        Particles& pParticles = pAsteroid->Add<Particles>();
-        pParticles.Geo = RendererResource::GetInstance().GetGeometry("Sphere");
-        pAsteroid->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
-        pAsteroid->Add<SphereCollider>().Radius = 1.f;
-        m_GameObjects.push_back(pAsteroid);
+        Asteroid::CreateAsteroid(pSpaceShip).SetRandomPosition();
     }
+
+    GameObject* pCrossHair =  GameObject::Create();
+    pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
+    pCrossHair->SetScale({ 10.f, 10.f, 1.f });
 }
 
 void Game::Destroy(const DXH::Timer& gt)
 {
-    for (auto go : m_GameObjects)
-    {
-        delete go;
-    }
 }
 
 void Game::LoadAssets()
@@ -73,6 +60,7 @@ void Game::LoadAssets()
     using namespace DXH;
     // Create textures
     RendererResource::CreateTexture("AsteroidTexture", L"res/textures/asteroid.dds");
+    RendererResource::CreateTexture("CrossHair_Texture", L"res/textures/crosshair.dds");
 
     // Create shaders
     RendererResource::CreateShader(
@@ -87,6 +75,14 @@ void Game::LoadAssets()
         "TextureLightingShader",
         "res/shaders/compiled/texture-lighting-vs.cso",
         "res/shaders/compiled/texture-lighting-ps.cso",
+        ShaderProgramType::TextureLightingShader,
+        InputLayoutType::PositionNormalTexcoord
+    );
+
+    RendererResource::CreateShader(
+        "UI_Shader",
+        "res/shaders/compiled/ui-shader-vs.cso",
+        "res/shaders/compiled/ui-shader-ps.cso",
         ShaderProgramType::TextureLightingShader,
         InputLayoutType::PositionNormalTexcoord
     );
@@ -107,10 +103,22 @@ void Game::LoadAssets()
         "TextureLightingShader"
     );
 
+    RendererResource::CreateMaterial(
+        "UI_Material", MaterialType::TextureLighting,
+        "UI_Shader"
+    );
+
     TextureLightingMaterial* pAsteroidMaterial =
         dynamic_cast<TextureLightingMaterial*>(RendererResource::GetInstance().GetMaterial("AsteroidMaterial"));
     pAsteroidMaterial->DiffuseAlbedo = {1.0f, 1.0f, 1.0f, 1.0f};
     pAsteroidMaterial->FresnelR0 = {0.01f, 0.01f, 0.01f};
     pAsteroidMaterial->Roughness = 0.5f;
     pAsteroidMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("AsteroidTexture");
+
+    TextureLightingMaterial* pUIMaterial =
+        dynamic_cast<TextureLightingMaterial*>(RendererResource::GetInstance().GetMaterial("UI_Material"));
+    pUIMaterial->DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+    pUIMaterial->FresnelR0 = { 0.01f, 0.01f, 0.01f };
+    pUIMaterial->Roughness = 0.5f;
+    pUIMaterial->DiffuseTexture = RendererResource::GetInstance().GetTexture("CrossHair_Texture");
 }

@@ -96,17 +96,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\scripts\Asteroid.cpp" />
     <ClCompile Include="src\scripts\Score.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\scripts\Bullet.cpp" />
     <ClCompile Include="src\scripts\CameraController.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\scripts\SpaceShip.cpp" />
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\scripts\Asteroid.h" />
+    <ClInclude Include="src\scripts\Bullet.h" />
     <ClInclude Include="src\scripts\Score.h" />
     <ClInclude Include="src\scripts\CameraController.h" />
     <ClInclude Include="src\pch.h" />

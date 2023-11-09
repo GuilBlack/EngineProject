@@ -108,6 +108,7 @@
     <ClInclude Include="src\ecs\components\Particles.h" />
     <ClInclude Include="src\ecs\Event.h" />
     <ClInclude Include="src\ecs\systems\ParticleSystem.h" />
+    <ClInclude Include="src\ecs\systems\GameObjectCollector.h" />
     <ClInclude Include="src\ecs\systems\ScriptingSystem.h" />
     <ClInclude Include="src\ecs\components\Script.h" />
     <ClInclude Include="src\ecs\systems\CameraSystem.h" />
@@ -152,6 +153,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ecs\components\Particles.cpp" />
+    <ClCompile Include="src\ecs\components\Script.cpp" />
+    <ClCompile Include="src\ecs\systems\GameObjectCollector.cpp" />
     <ClCompile Include="src\ecs\components\Render.cpp" />
     <ClCompile Include="src\ecs\systems\ParticleSystem.cpp" />
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />

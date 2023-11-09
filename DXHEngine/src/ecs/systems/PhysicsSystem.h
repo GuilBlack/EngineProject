@@ -11,7 +11,6 @@ public:
 
     void Update(const Timer& gt) override;
 
-
 private:
     void ResolveCollisions();
     void UpdateRigidBodies(const Timer& gt);

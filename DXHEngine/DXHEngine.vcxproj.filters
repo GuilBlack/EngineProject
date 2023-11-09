@@ -26,9 +26,11 @@
     <ClCompile Include="src\maths\Vector4.cpp" />
     <ClCompile Include="src\maths\Shorthands.cpp" />
     <ClCompile Include="vendor\DDSTextureLoader.cpp" />
+    <ClCompile Include="src\ecs\systems\GameObjectCollector.cpp" />
     <ClCompile Include="src\ecs\components\Render.cpp" />
     <ClCompile Include="src\ecs\components\Particles.cpp" />
     <ClCompile Include="src\ecs\systems\ParticleSystem.cpp" />
+    <ClCompile Include="src\ecs\components\Script.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXHCore.h" />
@@ -77,5 +79,6 @@
     <ClInclude Include="src\renderer\Texture.h" />
     <ClInclude Include="src\ecs\components\Particles.h" />
     <ClInclude Include="src\ecs\systems\ParticleSystem.h" />
+    <ClInclude Include="src\ecs\systems\GameObjectCollector.h" />
   </ItemGroup>
 </Project>

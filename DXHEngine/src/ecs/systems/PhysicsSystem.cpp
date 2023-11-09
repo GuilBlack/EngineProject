@@ -33,11 +33,13 @@ void PhysicsSystem::ResolveCollisions()
         for (auto it2 = std::next(it); it2 != collMap.end(); it2++)
         {
             GameObject* gameObjectB = it2->first;
-
-            // Check for grid position 
-            if (!gameObjectA->IsNear(*gameObjectB)) continue;
-
             SphereCollider& colliderB = it2->second;
+
+            // Check for mask and distance
+            if (!(colliderA.CanCollidesWith(colliderB)
+                && colliderB.CanCollidesWith(colliderA)
+                && gameObjectA->IsNear(*gameObjectB))) continue;
+
             XMVECTOR posB = colliderB.WorldPosition().Load();
 
             // Check for collision
@@ -48,13 +50,13 @@ void PhysicsSystem::ResolveCollisions()
             {
                 RigidBody& rigidBodyA = rigidMap.at(gameObjectA);
                 RigidBody& rigidBodyB = rigidMap.at(gameObjectB);
-            
+
                 XMVECTOR normal = CalculateCollisionNormal(posA, posB);
                 XMVECTOR rbvA = rigidBodyA.Velocity.Load();
                 XMVECTOR rbvB = rigidBodyB.Velocity.Load();
                 float impulse = (2 * rigidBodyB.Mass * XMVectorGetX(XMVector3Dot(normal, rbvB - rbvA))) /
                     (rigidBodyA.Mass + rigidBodyB.Mass);
-                
+
                 // Update the positions to does not collides anymore
                 XMVECTOR penetrationOverMasses = (sumRadii - XMVectorGetX(XMVector3Length(posB - posA))) / (rigidBodyA.Mass + rigidBodyB.Mass) * normal;
                 gameObjectA->SetPosition(gameObjectA->Position().Load() - (penetrationOverMasses * rigidBodyA.Mass));
@@ -63,6 +65,10 @@ void PhysicsSystem::ResolveCollisions()
                 // Update the velocities
                 rigidBodyA.Velocity.Store(rbvA + (impulse * normal / rigidBodyA.Mass));
                 rigidBodyB.Velocity.Store(rbvB - (impulse * normal / rigidBodyB.Mass));
+
+                // Call the OnCollision events
+                gameObjectA->OnCollision(gameObjectB);
+                gameObjectB->OnCollision(gameObjectA);
             }
         }
     }

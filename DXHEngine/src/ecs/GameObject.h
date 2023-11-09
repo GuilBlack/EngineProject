@@ -1,6 +1,8 @@
 #pragma once
 #include "ComponentManager.h" // Mandatory include, as all methods here are remapped to ComponentManager<T>
 #include "DXHMaths.h" // For math structs and functions
+#include "components/Script.h" // For friend functions
+#include "Event.h"
 
 namespace DXH
 {
@@ -11,9 +13,16 @@ class GameObject
 {
     // GameObjects are not copyable, as they are managed by ComponentManagers
     GameObject(const GameObject&) = delete;
-public:
+
+    friend class GameObjectCollector;
     GameObject();
     ~GameObject();
+public:
+
+    // Creates a new game object, will be automatically deleted if you don't destroy it yourself.
+    static GameObject* Create();
+    // Removes all components and destroys the game object.
+    void Destroy();
 
 #pragma region Component Manager Remapping
     /// <summary>
@@ -64,6 +73,7 @@ public:
     void Rotate(float x, float y, float z) { Rotate({x,y,z}); }
     Vector3 Scale() const { return m_Scale; }
     void SetScale(Vector3 scale) { m_Scale = scale; }
+    void SetScale(float x, float y, float z) { SetScale({x,y,z}); }
 
     /// <summary>
     /// Gets the matrix describing the transformation from world space to model space.
@@ -96,6 +106,8 @@ public:
         forward = m_Forward;
     }
 
+    void OnCollision(GameObject* other) { m_OnCollisions.Invoke(other); }
+
 private:
     typedef void(*ReleaseCallback)(GameObject*);
     // A vector of callbacks that will be called when the game object is destroyed
@@ -110,5 +122,10 @@ private:
     Vector3 m_Up = Vector3::Up;
     Vector3 m_Right = Vector3::Right;
     Vector3 m_Forward = Vector3::Forward;
+
+    // Collisions callbacks
+    Event<GameObject*> m_OnCollisions = Event<GameObject*>();
+    friend void Script::OnAssign();
+    friend void Script::OnDetach();
 };
 }

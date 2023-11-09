@@ -2,6 +2,7 @@
 
 // Include all systems here
 #include "systems/ScriptingSystem.h"
+#include "systems/GameObjectCollector.h"
 #include "systems/PhysicsSystem.h"
 #include "systems/CameraSystem.h"
 #include "systems/RenderSystem.h"
@@ -17,6 +18,7 @@ void System::UpdateAll(const Timer& gt)
     static CameraSystem cameraSystem;
     static RenderSystem renderSystem;
     static ParticleSystem particleSystem;
+    static GameObjectCollector& gameObjectCollector = GameObjectCollector::GetInstance();
 
     // Systems update
     scriptingSystem.Update(gt);
@@ -24,5 +26,6 @@ void System::UpdateAll(const Timer& gt)
     cameraSystem.Update(gt);
     particleSystem.Update(gt);
     renderSystem.Update(gt);
+    gameObjectCollector.Update(gt);
 }
 }

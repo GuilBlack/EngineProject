@@ -52,6 +52,7 @@ public:
         }
         throw std::exception("No components available");
     }
+    /// <summary>
     /// Detaches from the given game object the component of type T if it has one and returns it to the pool.
     /// </summary>
     void Detach(GameObject* pGameObject)
