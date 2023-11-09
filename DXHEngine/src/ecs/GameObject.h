@@ -111,7 +111,7 @@ public:
 private:
     typedef void(*ReleaseCallback)(GameObject*);
     // A vector of callbacks that will be called when the game object is destroyed
-    std::vector<ReleaseCallback> m_ReleaseCallbacks;
+    std::vector<ReleaseCallback> m_ReleaseCallbacks = std::vector<ReleaseCallback>();
 
     Vector3 m_Position = Vector3::Zero; // Position in world space, in meters
     int m_GridPosition[3] = {0,0,0}; // Position in the grid
@@ -124,7 +124,7 @@ private:
     Vector3 m_Forward = Vector3::Forward;
 
     // Scripts listening for collision events
-    std::vector<Script*> m_Scripts;
+    std::vector<Script*> m_Scripts = std::vector<Script*>();
     friend void Script::OnAssign();
     friend void Script::OnDetach();
 };
