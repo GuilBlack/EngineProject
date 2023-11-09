@@ -22,7 +22,7 @@ public:
     void RemoveGameObject(GameObject* gameObject) { m_GameObjectsToRemove.push(gameObject); }
 
 private:
-    std::vector<GameObject*> m_GameObjects;
-    std::queue<GameObject*> m_GameObjectsToRemove;
+    std::vector<GameObject*> m_GameObjects = std::vector<GameObject*>();
+    std::queue<GameObject*> m_GameObjectsToRemove = std::queue<GameObject*>();
 };
 }
