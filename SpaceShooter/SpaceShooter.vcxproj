@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\scripts\AsteroidSpawner.cpp" />
     <ClCompile Include="src\scripts\Asteroid.cpp" />
     <ClCompile Include="src\scripts\Score.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -109,6 +110,7 @@
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\scripts\AsteroidSpawner.h" />
     <ClInclude Include="src\scripts\Asteroid.h" />
     <ClInclude Include="src\scripts\Bullet.h" />
     <ClInclude Include="src\scripts\Blaster\Blaster.h" />

@@ -1,43 +1,36 @@
 #include "Asteroid.h"
+#include "DXHRendering.h"
 using namespace DXH;
 
 void Asteroid::Update(const DXH::Timer& gt)
 {
-    ReplaceAsteroid();
+    auto& rb = pGameObject->Get<RigidBody>();
+    Vector3 normalize = (m_SpaceShip->Position() - pGameObject->Position()).Normalize();
+    rb.Velocity = normalize * m_AsteroidSpeed;
+
+    if (!m_IsDestroyed)
+		return;
+
+    m_TimeToLive += gt.DeltaTime();
+
+    pGameObject->Remove<SphereCollider>();
+	if (m_TimeToLive > 6.f)
+        OnAsteroidDestroy();
 }
 
-Asteroid& Asteroid::CreateAsteroid(GameObject* SpaceShip)
+void Asteroid::OnAsteroidDestroy()
 {
-    GameObject* pAsteroid = GameObject::Create();
-    pAsteroid->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
-    pAsteroid->Add<RigidBody>();
-    pAsteroid->Add<SphereCollider>().Radius = 1.f;
-    auto &a = pAsteroid->Add<Asteroid>();
-    a.m_SpaceShip = SpaceShip;
-    return a;
+    pGameObject->Destroy();
 }
 
-void Asteroid::SetRandomPosition()
+void Asteroid::OnCollision(DXH::GameObject* other)
 {
-    float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-    float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-    float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-    pGameObject->SetPosition(randX, randY, randZ);
-}
-
-void Asteroid::ReplaceAsteroid()
-{
-    auto astePos = pGameObject->Position();
-    auto playerPosition = m_SpaceShip->Position();
-    Vector3 calculation = astePos - playerPosition;
-    calculation.x = calculation.x * calculation.x;
-    calculation.y = calculation.y * calculation.y;
-    calculation.z = calculation.z * calculation.z;
-    float distance = sqrt(calculation.x + calculation.y + calculation.z);
-
-    if (distance > 100.f)
+    pGameObject->Remove<Mesh>();
+    if (!pGameObject->Has<Particles>())
     {
-        pGameObject->Get<RigidBody>().Velocity = Vector3(0.f, 0.f, 0.f);
-        SetRandomPosition();
+        auto& particles = pGameObject->Add<Particles>();
+        particles.Geo = RendererResource::GetGeometry("Sphere");
     }
+    m_IsDestroyed = true;
+    pGameObject->Get<RigidBody>().Velocity = Vector3(0.f, 0.f, 0.f);
 }

@@ -5,6 +5,10 @@ template<typename ...T> class Event
 {
 public:
     Event() : m_Functions() {};
+    ~Event() 
+    {
+        m_Functions.clear();
+    };
 
     /// <summary>
     /// Adds a function to the event

@@ -68,4 +68,12 @@ void GameObject::Rotate(Vector3 rotation)
     q.SetEulerAngles(rotation);
     Rotate(q);
 }
+
+void GameObject::OnCollision(GameObject* other)
+{
+    for (auto& c : m_Scripts)
+    {
+        c->OnCollision(other);
+	}
+}
 }
