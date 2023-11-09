@@ -53,6 +53,10 @@ void SpaceShip::Update(const DXH::Timer& gt)
 
     // Camera Zoom
     m_Camera->FieldOfView = InputManager::GetKeyState('C') == KeyState::Pressed ? m_CameraDefaultPOV * m_ZoomScale : m_CameraDefaultPOV;
+    if (m_Life < 3 && m_IsDead)
+        m_Life = 3;
+    else
+        m_IsDead = false;
 }
 
 void SpaceShip::OnDestroy()
