@@ -43,7 +43,7 @@ void Game::Init(const DXH::Timer& gt)
     const size_t asteroidCount = 100;
     for (size_t i = 0; i < asteroidCount; i++)
     {
-        Asteroid::CreateAsteroid().SetRandomPosition();
+        Asteroid::CreateAsteroid(pSpaceShip).SetRandomPosition();
     }
 
     GameObject* pCrossHair =  GameObject::Create();
