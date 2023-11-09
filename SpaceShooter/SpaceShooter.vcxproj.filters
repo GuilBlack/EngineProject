@@ -26,7 +26,4 @@
     <ClInclude Include="src\scripts\Blaster\Weapon.h" />
     <ClInclude Include="src\ui\Button.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\..\Downloads\menu.dds" />
-  </ItemGroup>
 </Project>

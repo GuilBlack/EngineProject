@@ -124,9 +124,6 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scripts\SpaceShip.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\..\Downloads\menu.dds" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
