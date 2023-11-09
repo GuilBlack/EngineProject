@@ -2,6 +2,7 @@
 #include "scripts/CameraController.h"
 #include "scripts/SpaceShip.h"
 #include "scripts/Score.h"
+#include "scripts/Asteroid.h"
 #include <DXHCore.h>
 #include <DXHRendering.h>
 using namespace DXH;
@@ -22,7 +23,7 @@ void Game::Init(const DXH::Timer& gt)
     LoadAssets();
 
     // Create SpaceShip
-    GameObject* pSpaceShip = new GameObject();
+    GameObject* pSpaceShip = GameObject::Create();
     pSpaceShip->Add<SpaceShip>();
     pSpaceShip->Add<CameraController>();
     pSpaceShip->Add<Camera>().IsPrimary = true;
@@ -31,46 +32,27 @@ void Game::Init(const DXH::Timer& gt)
     c.Radius = 1.f;
     c.CollisionLayer = DXH::CollisionLayer::One;
     c.CollisionMask = DXH::CollisionLayer::One;
-    m_GameObjects.push_back(pSpaceShip);
-    GameObject* pScore = new GameObject();
+    GameObject* pScore = GameObject::Create();
     pScore->Add<Score>();
     pScore->SetPosition(-.975f, .95f, 0.f);
-    NumberUI& num = pScore->Add<NumberUI>();
+    NumberUI &num = pScore->Add<NumberUI>();
     num.InitGeometry(5);
     num.Number = "00000";
-    m_GameObjects.push_back(pScore);
-
 
     // Create asteroid field
     const size_t asteroidCount = 100;
     for (size_t i = 0; i < asteroidCount; i++)
     {
-        GameObject* pAsteroid = new GameObject();
-        float randX = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-        float randY = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-        float randZ = ((float)rand() / (float)RAND_MAX - 0.5f) * 100.f;
-        pAsteroid->SetPosition(randX, randY, randZ);
-        randX = ((float)rand() / (float)RAND_MAX - 0.5f);
-        randY = ((float)rand() / (float)RAND_MAX - 0.5f);
-        randZ = ((float)rand() / (float)RAND_MAX - 0.5f);
-        pAsteroid->Add<RigidBody>().Velocity = {randX, randY, randZ};
-        pAsteroid->Add<Mesh>().SetGeoAndMatByName("Sphere", "AsteroidMaterial");
-        pAsteroid->Add<SphereCollider>().Radius = 1.f;
-        m_GameObjects.push_back(pAsteroid);
+        Asteroid::CreateAsteroid(pSpaceShip).SetRandomPosition();
     }
 
-    GameObject* pCrossHair = new GameObject();
+    GameObject* pCrossHair =  GameObject::Create();
     pCrossHair->Add<Mesh>().SetGeoAndMatByName("Square", "UI_Material");
     pCrossHair->SetScale({ 10.f, 10.f, 1.f });
-    m_GameObjects.push_back(pCrossHair);
 }
 
 void Game::Destroy(const DXH::Timer& gt)
 {
-    for (auto go : m_GameObjects)
-    {
-        delete go;
-    }
 }
 
 void Game::LoadAssets()

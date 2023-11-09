@@ -107,6 +107,7 @@
     <ClInclude Include="DXHRendering.h" />
     <ClInclude Include="res\shaders\include\DXHRendering.h" />
     <ClInclude Include="src\ecs\Event.h" />
+    <ClInclude Include="src\ecs\systems\GameObjectCollector.h" />
     <ClInclude Include="src\ecs\systems\ScriptingSystem.h" />
     <ClInclude Include="src\ecs\components\Script.h" />
     <ClInclude Include="src\ecs\systems\CameraSystem.h" />
@@ -150,6 +151,8 @@
     <ClInclude Include="vendor\DDSTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ecs\components\Script.cpp" />
+    <ClCompile Include="src\ecs\systems\GameObjectCollector.cpp" />
     <ClCompile Include="src\ecs\components\Render.cpp" />
     <ClCompile Include="src\ecs\systems\ScriptingSystem.cpp" />
     <ClCompile Include="src\ecs\systems\CameraSystem.cpp" />

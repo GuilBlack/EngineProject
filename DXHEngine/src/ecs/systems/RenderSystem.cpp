@@ -49,9 +49,9 @@ void DXH::RenderSystem::Update(const Timer& gt)
             1000.f
         );
         defaultCam.Proj = proj;
-        defaultCam.pGameObject = new GameObject();
+        defaultCam.pGameObject = GameObject::Create();
         Renderer::GetInstance().BeginFrame(defaultCam, gt);
-        delete defaultCam.pGameObject;
+        defaultCam.pGameObject->Destroy();
     }
 
     for (auto& pair : map)
