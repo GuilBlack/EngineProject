@@ -18,21 +18,21 @@ void SpaceShip::Update(const DXH::Timer& gt)
     Vector3 up, right, forward;
     pGameObject->GetLocalAxis(up, right, forward);
     if (InputManager::GetKeyState('W') == KeyState::Pressed || InputManager::GetKeyState('Z') == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity += forward * m_DefaultSpeed;
+        m_SpaceshipRigibody->Velocity += forward * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState('S') == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity -= forward * m_DefaultSpeed;
+        m_SpaceshipRigibody->Velocity -= forward * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState('A') == KeyState::Pressed || InputManager::GetKeyState('Q') == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity -= right * m_DefaultSpeed;
+        m_SpaceshipRigibody->Velocity -= right * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState('D') == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity += right * m_DefaultSpeed;
+        m_SpaceshipRigibody->Velocity += right * (m_Propulsion * gt.DeltaTime());
     if (InputManager::GetKeyState(VK_SPACE) == KeyState::Pressed)
-        m_SpaceshipRigibody->Velocity = Vector3::Zero;
+        m_SpaceshipRigibody->Velocity -= Vector3(m_SpaceshipRigibody->Velocity.Normalize()) * (m_Propulsion * gt.DeltaTime());
 
     auto loadedVelocity = m_SpaceshipRigibody->Velocity.Load();
-    if (DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(loadedVelocity)) > m_SqMaxVelocity)
+    if (DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(loadedVelocity)) > m_MaxVelocity * m_MaxVelocity)
     {
         m_SpaceshipRigibody->Velocity.Store(DirectX::XMVector3Normalize(loadedVelocity));
-        m_SpaceshipRigibody->Velocity *= m_SqMaxVelocity;
+        m_SpaceshipRigibody->Velocity *= m_MaxVelocity;
     }
 
     if (InputManager::GetKeyState(VK_TAB) == KeyState::JustPressed)

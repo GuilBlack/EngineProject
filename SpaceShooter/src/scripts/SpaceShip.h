@@ -13,8 +13,8 @@ public:
 private:
     DXH::RigidBody* m_SpaceshipRigibody;
     DXH::Camera* m_Camera;
-    float m_DefaultSpeed = 1.f;
-    float m_SqMaxVelocity = 5.f;
+    float m_Propulsion = 2.f;
+    float m_MaxVelocity = 5.f;
 
     float m_CameraDefaultPOV = 65.f;
     float m_ZoomScale = 0.5f;
