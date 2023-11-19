@@ -52,9 +52,14 @@ public:
         GetInstance().PrivateCreateMaterial(materialName, materialType, shaderName);
     }
 
-static void CreateTexture(const std::string& textureName, const std::wstring& texturePath)
+    static void CreateTexture(const std::string& textureName, const std::wstring& texturePath)
     {
         GetInstance().PrivateCreateTexture(textureName, texturePath);
+    }
+
+    static void CreateTextureCube(const std::string& textureName, const std::wstring& texturePath)
+    {
+        GetInstance().PrivateCreateTextureCube(textureName, texturePath);
     }
 
     /// <summary>
@@ -68,26 +73,32 @@ static void CreateTexture(const std::string& textureName, const std::wstring& te
 
     static Texture* GetTexture(const std::string& textureName) { return RendererResource::GetInstance().m_Textures[textureName]; }
 
+    static Texture* GetTextureCube(const std::string& textureName) { return RendererResource::GetInstance().m_TexturesCube[textureName]; }
+
 private:
     std::unordered_map<std::string, BaseShader*> m_Shaders;
     std::unordered_map<std::string, Geometry*> m_Geometries;
     std::unordered_map<std::string, Material*> m_Materials;
     std::unordered_map<std::string, Texture*> m_Textures;
+    std::unordered_map<std::string, Texture*> m_TexturesCube;
 
 private:
     /// <summary>
-/// Create a shader
-/// </summary>
-/// <param name="name">Name of the shader</param>
-/// <param name="vsFilePath">Path to the vertex shader</param>
-/// <param name="psFilePath">Path to the pixel shader</param>
-/// <param name="type">Type of the shader program</param>
-/// <param name="layout">Type of the input layout</param>
+    /// Create a shader
+    /// </summary>
+    /// <param name="name">Name of the shader</param>
+    /// <param name="vsFilePath">Path to the vertex shader</param>
+    /// <param name="psFilePath">Path to the pixel shader</param>
+    /// <param name="type">Type of the shader program</param>
+    /// <param name="layout">Type of the input layout</param>
     void PrivateCreateShader(const std::string& name, const std::string& vsFilePath, const std::string& psFilePath, ShaderProgramType type, InputLayoutType layout);
 
     void PrivateCreateMaterial(const std::string& materialName, MaterialType materialType, const std::string& shaderName);
 
+
     void PrivateCreateTexture(const std::string& textureName, const std::wstring& texturePath);
+
+    void PrivateCreateTextureCube(const std::string& textureName, const std::wstring& texturePath);
 
     /// <summary>
     /// Create a cube geometry

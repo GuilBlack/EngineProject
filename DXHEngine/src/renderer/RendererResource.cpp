@@ -17,6 +17,8 @@ RendererResource::~RendererResource()
         DELETE_PTR(material);
     for (auto [_, texture] : m_Textures)
         DELETE_PTR(texture);
+    for (auto [_, texture] : m_TexturesCube)
+        DELETE_PTR(texture);
 }
 
 void RendererResource::Init()
@@ -130,6 +132,20 @@ void RendererResource::PrivateCreateMaterial(const std::string& materialName, Ma
         m_Materials[materialName] = pMaterial;
         break;
     }
+    case MaterialType::Skybox:
+    {
+        BaseShader* pShader = m_Shaders[shaderName];
+        if (pShader->GetType() != ShaderProgramType::SkyboxShader)
+        { // TODO: Add error handling
+            assert(false && "Shader type mismatch");
+            return;
+        }
+        Material* pMaterial = new SkyboxMaterial();
+        pMaterial->Type = MaterialType::Skybox;
+        pMaterial->Shader = pShader;
+        m_Materials[materialName] = pMaterial;
+        break;
+    }
     default:
         // TODO: Add error handling
         assert(false && "Material type not supported");
@@ -145,6 +161,16 @@ void RendererResource::PrivateCreateTexture(const std::string& textureName, cons
     Texture* pTexture = Renderer::GetInstance().CreateTexture2D(texturePath);
 
     m_Textures[textureName] = pTexture;
+}
+
+void RendererResource::PrivateCreateTextureCube(const std::string& textureName, const std::wstring& texturePath)
+{
+    if (m_Textures.contains(textureName))
+        return;
+
+    Texture* pTexture = Renderer::GetInstance().CreateTextureCube(texturePath);
+
+    m_TexturesCube[textureName] = pTexture;
 }
 
 void RendererResource::CreateCube()

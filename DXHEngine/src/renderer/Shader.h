@@ -15,7 +15,8 @@ enum class ShaderProgramType
     BasicLightingShader,
     TextureLightingShader,
     NumberUIShader,
-    ParticleShader
+    ParticleShader,
+    SkyboxShader
 };
 
 
@@ -106,8 +107,6 @@ public:
         cl->SetGraphicsRootSignature(nullptr);
     }
 
-    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl);
-
     /// <summary>
     /// Gets the type of the shader program.
     /// </summary>
@@ -171,6 +170,8 @@ protected:
     /// Builds the pipeline state object for the shader.
     /// </summary>
     virtual void BuildPSO();
+
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl);
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -261,5 +262,23 @@ public:
     virtual void Bind(ID3D12GraphicsCommandList* cl) override;
 
     void DrawInstanced(Geometry* geometry, GameObject& gameObject, uint32_t objectCBIndex, UploadBuffer<ParticleConstants>& instanceData, Material* material, ID3D12GraphicsCommandList* cl, uint32_t instanceCount);
+};
+
+//////////////////////////////////////////////////////////////////////////
+// SkyboxShader //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+class SkyboxShader : public BaseShader
+{
+public:
+    SkyboxShader();
+    ~SkyboxShader() {}
+
+    virtual void Bind(ID3D12GraphicsCommandList* cl) override;
+
+protected:
+    virtual void SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl) override;
+
+    virtual void BuildPSO() override;
 };
 }

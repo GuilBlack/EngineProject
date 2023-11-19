@@ -28,4 +28,7 @@
     <ClInclude Include="src\ui\Button.h" />
     <ClInclude Include="src\scripts\AsteroidSpawner.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Users\guill\Downloads\CubeMap\space-cubemap.dds" />
+  </ItemGroup>
 </Project>

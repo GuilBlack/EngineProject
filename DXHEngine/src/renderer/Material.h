@@ -11,7 +11,8 @@ enum class MaterialType
     Lighting,
     TextureLighting,
     NumberUI,
-    ParticleMaterial
+    ParticleMaterial,
+    Skybox
 };
 
 struct Material
@@ -40,6 +41,11 @@ struct TextureLightingMaterial : public SimpleLightingMaterial
 struct NumberUIMaterial : public Material
 {
     Texture* NumberAtlas = nullptr;
+};
+
+struct SkyboxMaterial : public Material
+{
+    Texture* SkyboxTexture = nullptr;
 };
 
 }

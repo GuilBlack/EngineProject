@@ -340,6 +340,53 @@ Texture* Renderer::CreateTexture2D(const std::wstring& texturePath)
     return pTexture;
 }
 
+Texture* Renderer::CreateTextureCube(const std::wstring& texturePath)
+{
+    using namespace DirectX;
+
+    Microsoft::WRL::ComPtr<ID3D12Resource> uploadHeap = nullptr;
+
+    FlushCommandQueue();
+    ASSERT_HRESULT(m_pCommandList->Reset(m_pCommandAllocator, nullptr));
+
+    Texture* pTexture = new Texture();
+    ASSERT_HRESULT(CreateDDSTextureFromFile12(
+        GetRenderContext()->GetDevice(),
+        m_pCommandList,
+        texturePath.c_str(),
+        pTexture->Resource,
+        uploadHeap
+    ));
+    D3D12_RESOURCE_DESC textureDesc = pTexture->Resource->GetDesc();
+
+    CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(m_pSrvHeap->GetCPUDescriptorHandleForHeapStart());
+    hDescriptor.Offset(m_SrvIndex, m_pRenderContext->GetDescriptorIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc =
+    {
+        .Format = textureDesc.Format,
+        .ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE,
+        .Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING,
+        .TextureCube =
+        {
+            .MostDetailedMip = 0,
+            .MipLevels = textureDesc.MipLevels,
+            .ResourceMinLODClamp = 0.0f,
+        }
+    };
+
+    m_pRenderContext->GetDevice()->CreateShaderResourceView(pTexture->Resource.Get(), &srvDesc, hDescriptor);
+
+    ASSERT_HRESULT(m_pCommandList->Close());
+    ID3D12CommandList* commandLists[] = { m_pCommandList };
+    m_pCommandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
+
+    FlushCommandQueue();
+
+    pTexture->heapIndex = m_SrvIndex++;
+    return pTexture;
+}
+
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> Renderer::GetStaticSamplers()
 {
     static const CD3DX12_STATIC_SAMPLER_DESC pointWrap(

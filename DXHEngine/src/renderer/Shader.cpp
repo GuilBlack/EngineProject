@@ -34,31 +34,36 @@ BaseShader* BaseShader::Create(const std::string& vsFilePath, const std::string&
 
     switch (type)
     {
-    case ShaderProgramType::SimpleShader:
-    {
-        shader = new SimpleShader();
-        break;
-    }
-    case ShaderProgramType::BasicLightingShader:
-    {
-        shader = new BasicLightingShader();
-        break;
-    }
-    case ShaderProgramType::TextureLightingShader:
-    {
-        shader = new TextureLightingShader();
-        break;
-    }
-    case ShaderProgramType::NumberUIShader:
-    {
-        shader = new NumberUIShader();
-        break;
-    }
-    case ShaderProgramType::ParticleShader:
-    {
-        shader = new ParticleShader();
-        break;
-    }
+        case ShaderProgramType::SimpleShader:
+        {
+            shader = new SimpleShader();
+            break;
+        }
+        case ShaderProgramType::BasicLightingShader:
+        {
+            shader = new BasicLightingShader();
+            break;
+        }
+        case ShaderProgramType::TextureLightingShader:
+        {
+            shader = new TextureLightingShader();
+            break;
+        }
+        case ShaderProgramType::NumberUIShader:
+        {
+            shader = new NumberUIShader();
+            break;
+        }
+        case ShaderProgramType::ParticleShader:
+        {
+            shader = new ParticleShader();
+            break;
+        }
+        case ShaderProgramType::SkyboxShader:
+        {
+            shader = new SkyboxShader();
+            break;
+        }
     }
     assert(shader && "Wrong shader program type given!");
 
@@ -537,4 +542,90 @@ void ParticleShader::DrawInstanced(Geometry* geometry, GameObject& gameObject, u
     cl->DrawIndexedInstanced(geometry->IndexBufferByteSize / sizeof(uint16_t), instanceCount, 0, 0, 0);
 }
 
+//////////////////////////////////////////////////////////////////////////
+// SkyboxShader //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+SkyboxShader::SkyboxShader()
+{
+    m_PassCB.CopyData(0, PassConstants());
+    m_Type = ShaderProgramType::SkyboxShader;
+
+    CD3DX12_ROOT_PARAMETER rootParameters[3];
+
+    CD3DX12_DESCRIPTOR_RANGE texTable;
+    texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+    rootParameters[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL); // t0 skybox
+    rootParameters[1].InitAsConstantBufferView(0); // b0 objCB
+    rootParameters[2].InitAsConstantBufferView(1); // b1 passCB
+
+    auto staticSamplers = Renderer::GetInstance().GetStaticSamplers();
+
+    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+    rootSignatureDesc.Init(
+        3, rootParameters,
+        (uint32_t)staticSamplers.size(), staticSamplers.data(),
+        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+    );
+
+    BuildRootSignature(rootSignatureDesc);
+}
+
+void SkyboxShader::Bind(ID3D12GraphicsCommandList* cl)
+{
+    BaseShader::Bind(cl);
+    cl->SetGraphicsRootConstantBufferView(2, m_PassCB.GetResource()->GetGPUVirtualAddress()); // passCB
+}
+
+void SkyboxShader::SetCbvSrv(uint32_t objectCBIndex, Material* material, GameObject& gameObject, ID3D12GraphicsCommandList* cl)
+{
+    using namespace DirectX;
+
+    ObjectConstants objectCB;
+    XMStoreFloat4x4(&objectCB.World, XMMatrixTranspose(gameObject.GetModelMatrix()));
+    UpdateObjectCB(objectCB, objectCBIndex);
+    cl->SetGraphicsRootConstantBufferView(1, s_ObjectCB[objectCBIndex].GetResource()->GetGPUVirtualAddress()); // objCB
+
+    SkyboxMaterial* pMat = dynamic_cast<SkyboxMaterial*>(material);
+
+    CD3DX12_GPU_DESCRIPTOR_HANDLE tex(Renderer::GetInstance().GetSrvHeap()->GetGPUDescriptorHandleForHeapStart());
+    tex.Offset(pMat->SkyboxTexture->heapIndex, Renderer::GetRenderContext()->GetDescriptorIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+
+    cl->SetGraphicsRootDescriptorTable(0, tex); // t0
+}
+
+void SkyboxShader::BuildPSO()
+{
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc =
+    {
+        .pRootSignature = m_pRootSignature,
+        .VS =
+        {
+            reinterpret_cast<BYTE*>(m_pVS->GetBufferPointer()),
+            m_pVS->GetBufferSize()
+        },
+        .PS =
+        {
+            reinterpret_cast<BYTE*>(m_pPS->GetBufferPointer()),
+            m_pPS->GetBufferSize()
+        },
+        .BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT),
+        .SampleMask = UINT_MAX,
+        .RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT),
+        .DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT),
+        .InputLayout = { m_InputLayout.data(), (uint32_t)m_InputLayout.size() },
+        .PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,
+        .NumRenderTargets = 1,
+        .DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT,
+        .SampleDesc = { 1, 0 },
+        .NodeMask = 0
+    };
+    psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+    psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+    psoDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
+    Renderer::GetRenderContext()->CreatePSO(psoDesc, &m_pPSO);
+}
 }

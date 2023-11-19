@@ -90,6 +90,8 @@ public:
 
     Texture* CreateTexture2D(const std::wstring& texturePath);
 
+    Texture* CreateTextureCube(const std::wstring& texturePath);
+
     std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 
 private:
